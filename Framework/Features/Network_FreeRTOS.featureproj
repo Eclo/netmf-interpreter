@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <FeatureName>Network (FreeRTOS)</FeatureName>
+    <Filter>FREE_RTOS</Filter>
+  </PropertyGroup>
+
+  <Import Condition="'$(CORE_FEATUREPROJ)'        ==''" Project="$(SPOCLIENT)\Framework\Features\Core.featureproj" />
+  <Import Condition="'$(HARDWARE_FEATUREPROJ)'    ==''" Project="$(SPOCLIENT)\Framework\Features\Hardware.featureproj" />
+  <Import Condition="'$(SOCKETS_PORT_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\SOCKETS_Port.featureproj" />
+
+  <ItemGroup>
+    <InteropFeature Include="Microsoft_SPOT_Net" />
+    <MMP_DAT_CreateDatabase Include="$(BUILD_TREE_CLIENT)\pe\$(ENDIANNESS)\Microsoft.SPOT.Net.pe" />
+    <RequiredManagedProjects Include="$(SPOCLIENT)\Framework\core\Native_net\Core_Net.csproj" Condition="'$(AUTOMATED_BUILD)'==''" />
+
+    <MMP_DAT_CreateDatabase Include="$(BUILD_TREE_CLIENT)\pe\$(ENDIANNESS)\system.pe" />
+    <RequiredManagedProjects Include="$(SPOCLIENT)\Framework\core\System\System.csproj" Condition="'$(AUTOMATED_BUILD)'==''" />
+  </ItemGroup>
+  <Import Project="$(SPOCLIENT)\Framework\Features\spot_net_CLR.libcatproj" />
+  <Import Project="$(SPOCLIENT)\Framework\Features\OS.libcatproj" />
+  <PropertyGroup>
+    <Description>Network core functionality for FreeRTOS stack on a multi-threaded OS</Description>
+    <Guid>{D6AA9A25-4B00-476E-84B8-6A1AA2AD0BC2}</Guid>
+    <Groups>Networking</Groups>
+    <Documentation>
+    </Documentation>
+    <NETWORK_FREERTOS_FEATUREPROJ>True</NETWORK_FREERTOS_FEATUREPROJ>
+  </PropertyGroup>
+</Project>
