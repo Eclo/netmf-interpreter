@@ -1,77 +1,77 @@
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // Copyright (c) Microsoft Corporation.  All rights reserved.
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 
-// #include "FreeRTOS_sockets.h"
-// 
-// extern "C"
-// {
-// // #include "lwip\init.h"
-// // #include "lwip\tcpip.h"
-// // #include "lwip\dns.h"
-// // #include "lwip\netifapi.h"
-// // #include "lwip\Netdb.h"
-// // #include "lwip\tcp.h"
-// // #include "lwip\Sockets.h"
-// }
-// 
-// extern const HAL_CONFIG_BLOCK   g_NetworkConfigHeader;
-// extern NETWORK_CONFIG           g_NetworkConfig;
-// 
-// //--// 
-// 
-// #if defined(DEBUG)
-// #define DEBUG_HANDLE_SOCKET_ERROR(t,a) 
-// // assume there is something to add in later??
-// #else
-// #define DEBUG_HANDLE_SOCKET_ERROR(t,a) 
-// #endif
-// 
-// //struct netif *netif_find_interface(int num);
-// 
-// //--//
-// 
-// FreeRTOS_SOCKETS_Driver g_FreeRTOS_SOCKETS_Driver;
-// 
-// //--//
-// 
-// static HAL_CONTINUATION PostAddressChangedContinuation;
-// static HAL_CONTINUATION PostAvailabilityOnContinuation;
-// static HAL_CONTINUATION PostAvailabilityOffContinuation;
-// 
-// void FreeRTOS_SOCKETS_Driver::PostAddressChanged(void* arg)
-// {
-// 	Network_PostEvent(NETWORK_EVENT_TYPE_ADDRESS_CHANGED, 0);
-// }
-// 
-// void FreeRTOS_SOCKETS_Driver::PostAvailabilityOn(void* arg)
-// {
-// 	Network_PostEvent(NETWORK_EVENT_TYPE__AVAILABILITY_CHANGED, 1);
-// }
-// 
-// void FreeRTOS_SOCKETS_Driver::PostAvailabilityOff(void* arg)
-// {
-// 	Network_PostEvent(NETWORK_EVENT_TYPE__AVAILABILITY_CHANGED, 0);
-// }
-// 
-// void FreeRTOS_SOCKETS_Driver::Link_callback(struct netif *netif)
-// {
-// 	if (netif_is_link_up(netif))
-// 	{
-// 		if (!PostAvailabilityOnContinuation.IsLinked())
-// 			PostAvailabilityOnContinuation.Enqueue();
-// 	}
-// 	else
-// 	{
-// 		if (!PostAvailabilityOffContinuation.IsLinked())
-// 			PostAvailabilityOffContinuation.Enqueue();
-// 	}
-//     Events_Set(SYSTEM_EVENT_FLAG_SOCKET);
-//     Events_Set(SYSTEM_EVENT_FLAG_NETWORK);
-// }
-// 
-// void FreeRTOS_SOCKETS_Driver::Status_callback(struct netif *netif)
-// {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include "FreeRTOS_sockets.h"
+
+extern "C"
+{
+// #include "lwip\init.h"
+// #include "lwip\tcpip.h"
+// #include "lwip\dns.h"
+// #include "lwip\netifapi.h"
+// #include "lwip\Netdb.h"
+// #include "lwip\tcp.h"
+// #include "lwip\Sockets.h"
+}
+
+extern const HAL_CONFIG_BLOCK   g_NetworkConfigHeader;
+extern NETWORK_CONFIG           g_NetworkConfig;
+
+//--// 
+
+#if defined(DEBUG)
+#define DEBUG_HANDLE_SOCKET_ERROR(t,a) 
+// assume there is something to add in later??
+#else
+#define DEBUG_HANDLE_SOCKET_ERROR(t,a) 
+#endif
+
+//struct netif *netif_find_interface(int num);
+
+//--//
+
+FreeRTOS_SOCKETS_Driver g_FreeRTOS_SOCKETS_Driver;
+
+//--//
+
+static HAL_CONTINUATION PostAddressChangedContinuation;
+static HAL_CONTINUATION PostAvailabilityOnContinuation;
+static HAL_CONTINUATION PostAvailabilityOffContinuation;
+
+void FreeRTOS_SOCKETS_Driver::PostAddressChanged(void* arg)
+{
+	//Network_PostEvent(NETWORK_EVENT_TYPE_ADDRESS_CHANGED, 0);
+}
+
+void FreeRTOS_SOCKETS_Driver::PostAvailabilityOn(void* arg)
+{
+	//Network_PostEvent(NETWORK_EVENT_TYPE__AVAILABILITY_CHANGED, 1);
+}
+
+void FreeRTOS_SOCKETS_Driver::PostAvailabilityOff(void* arg)
+{
+	//Network_PostEvent(NETWORK_EVENT_TYPE__AVAILABILITY_CHANGED, 0);
+}
+
+void FreeRTOS_SOCKETS_Driver::Link_callback(struct netif *netif)
+{
+	// if (netif_is_link_up(netif))
+	// {
+	// 	if (!PostAvailabilityOnContinuation.IsLinked())
+	// 		PostAvailabilityOnContinuation.Enqueue();
+	// }
+	// else
+	// {
+	// 	if (!PostAvailabilityOffContinuation.IsLinked())
+	// 		PostAvailabilityOffContinuation.Enqueue();
+	// }
+    // Events_Set(SYSTEM_EVENT_FLAG_SOCKET);
+    // Events_Set(SYSTEM_EVENT_FLAG_NETWORK);
+}
+
+void FreeRTOS_SOCKETS_Driver::Status_callback(struct netif *netif)
+{
 // 	if (!PostAddressChangedContinuation.IsLinked())
 // 		PostAddressChangedContinuation.Enqueue();
 // 
@@ -113,10 +113,10 @@
 // #endif
 //     Events_Set(SYSTEM_EVENT_FLAG_SOCKET);
 //     Events_Set(SYSTEM_EVENT_FLAG_NETWORK);
-// }
-// 
-// void FreeRTOS_SOCKETS_Driver::TcpipInitDone(void* arg)
-// {
+}
+
+void FreeRTOS_SOCKETS_Driver::TcpipInitDone(void* arg)
+{
 // 	struct netif *pNetIf;
 // 
 // 	for (int i = 0; i<g_NetworkConfig.NetworkInterfaceCount; i++)
@@ -161,25 +161,25 @@
 //             }
 // 		}
 // 	}
-// }
-// 
-// BOOL FreeRTOS_SOCKETS_Driver::Initialize()
-// {   
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
+}
+
+BOOL FreeRTOS_SOCKETS_Driver::Initialize()
+{   
+    NATIVE_PROFILE_PAL_NETWORK();
+
 //     PostAddressChangedContinuation.InitializeCallback(PostAddressChanged, NULL);
 //     PostAvailabilityOnContinuation.InitializeCallback(PostAvailabilityOn, NULL);
 //     PostAvailabilityOffContinuation.InitializeCallback(PostAvailabilityOff, NULL);
 // 
 //     /* Initialize the lwIP stack */
 //     tcpip_init(TcpipInitDone, NULL);
-//     
-//     return TRUE;
-// }
-// 
-// BOOL FreeRTOS_SOCKETS_Driver::Uninitialize()
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();      
+    
+    return TRUE;
+}
+
+BOOL FreeRTOS_SOCKETS_Driver::Uninitialize()
+{
+    NATIVE_PROFILE_PAL_NETWORK();      
 // 
 //     PostAddressChangedContinuation.Abort();
 //     PostAvailabilityOnContinuation.Abort();
@@ -191,14 +191,14 @@
 //     }
 // 
 //     tcpip_shutdown();
-// 
-//     return TRUE;
-// }
-// 
-// 
-// SOCK_SOCKET FreeRTOS_SOCKETS_Driver::Socket(int family, int type, int protocol) 
-// {  
-//     NATIVE_PROFILE_PAL_NETWORK();
+
+    return TRUE;
+}
+
+
+SOCK_SOCKET FreeRTOS_SOCKETS_Driver::Socket(int family, int type, int protocol) 
+{  
+    NATIVE_PROFILE_PAL_NETWORK();
 // 
 //     switch(protocol)
 //     {
@@ -218,104 +218,104 @@
 //     }
 //     
 //     return lwip_socket(family, type, protocol);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Bind(SOCK_SOCKET socket, const SOCK_sockaddr* address, int addressLen) 
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
+}
+
+int FreeRTOS_SOCKETS_Driver::Bind(SOCK_SOCKET socket, const SOCK_sockaddr* address, int addressLen) 
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
 // 
 //     sockaddr_in addr;
 // 
 //     SOCK_SOCKADDR_TO_SOCKADDR(address, addr, &addressLen);
 //         
 //     return lwip_bind(socket, (sockaddr*)&addr, addressLen);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Connect(SOCK_SOCKET socket, const SOCK_sockaddr* address, int addressLen) 
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
+}
+
+int FreeRTOS_SOCKETS_Driver::Connect(SOCK_SOCKET socket, const SOCK_sockaddr* address, int addressLen) 
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
 //     
 //     sockaddr_in addr;
 // 
 //     SOCK_SOCKADDR_TO_SOCKADDR(address, addr, &addressLen);
 //         
 //     return lwip_connect(socket, (sockaddr*)&addr, addressLen);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Send(SOCK_SOCKET socket, const char* buf, int len, int flags) 
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//         
-//     return lwip_send(socket, (const void*)buf, len, flags);
-// }
-// 
-// 
-// int FreeRTOS_SOCKETS_Driver::Recv(SOCK_SOCKET socket, char* buf, int len, int flags)
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int     nativeFlag;
-//     
-//     switch (flags)
-//     {
-//         case SOCKET_READ_PEEK_OPTION:
-//             nativeFlag = MSG_PEEK;
-//             break;
-//         default:
-//             nativeFlag = flags;
-//             break;
-//     }
-//     
-//     return lwip_recv(socket,(void*)buf, len, nativeFlag);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Close(SOCK_SOCKET socket)
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
-//     return lwip_close(socket);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Listen(SOCK_SOCKET socket, int backlog)
-// {    
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     
-//     return lwip_listen(socket, backlog);
-// }
-// 
-// SOCK_SOCKET FreeRTOS_SOCKETS_Driver::Accept(SOCK_SOCKET socket, SOCK_sockaddr* address, int* addressLen)
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     SOCK_SOCKET ret;
-// 
-//     sockaddr_in addr;
-// 
-//     if (address)
-//     {
-//         SOCK_SOCKADDR_TO_SOCKADDR(address, addr, addressLen);
-//     }
-//     
-//     ret = lwip_accept(socket, address?(sockaddr*)&addr:NULL, (u32_t*)addressLen);
-//     
-//     if(address)
-//     {
-//         SOCKADDR_TO_SOCK_SOCKADDR(address, addr, addressLen);
-//     }
-//     
-//     return ret;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Shutdown( SOCK_SOCKET socket, int how )
-// {    
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     
-//     return lwip_shutdown (socket, how);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetAddrInfo(const char* nodename, char* servname, const SOCK_addrinfo* hints, SOCK_addrinfo** res)
-// { 
-// #if LWIP_DNS
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
+}
+
+int FreeRTOS_SOCKETS_Driver::Send(SOCK_SOCKET socket, const char* buf, int len, int flags) 
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+        
+    //return lwip_send(socket, (const void*)buf, len, flags);
+}
+
+
+int FreeRTOS_SOCKETS_Driver::Recv(SOCK_SOCKET socket, char* buf, int len, int flags)
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+    int     nativeFlag;
+    
+    // switch (flags)
+    // {
+    //     case SOCKET_READ_PEEK_OPTION:
+    //         nativeFlag = MSG_PEEK;
+    //         break;
+    //     default:
+    //         nativeFlag = flags;
+    //         break;
+    // }
+    // 
+    // return lwip_recv(socket,(void*)buf, len, nativeFlag);
+}
+
+int FreeRTOS_SOCKETS_Driver::Close(SOCK_SOCKET socket)
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+
+    //return lwip_close(socket);
+}
+
+int FreeRTOS_SOCKETS_Driver::Listen(SOCK_SOCKET socket, int backlog)
+{    
+    NATIVE_PROFILE_PAL_NETWORK();
+    
+    //return lwip_listen(socket, backlog);
+}
+
+SOCK_SOCKET FreeRTOS_SOCKETS_Driver::Accept(SOCK_SOCKET socket, SOCK_sockaddr* address, int* addressLen)
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+    SOCK_SOCKET ret;
+
+    //sockaddr_in addr;
+
+    // if (address)
+    // {
+    //     SOCK_SOCKADDR_TO_SOCKADDR(address, addr, addressLen);
+    // }
+    // 
+    // ret = lwip_accept(socket, address?(sockaddr*)&addr:NULL, (u32_t*)addressLen);
+    // 
+    // if(address)
+    // {
+    //     SOCKADDR_TO_SOCK_SOCKADDR(address, addr, addressLen);
+    // }
+    
+    return ret;
+}
+
+int FreeRTOS_SOCKETS_Driver::Shutdown( SOCK_SOCKET socket, int how )
+{    
+    NATIVE_PROFILE_PAL_NETWORK();
+    
+    //return lwip_shutdown (socket, how);
+}
+
+int FreeRTOS_SOCKETS_Driver::GetAddrInfo(const char* nodename, char* servname, const SOCK_addrinfo* hints, SOCK_addrinfo** res)
+{ 
+#if LWIP_DNS
+    NATIVE_PROFILE_PAL_NETWORK();
+
 //     SOCK_addrinfo *ai;
 //     SOCK_sockaddr_in *sa = NULL;
 //     int total_size = sizeof(SOCK_addrinfo) + sizeof(SOCK_sockaddr_in);
@@ -410,77 +410,77 @@
 //     }
 //  
 //     return err;
-// #else
-//     return -1;
-// #endif
-// }
-// 
-// void FreeRTOS_SOCKETS_Driver::FreeAddrInfo( SOCK_addrinfo* ai )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
-//     SOCK_addrinfo *next;
-//     
-//     while (ai != NULL) {
-//       next = ai->ai_next;
-//       mem_free(ai);
-//       ai = next;
-//     }
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::Ioctl( SOCK_SOCKET socket, int cmd, int* data )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
-//     return lwip_ioctl(socket,cmd,data);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetLastError()
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
-//     return GetNativeError(errno);
-// }
-// 
-// static int MARSHAL_SOCK_FDSET_TO_FDSET(SOCK_fd_set *sf, fd_set *f)
-// {
-//     if(f != NULL && sf != NULL) 
-//     { 
-//         FD_ZERO(f);
-//         
-//         for(int i=0; i<sf->fd_count; i++) 
-//         { 
-//             FD_SET(sf->fd_array[i], f); 
-//         } 
-//         return sf->fd_count;
-//     } 
-// 
-//     return 0;
-// }
-// 
-// static void MARSHAL_FDSET_TO_SOCK_FDSET(SOCK_fd_set *sf, fd_set *f)
-// {
-//     if(sf != NULL && f != NULL) 
-//     { 
-//         int cnt = sf->fd_count;
-//         sf->fd_count = 0; 
-//         for(int i=0; i<cnt; i++) 
-//         { 
-//             if(FD_ISSET(sf->fd_array[i],f)) 
-//             { 
-//                 sf->fd_array[sf->fd_count] = sf->fd_array[i]; 
-//                 sf->fd_count++; 
-//             } 
-//         } 
-//     } 
-// }
-//     
-// 
-// int FreeRTOS_SOCKETS_Driver::Select( int nfds, SOCK_fd_set* readfds, SOCK_fd_set* writefds, SOCK_fd_set* exceptfds, const SOCK_timeval* timeout )
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int ret = 0;
-// 
+#else
+    return -1;
+#endif
+}
+
+void FreeRTOS_SOCKETS_Driver::FreeAddrInfo( SOCK_addrinfo* ai )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+
+    // SOCK_addrinfo *next;
+    // 
+    // while (ai != NULL) {
+    //   next = ai->ai_next;
+    //   mem_free(ai);
+    //   ai = next;
+    // }
+}
+
+int FreeRTOS_SOCKETS_Driver::Ioctl( SOCK_SOCKET socket, int cmd, int* data )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+
+    //return lwip_ioctl(socket,cmd,data);
+}
+
+int FreeRTOS_SOCKETS_Driver::GetLastError()
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+
+    //return GetNativeError(errno);
+}
+
+static int MARSHAL_SOCK_FDSET_TO_FDSET(SOCK_fd_set *sf, fd_set *f)
+{
+    // if(f != NULL && sf != NULL) 
+    // { 
+    //     FD_ZERO(f);
+    //     
+    //     for(int i=0; i<sf->fd_count; i++) 
+    //     { 
+    //         FD_SET(sf->fd_array[i], f); 
+    //     } 
+    //     return sf->fd_count;
+    // } 
+
+    return 0;
+}
+
+static void MARSHAL_FDSET_TO_SOCK_FDSET(SOCK_fd_set *sf, fd_set *f)
+{
+    // if(sf != NULL && f != NULL) 
+    // { 
+    //     int cnt = sf->fd_count;
+    //     sf->fd_count = 0; 
+    //     for(int i=0; i<cnt; i++) 
+    //     { 
+    //         if(FD_ISSET(sf->fd_array[i],f)) 
+    //         { 
+    //             sf->fd_array[sf->fd_count] = sf->fd_array[i]; 
+    //             sf->fd_count++; 
+    //         } 
+    //     } 
+    // } 
+}
+    
+
+int FreeRTOS_SOCKETS_Driver::Select( int nfds, SOCK_fd_set* readfds, SOCK_fd_set* writefds, SOCK_fd_set* exceptfds, const SOCK_timeval* timeout )
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    int ret = 0;
+
 //     fd_set read;
 //     fd_set write;
 //     fd_set excpt;
@@ -517,18 +517,18 @@
 //     MARSHAL_FDSET_TO_SOCK_FDSET(readfds  , pR);
 //     MARSHAL_FDSET_TO_SOCK_FDSET(writefds , pW);
 //     MARSHAL_FDSET_TO_SOCK_FDSET(exceptfds, pE);
-// 
-//     return ret;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::SetSockOpt( SOCK_SOCKET socket, int level, int optname, const char* optval, int  optlen )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int nativeLevel;
-//     int nativeOptionName;
-//     int nativeIntValue;
-//     char *pNativeOptionValue = (char*)optval;
-// 
+
+    return ret;
+}
+
+int FreeRTOS_SOCKETS_Driver::SetSockOpt( SOCK_SOCKET socket, int level, int optname, const char* optval, int  optlen )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+    int nativeLevel;
+    int nativeOptionName;
+    int nativeIntValue;
+    char *pNativeOptionValue = (char*)optval;
+
 //     switch(level)
 //     {
 //         case SOCK_IPPROTO_IP:
@@ -575,16 +575,16 @@
 //     }
 // 
 //     return lwip_setsockopt(socket, nativeLevel, nativeOptionName, pNativeOptionValue, optlen);
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetSockOpt( SOCK_SOCKET socket, int level, int optname, char* optval, int* optlen )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int         nativeLevel;
-//     int         nativeOptionName;
-//     char*       pNativeOptval = optval;
-//     int         ret;
-//     
+}
+
+int FreeRTOS_SOCKETS_Driver::GetSockOpt( SOCK_SOCKET socket, int level, int optname, char* optval, int* optlen )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+    int         nativeLevel;
+    int         nativeOptionName;
+    char*       pNativeOptval = optval;
+    int         ret;
+    
 //     switch(level)
 //     {
 //         case SOCK_IPPROTO_IP:
@@ -645,47 +645,47 @@
 //     }
 // 
 //     return ret;    
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetPeerName( SOCK_SOCKET socket, SOCK_sockaddr* name, int* namelen )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int ret;
-// 
-//     sockaddr_in addr;
-// 
+}
+
+int FreeRTOS_SOCKETS_Driver::GetPeerName( SOCK_SOCKET socket, SOCK_sockaddr* name, int* namelen )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+    int ret;
+
+//    sockaddr_in addr;
+
 //     SOCK_SOCKADDR_TO_SOCKADDR(name, addr, namelen);
 // 
 //     ret = lwip_getpeername(socket, (sockaddr*)&addr, (u32_t*)namelen);
 // 
 //     SOCKADDR_TO_SOCK_SOCKADDR(name, addr, namelen);
-// 
-//     return ret;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetSockName( SOCK_SOCKET socket, SOCK_sockaddr* name, int* namelen )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int ret;
-// 
-//     sockaddr_in addr;
-// 
+
+    return ret;
+}
+
+int FreeRTOS_SOCKETS_Driver::GetSockName( SOCK_SOCKET socket, SOCK_sockaddr* name, int* namelen )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+    int ret;
+
+//    sockaddr_in addr;
+
 //     SOCK_SOCKADDR_TO_SOCKADDR(name, addr, namelen);
 // 
 //     ret = lwip_getsockname(socket, (sockaddr*)&addr, (u32_t*)namelen);
 // 
 //     SOCKADDR_TO_SOCK_SOCKADDR(name, addr, namelen);
 // 
-//     return ret;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::RecvFrom( SOCK_SOCKET socket, char* buf, int len, int flags, SOCK_sockaddr* from, int* fromlen )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     sockaddr_in addr;
-//     sockaddr *pFrom = NULL;
-//     int ret;
-// 
+     return ret;
+}
+
+int FreeRTOS_SOCKETS_Driver::RecvFrom( SOCK_SOCKET socket, char* buf, int len, int flags, SOCK_sockaddr* from, int* fromlen )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+//    sockaddr_in addr;
+//    sockaddr *pFrom = NULL;
+    int ret;
+
 //     if(from)
 //     {
 //         SOCK_SOCKADDR_TO_SOCKADDR(from, addr, fromlen);
@@ -698,35 +698,35 @@
 //     {
 //         SOCKADDR_TO_SOCK_SOCKADDR(from, addr, fromlen);
 //     }
-// 
-//     return ret;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::SendTo( SOCK_SOCKET socket, const char* buf, int len, int flags, const SOCK_sockaddr* to, int tolen )
-// { 
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
+
+    return ret;
+}
+
+int FreeRTOS_SOCKETS_Driver::SendTo( SOCK_SOCKET socket, const char* buf, int len, int flags, const SOCK_sockaddr* to, int tolen )
+{ 
+    NATIVE_PROFILE_PAL_NETWORK();
+
 //     sockaddr_in addr;
 // 
 //     SOCK_SOCKADDR_TO_SOCKADDR(to, addr, &tolen);
 // 
 //     return lwip_sendto(socket, buf, len, flags, (sockaddr*)&addr, (u32_t)tolen);
-// }
-// 
-// UINT32 FreeRTOS_SOCKETS_Driver::GetAdapterCount()
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     return NETWORK_INTERFACE_COUNT;
-// }
-// 
-// HRESULT FreeRTOS_SOCKETS_Driver::LoadAdapterConfiguration( UINT32 interfaceIndex, SOCK_NetworkConfiguration* config )
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-// 
-//     if(interfaceIndex >= NETWORK_INTERFACE_COUNT) 
-//     {
-//         return CLR_E_INVALID_PARAMETER;
-//     }
+}
+
+UINT32 FreeRTOS_SOCKETS_Driver::GetAdapterCount()
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    return NETWORK_INTERFACE_COUNT;
+}
+
+HRESULT FreeRTOS_SOCKETS_Driver::LoadAdapterConfiguration( UINT32 interfaceIndex, SOCK_NetworkConfiguration* config )
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+
+    if(interfaceIndex >= NETWORK_INTERFACE_COUNT) 
+    {
+        return CLR_E_INVALID_PARAMETER;
+    }
 // 
 //     memcpy(config, &g_NetworkConfig.NetworkInterfaces[interfaceIndex], sizeof(g_NetworkConfig.NetworkInterfaces[interfaceIndex]));
 // 
@@ -751,34 +751,34 @@
 //             config->gateway    = 0;
 //         }
 //     }
-//     
-//     return S_OK;
-// }
-// 
-// HRESULT FreeRTOS_SOCKETS_Driver::LoadWirelessConfiguration( UINT32 interfaceIndex, SOCK_WirelessConfiguration* wirelessConfig )
-// {
-//     /// Load wireless specific settings if any. You must return S_OK, otherwise default values will be
-//     /// loaded by PAL.
-// 
-//     return CLR_E_FAIL;
-// }
-// 
-// struct dhcp_client_id
-// {
-//     UINT8 code;
-//     UINT8 length;
-//     UINT8 type;
-//     UINT8 clientId[6];
-// };
-// 
-// HRESULT FreeRTOS_SOCKETS_Driver::UpdateAdapterConfiguration( UINT32 interfaceIndex, UINT32 updateFlags, SOCK_NetworkConfiguration* config )
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     if(interfaceIndex >= NETWORK_INTERFACE_COUNT) 
-//     {
-//         return CLR_E_INVALID_PARAMETER;
-//     }
-//     
+    
+    return S_OK;
+}
+
+HRESULT FreeRTOS_SOCKETS_Driver::LoadWirelessConfiguration( UINT32 interfaceIndex, SOCK_WirelessConfiguration* wirelessConfig )
+{
+    /// Load wireless specific settings if any. You must return S_OK, otherwise default values will be
+    /// loaded by PAL.
+
+    return CLR_E_FAIL;
+}
+
+struct dhcp_client_id
+{
+    UINT8 code;
+    UINT8 length;
+    UINT8 type;
+    UINT8 clientId[6];
+};
+
+HRESULT FreeRTOS_SOCKETS_Driver::UpdateAdapterConfiguration( UINT32 interfaceIndex, UINT32 updateFlags, SOCK_NetworkConfiguration* config )
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    if(interfaceIndex >= NETWORK_INTERFACE_COUNT) 
+    {
+        return CLR_E_INVALID_PARAMETER;
+    }
+    
 //     BOOL fEnableDhcp = (0 != (config->flags & SOCK_NETWORKCONFIGURATION_FLAGS_DHCP));
 //     BOOL fDynamicDns = (0 != (config->flags & SOCK_NETWORKCONFIGURATION_FLAGS_DYNAMIC_DNS));
 //     BOOL fDhcpStarted;
@@ -867,15 +867,15 @@
 //         Network_Interface_Close(interfaceIndex);
 //         g_FreeRTOS_SOCKETS_Driver.m_interfaces[interfaceIndex].m_interfaceNumber = Network_Interface_Open(interfaceIndex);
 //     }
-// 
-//     return S_OK;
-// 
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetNativeTcpOption (int optname)
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int nativeOptionName = 0;
+
+    return S_OK;
+
+}
+
+int FreeRTOS_SOCKETS_Driver::GetNativeTcpOption (int optname)
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    int nativeOptionName = 0;
 // 
 //     switch(optname)
 //     {
@@ -893,14 +893,14 @@
 //             nativeOptionName = optname;
 //             break;
 //     }
-//     return nativeOptionName;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetNativeSockOption (int optname)
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int nativeOptionName = 0;
-// 
+    return nativeOptionName;
+}
+
+int FreeRTOS_SOCKETS_Driver::GetNativeSockOption (int optname)
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    int nativeOptionName = 0;
+
 //     switch(optname)
 //     {
 //         case SOCK_SOCKO_DONTLINGER:
@@ -974,15 +974,15 @@
 //             break;
 //             
 //     }
-// 
-//     return nativeOptionName;
-// }
-// 
-// int FreeRTOS_SOCKETS_Driver::GetNativeIPOption (int optname)
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int nativeOptionName = 0;
-// 
+
+    return nativeOptionName;
+}
+
+int FreeRTOS_SOCKETS_Driver::GetNativeIPOption (int optname)
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    int nativeOptionName = 0;
+
 //     switch(optname)
 //     {
 //         case SOCK_IPO_TTL:           
@@ -1031,15 +1031,15 @@
 //             nativeOptionName = optname;
 //             break;
 //     }
-//     
-//     return nativeOptionName;
-// }   
-// 
-// int FreeRTOS_SOCKETS_Driver::GetNativeError ( int error )
-// {
-//     NATIVE_PROFILE_PAL_NETWORK();
-//     int ret;
-// 
+    
+    return nativeOptionName;
+}   
+
+int FreeRTOS_SOCKETS_Driver::GetNativeError ( int error )
+{
+    NATIVE_PROFILE_PAL_NETWORK();
+    int ret;
+
 //     switch(error)
 //     {
 //         case EINTR:
@@ -1180,17 +1180,17 @@
 //             ret = error;
 //             break;
 //     } 
-//     
-//     return (ret);   
-// }
-// 
-// /**
-//  * Find a network interface by searching for its number
-//  * Similar to LWIP's netif_find(char *name)
-//  */
-// struct netif *netif_find_interface(int num)
-// {
-//     struct netif *pNetIf;
+    
+    return (ret);   
+}
+
+/**
+ * Find a network interface by searching for its number
+ * Similar to LWIP's netif_find(char *name)
+ */
+struct netif *netif_find_interface(int num)
+{
+    struct netif *pNetIf;
 // 
 //     for (pNetIf = netif_list; pNetIf != NULL; pNetIf = pNetIf->next)
 //     {
@@ -1199,6 +1199,6 @@
 //             return pNetIf;
 //         }
 //     }
-//     return NULL;
-// }
-// 
+    return NULL;
+}
+
