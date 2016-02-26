@@ -34,11 +34,7 @@ extern "C" {
 
 #include <tinyhal.h>
 
-#ifdef STM32F4XX
-#include "..\stm32f4xx.h"
-#else
-#include "..\stm32f2xx.h"
-#endif
+#include "stm32f4xx_hal.h"
 
 #include "STM32F4_ETH_phy.h"
 
