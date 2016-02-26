@@ -34,11 +34,7 @@ extern "C" {
 
 #include <tinyhal.h>
 
-#ifdef STM32F4XX
-#include "..\stm32f4xx.h"
-#else
-#include "..\stm32f2xx.h"
-#endif
+#include "stm32f4xx_hal.h"
 
 
 // The first 8 registers are standard for all PHY chips
