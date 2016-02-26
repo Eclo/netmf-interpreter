@@ -35,6 +35,9 @@
   <FeatureAssociations Name="Network (LWIP OS)" Guid="{FC481D0B-784B-402B-8EE0-0BD1D29823A9}" ProjectPath="$(SPOCLIENT)\Framework\Features\Network_LWIP_OS.featureproj" Conditional="" xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">
     <ComponentType>Feature</ComponentType>
   </FeatureAssociations>
+  <FeatureAssociations Name="Network (FreeRTOS)" Guid="{D6AA9A25-4B00-476E-84B8-6A1AA2AD0BC2}" ProjectPath="$(SPOCLIENT)\Framework\Features\Network_FreeRTOS.featureproj" Conditional="" xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">
+    <ComponentType>Feature</ComponentType>
+  </FeatureAssociations>    
 </LibraryCategory></PKUI_LibraryCategory>
   </PropertyGroup>
   <ItemGroup>
