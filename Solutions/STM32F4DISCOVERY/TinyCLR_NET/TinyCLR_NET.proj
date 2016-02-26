@@ -71,7 +71,7 @@
     <Import Condition="'$(WINDOWS_DEVICES_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\Windows_Devices.featureproj" />
     <Import Condition="'$(SOCKETS_PORT_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\SOCKETS_Port.featureproj" />
     <!--<Import Condition="'$(STREAM_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\Stream.featureproj" />-->
-    <Import Condition="'$(NETWORK_RTOS_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\Network_FreeRTOS.featureproj" />
+    <Import Condition="'$(NETWORK_FREERTOS_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\Network_FreeRTOS.featureproj" />
     <!--<Import Condition="'$(CRYPTO_FEATUREPROJ)'=='' AND '$(USE_SSL)'=='true'" Project="$(SPOCLIENT)\Framework\Features\Crypto.featureproj" />-->
     <!--<Import Condition="'$(SSL_OPEN_LWIP_OS_FEATUREPROJ)'=='' AND '$(USE_SSL)'=='true'" Project="$(SPOCLIENT)\Framework\Features\SSL_Open_lwip_os.featureproj" />-->
     <!--<Import Condition="'$(XML_FEATUREPROJ)'==''" Project="$(SPOCLIENT)\Framework\Features\XML.featureproj" />-->
@@ -504,8 +504,8 @@
         <!--<DriverLibs Include="ENC28J60_Config_lwIP_HAL_STM32F4DISCOVERY.$(LIB_EXT)" />
 	    <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\ENC28J60_Config_lwIP_HAL\dotNetMF.proj" />-->
                 
-        <!--<DriverLibs Include="STM32F4_ETH_lwip_os.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_ETH_lwip_os\dotNetMF.proj" />-->
+        <DriverLibs Include="STM32F4_ETH_freertos.$(LIB_EXT)" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_ETH_FreeRTOS\dotNetMF.proj" />
 
         <!--<DriverLibs Include="ETHERNET_loopback_lwip.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Ethernet\Loopback_lwip\dotNetMF.proj" />  -->
