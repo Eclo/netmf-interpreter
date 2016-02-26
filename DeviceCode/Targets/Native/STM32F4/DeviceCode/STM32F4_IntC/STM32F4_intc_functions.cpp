@@ -13,7 +13,7 @@
 
 #include <tinyhal.h>
 
-#if (__FREE_RTOS)#if (__FREE_RTOS)
+#if (__FREE_RTOS)
 #include "..\..\..\..\..\FreeRTOS\CMSIS_RTOS\cmsis_os.h"
 #endif
 
