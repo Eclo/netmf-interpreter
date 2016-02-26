@@ -74,8 +74,6 @@
     <IncludePaths Condition="'$(OS_FLAVOR)'=='FREE_RTOS'" Include="FreeRTOS\CMSI_RTOS" />
   </ItemGroup>
   <ItemGroup>
-    <HFiles Include="..\stm32f2xx.h" />
-    <HFiles Include="..\stm32f4xx.h" />
     <Compile Include="STM32F4_intc_functions.cpp" />
   </ItemGroup>
   <ItemGroup />

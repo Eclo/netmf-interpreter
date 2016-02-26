@@ -13,15 +13,11 @@
 
 #include <tinyhal.h>
 
-#if (__FREE_RTOS)
+#if (__FREE_RTOS)#if (__FREE_RTOS)
 #include "..\..\..\..\..\FreeRTOS\CMSIS_RTOS\cmsis_os.h"
 #endif
 
-#ifdef STM32F4XX
-#include "..\stm32f4xx.h"
-#else
-#include "..\stm32f2xx.h"
-#endif
+#include "stm32f4xx_hal.h"
 
 extern "C" void PendSV_Handler( void );
 extern "C" void SysTick_Handler( void );
