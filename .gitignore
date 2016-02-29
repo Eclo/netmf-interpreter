@@ -47,6 +47,11 @@ License (Crypto).rtf
 PKCryptoWelcome.rtf
 REDIST_CRYPTO.TXT
 ReleaseNotesCrypto.txt
+*.tlog
+/Solutions/Windows/TinyCLR/Debug
+/Solutions/Windows/TinyCLR/FLASH_MEMORY.bin
+*.opendb
+*.dbgconf
 
 # FreeRTOS
 FreeRTOS/*
