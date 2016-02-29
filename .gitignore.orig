@@ -1,0 +1,65 @@
+# Build results
+/BuildOutput
+*.log
+*_assemblyinfo.txt
+*.feedback
+/alias.txt
+
+# CMSIS and CMSIS_RTX
+/CMSIS/CMSIS/
+/CMSIS/Device/*
+/CMSIS/ARM.CMSIS.pdsc
+!/CMSIS/CMSIS/RTOS/RTX/dotNetMF.proj
+
+# Visual Studio
+*.aps
+*.[Cc]ache
+*.ilk
+*.ncb
+*.[Oo]bj
+*.opensdf
+*.pch
+*.sbr
+*.sdf
+*.sln.docstates
+*.suo
+*.vspscc
+*.vssscc
+*.user
+[Bb]in/
+[Oo]bj/
+ipch/
+
+!/tools/bin/
+
+#uVision
+*.uvguix*
+Listings/
+{*/
+
+# WinPCAP
+/DeviceCode/Targets/OS/Win32/DeviceCode/WinPcap_Eth/Dependencies/WpdPack/
+
+*.axfdump
+/crypto/lib
+Firmware License (Crypto).rtf
+License (Crypto).rtf
+PKCryptoWelcome.rtf
+REDIST_CRYPTO.TXT
+ReleaseNotesCrypto.txt
+<<<<<<< HEAD
+
+# FreeRTOS
+FreeRTOS/*
+!FreeRTOS/dotNetMF.proj
+!FreeRTOS/CMSIS_RTOS
+!FreeRTOS/FreeRTOS_Hooks.c
+!FreeRTOS/FreeRTOS_Network_Hooks.c
+!FreeRTOS/FreeRTOS_Network_Tasks.c
+=======
+*.tlog
+/Solutions/Windows/TinyCLR/Debug
+/Solutions/Windows/TinyCLR/FLASH_MEMORY.bin
+*.opendb
+*.dbgconf
+>>>>>>> d771d0fe0d77bb8b858f561f889218c2281b3fc2
