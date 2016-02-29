@@ -61,17 +61,17 @@
     <ItemGroup>
         <Compile Include="STM32F4_ETH_lwip_adapter.cpp" />
         <Compile Include="EthernetDriver_STM32F4.cpp" />
-<Compile Include="dummy.c" />
+        <!--<Compile Include="dummy.c" />-->
         <HFiles Include="STM32F4_ETH_lwip_adapter.h" />
     
     <IncludePaths Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY" />
     
-        <!--<Compile Include="$(SPOCLIENT)\FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\NetworkInterface\STM32Fxx\NetworkInterface.cpp" />-->
-        <!--<Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c" />
+        <Compile Include="$(SPOCLIENT)\FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\NetworkInterface\STM32Fxx\NetworkInterface.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_eth.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rng.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
-        <Compile Include="$(SPOCLIENT)\FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\BufferManagement\BufferAllocation_2.c" />-->
+        <Compile Include="$(SPOCLIENT)\FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\BufferManagement\BufferAllocation_2.c" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(CpuName)'=='Cortex-M4' AND '$(PLATFORM_EMULATED_FLOATINGPOINT)'!='true'" >

@@ -1,8 +1,6 @@
-#include <platform_selector.h>
+//#include <tinyhal.h>
 
-#include <tinyhal.h>
-
-//#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 
 void dummy_dumyy(  )
