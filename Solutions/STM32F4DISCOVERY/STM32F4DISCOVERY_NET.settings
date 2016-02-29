@@ -25,6 +25,11 @@
     <OEMSystemInfoString>STM32F4DISCOVERY WITH NET by ECLO</OEMSystemInfoString>
   </PropertyGroup>
   <ItemGroup>
+    <!-- this define was traditionally in the solution  platform_selector.-->
+    <!-- CPU device selector-->
+    <CC_CPP_Defines Include="STM32F407xx" />
+  </ItemGroup>  
+  <ItemGroup>
     <IncludePaths Include="Solutions\STM32F4DISCOVERY" />
     <IncludePaths Include="DeviceCode\Cores\arm\Processors\CortexMx" />
   </ItemGroup>
