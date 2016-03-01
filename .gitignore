@@ -52,3 +52,8 @@ ReleaseNotesCrypto.txt
 /Solutions/Windows/TinyCLR/FLASH_MEMORY.bin
 *.opendb
 *.dbgconf
+
+# STM32 Cube and installation folders
+STM32Cube/*
+!STM32Cube/ReadMe.m
+DeviceCode/Targets/Native/ST/STM32F4XX/*
