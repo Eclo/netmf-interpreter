@@ -54,9 +54,15 @@ ReleaseNotesCrypto.txt
 *.dbgconf
 
 # FreeRTOS
-FreeRTOS/*
-!FreeRTOS/dotNetMF.proj
-!FreeRTOS/CMSIS_RTOS
-!FreeRTOS/FreeRTOS_Hooks.c
-!FreeRTOS/FreeRTOS_Network_Hooks.c
-!FreeRTOS/FreeRTOS_Network_Tasks.c
+FreeRTOS/**/*.url
+FreeRTOS/**/*.txt
+/FreeRTOS/CMSIS_RTOS
+/FreeRTOS/FreeRTOS
+/FreeRTOS/FreeRTOS-Plus/Demo
+/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-CLI
+/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-FAT
+/FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-TCP/**
+!FreeRTOS/**/*.proj
+!/FreeRTOS/FreeRTOS_Hooks.c
+!/FreeRTOS/FreeRTOS_Network_Hooks.c
+!/FreeRTOS/FreeRTOS_Network_Tasks.c
