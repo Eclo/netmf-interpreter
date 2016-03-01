@@ -28,7 +28,8 @@ $seriesPath = [System.IO.Path]::Combine( $stmCubePath, "F4" )
 # make sure the destination directory is empty (if it exists at all)
 if([System.IO.Directory]::Exists( $seriesPath ) )
 {
-    [System.IO.Directory]::Delete( $seriesPath, $true)}
+    [System.IO.Directory]::Delete( $seriesPath, $true)
+}
 else
 {
     # need to create destination directory first
@@ -48,7 +49,7 @@ if(-not [System.IO.File]::Exists( [System.IO.Path]::Combine( $stmCubePath , $pac
 {
     # must use WebClient because the pack file is huge
     $webclient = New-Object System.Net.WebClient
-    #$webclient.DownloadFile( $packSourceURLBase , [System.IO.Path]::Combine( $stmCubePath , $packFileName ) )
+    $webclient.DownloadFile( $packSourceURLBase , [System.IO.Path]::Combine( $stmCubePath , $packFileName ) )
 }
 
 # ... and extract the files into the series directory
