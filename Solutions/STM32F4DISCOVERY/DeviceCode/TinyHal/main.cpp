@@ -18,7 +18,11 @@
 #if (__FREE_RTOS)
 
 #include "FreeRTOS.h"
+#include "FreeRTOS_IP.h"
 #include "core_cm4.h"
+
+/* ST includes. */
+#include "stm32f4xx.h"
 
 // this was copied from stm32f4xx_hal_cortex.h
 #define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority 
@@ -136,13 +140,36 @@ static void ToggleLEDsThread(void const *argument)
 	}
 }
 
+/*-----------------------------------------------------------*/
+
+/* The default IP and MAC address used by the demo.  The address configuration
+defined here will be used if ipconfigUSE_DHCP is 0, or if ipconfigUSE_DHCP is
+1 but a DHCP server could not be contacted.  See the online documentation for
+more information.  http://www.FreeRTOS.org/tcp */
+static const uint8_t ucIPAddress[ 4 ] = { configIP_ADDR0, configIP_ADDR1, configIP_ADDR2, configIP_ADDR3 };
+static const uint8_t ucNetMask[ 4 ] = { configNET_MASK0, configNET_MASK1, configNET_MASK2, configNET_MASK3 };
+static const uint8_t ucGatewayAddress[ 4 ] = { configGATEWAY_ADDR0, configGATEWAY_ADDR1, configGATEWAY_ADDR2, configGATEWAY_ADDR3 };
+static const uint8_t ucDNSServerAddress[ 4 ] = { configDNS_SERVER_ADDR0, configDNS_SERVER_ADDR1, configDNS_SERVER_ADDR2, configDNS_SERVER_ADDR3 };
+
+/* Default MAC address configuration. */
+extern const uint8_t ucMACAddress[ 6 ] = { configMAC_ADDR0, configMAC_ADDR1, configMAC_ADDR2, configMAC_ADDR3, configMAC_ADDR4, configMAC_ADDR5 };
+
 int main()
 {
     // need to set NVIC priority otherwise FreeRTOS won't run
     // see http://www.freertos.org/RTOS-Cortex-M3-M4.html (Preempt Priority and Subpriority -> Relevance when using the RTOS)
     // Set Interrupt Group Priority
     NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-    
+
+	/* Initialise the network interface.
+
+	***NOTE*** Tasks that use the network are created in the network event hook
+	when the network is connected and ready for use (see the definition of
+	vApplicationIPNetworkEventHook() below).  The address values passed in here
+	are used if ipconfigUSE_DHCP is set to 0, or if ipconfigUSE_DHCP is set to 1
+	but a DHCP server cannot be	contacted. */
+	FreeRTOS_IPInit( ucIPAddress, ucNetMask, ucGatewayAddress, ucDNSServerAddress, ucMACAddress );
+   
     // Create LED blink thread
 	osThreadDef(LEDThread, ToggleLEDsThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
 	osThreadCreate(osThread(LEDThread), NULL);

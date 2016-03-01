@@ -503,6 +503,9 @@
         -->
         <!--<DriverLibs Include="ENC28J60_Config_lwIP_HAL_STM32F4DISCOVERY.$(LIB_EXT)" />
 	    <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\ENC28J60_Config_lwIP_HAL\dotNetMF.proj" />-->
+       
+        <DriverLibs Include="FreeRTOS_Plus_TCP.$(LIB_EXT)" />
+	    <RequiredProjects Include="$(SPOCLIENT)\FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\dotNetMF.proj" />
                 
         <DriverLibs Include="STM32F4_ETH_freertos.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_ETH_FreeRTOS\dotNetMF.proj" />

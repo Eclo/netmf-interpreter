@@ -36,8 +36,7 @@
         <IncludePaths Include="FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\protocols\include" />
         <IncludePaths Condition="$(AS_SUBDIR) == 'GNU_S'" Include="FreeRTOS\FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\Compiler\GCC" />
         <IncludePaths Include="FreeRTOS\CMSI_RTOS" />
-        <IncludePaths Include="FreeRTOS\FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\CMSIS\Device\ST\STM32F4xx\Include" />
-        <IncludePaths Include="FreeRTOS\FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\STM32F4xx_HAL_Driver\Inc" />
+        <!--<IncludePaths Include="FreeRTOS\FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\STM32F4xx_HAL_Driver\Inc" />-->
     </ItemGroup>
 
     <ItemGroup Condition="'$(CpuName)'=='Cortex-M4' AND '$(PLATFORM_EMULATED_FLOATINGPOINT)'!='true'" >
@@ -60,10 +59,10 @@
         
         <Compile Include="CMSIS_RTOS\cmsis_os.c" />
         <Compile Include="FreeRTOS_Hooks.c" />
-        <Compile Include="FreeRTOS_Network_Hooks.c" />
+        <!--<Compile Include="FreeRTOS_Network_Hooks.c" />
         <Compile Include="FreeRTOS_Network_Tasks.c" />
         
-        <!--<Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_IP.c" />
+        <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_IP.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_ARP.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_DHCP.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_DNS.c" />
@@ -71,12 +70,12 @@
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_TCP_IP.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_UDP_IP.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_TCP_WIN.c" />
-        <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_Stream_Buffer.c" />-->
+        <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\FreeRTOS_Stream_Buffer.c" />
         
-        <!--<Compile Include="FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c" />
-        <Compile Include="FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_eth.c" />
-        <Compile Include="FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rng.c" />
-        <Compile Include="FreeRTOS-Plus\Demo\FreeRTOS_Plus_TCP_STM32F4xxx\src\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
+        <Compile Include="DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c" />
+        <Compile Include="DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_eth.c" />
+        <Compile Include="DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rng.c" />
+        <Compile Include="DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\NetworkInterface\STM32Fxx\NetworkInterface.c" />
         <Compile Include="FreeRTOS-Plus\Source\FreeRTOS-Plus-TCP\portable\BufferManagement\BufferAllocation_2.c" />-->
     </ItemGroup>

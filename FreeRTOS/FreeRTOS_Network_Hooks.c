@@ -7,6 +7,7 @@
 
 /* FreeRTOS+TCP includes. */
 #include "FreeRTOS_IP.h"
+#include "FreeRTOS_Sockets.h"
 
 /* Define names that will be used for DNS, LLMNR and NBNS searches.  This allows
 mainHOST_NAME to be used when the IP address is not known.  For example
