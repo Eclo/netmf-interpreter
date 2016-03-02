@@ -15,6 +15,7 @@ $packVersion = "1.11.0"
 # STM32 series 
 $seriesName = "F4" 
 
+Write-Host "Installing STM32Cube CMSIS pack for STM32$seriesName series"
 
 # pack file name
 $packFileName = "stm32cube_fw_" + $seriesName.ToLower() +  "_v" + ($packVersion -replace "[.]","") + ".zip"
@@ -39,22 +40,27 @@ else
     [System.IO.Directory]::CreateDirectory( $seriesPath )
 }
 
-# base URL to download the pack file from
-$packSourceURL = "http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/" + $packFileName 
-
-# download the pack...  
-Write-Host "Downloading SMT32F4 pack from ST web site. This will take a while, be patient..."
-
 # check is pack file is already there
 if(-not [System.IO.File]::Exists( [System.IO.Path]::Combine( $stmCubePath , $packFileName ) )) 
 {
+    # base URL to download the pack file from
+    $packSourceURL = "http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/" + $packFileName 
+
+    # download the pack...  
+    Write-Host "Downloading SMT32Cube pack from ST web site. This will take a while, be patient..."
+
     # must use WebClient because the pack file is huge
     $webclient = New-Object System.Net.WebClient
     $webclient.DownloadFile( $packSourceURL , [System.IO.Path]::Combine( $stmCubePath , $packFileName ) )
 }
+else
+{
+    # pack is available...  
+    Write-Host "SMT32Cube pack is already available, skipping download"
+}
 
 # ... and extract the files into the series directory
-Write-Host "Extracting SMT32 pack"
+Write-Host "Extracting SMT32 pack..."
 
 # must load this type to open Zip files
 Add-Type -assembly  System.IO.Compression.FileSystem
@@ -100,6 +106,8 @@ finally
 
 # copy CMSIS folder for this series from STM32Cube folder to the respective Device folder in CMSIS folder
 # first make sure the destination directory is empty (if it exists at all) before copying as we don't want to mix versions
+Write-Host "Copying CMSIS driver..."
+
 $cmsisPathForSeries = $SPOCLIENT + "\CMSIS\Device\ST"
 
 if([System.IO.Directory]::Exists( $cmsisPathForSeries ) )
@@ -111,12 +119,16 @@ Copy-Item ( $seriesPath + "\Drivers\CMSIS\Device\ST" ) -Destination $cmsisPathFo
 
 # copy HAL drivers for this series from STM32Cube folder to the respective DeviceCode folder 
 # first make sure the destination directories are empty (if they exists at all) before copying as we don't want to mix versions
+Write-Host "Copying HAL driver..."
+
 $deviceCodePathForSeries = $SPOCLIENT + "\DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver"
 
 if([System.IO.Directory]::Exists( $deviceCodePathForSeries ) )
 {
-    [System.IO.Directory]::Delete( $deviceCodePathForSeries + "\Src" , $true)
+    [System.IO.Directory]::Delete( $deviceCodePathForSeries , $true)
 }
 
 
 Copy-Item ( $seriesPath + "\Drivers\STM32" + $seriesName + "xx_HAL_Driver" ) -Destination $deviceCodePathForSeries -recurse -Force
+
+Write-Host "Installation of STM32Cube CMSIS pack for STM32$seriesName series completed"
