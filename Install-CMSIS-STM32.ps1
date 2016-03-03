@@ -84,7 +84,7 @@ if(-not (Test-Path ([System.IO.Path]::Combine( $stmCubePath , $packFileName ))) 
     $packSourceURL = "http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/" + $packFileName 
 
     # download the pack...  
-    Write-Host "Downloading SMT32Cube pack from ST web site. This will take a while, be patient..."
+    Write-Host "Downloading pack from ST web site. This will take a while, be patient..."
 
     # must use WebClient because the pack file is huge
     $webclient = New-Object System.Net.WebClient
@@ -93,11 +93,11 @@ if(-not (Test-Path ([System.IO.Path]::Combine( $stmCubePath , $packFileName ))) 
 else
 {
     # pack is available...  
-    Write-Host "SMT32Cube pack is already available, skipping download"
+    Write-Host "Pack already available, skipping download"
 }
 
 # ... and extract the files into the series directory
-Write-Host "Extracting SMT32 pack..."
+Write-Host "Extracting pack..."
 
 # must load this type to open Zip files
 Add-Type -assembly  System.IO.Compression.FileSystem
