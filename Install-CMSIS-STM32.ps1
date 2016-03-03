@@ -1,30 +1,67 @@
 ﻿<#
 .SYNOPSIS
+Downloads and and extracts STM32CubeMX CMSIS pack.
 
-Downloads and and extracts STM32CubeMX support pack for STM32 series from ST website.
+.DESCRIPTION
+The script downloads and and extracts an STM32CubeMX CMSIS support pack for STM32 series from ST website.
+Accepts as parameters the series name and the pack version.
+
 
 .EXAMPLE
+Install-CMSIS-STM32.ps1 F4 1.11.00
+
+.PARAMETER seriesName
+STM32 series name. Valid series are: F0, F1, F2, F3, F4, F7, L0, L1 and L4.
+
+.PARAMETER packVersion
+The pack version to donwload. Format is N.NN.NN. Example: 1.11.00.
 
 #>
 
-Import-Module .\tools\scripts\Build-netmf.psm1
+[CmdletBinding()]
+Param(
+    [Parameter(Mandatory=$True,Position=1)]
+    [ValidateNotNullOrEmpty()]
+    [string]$seriesName,
+	
+    [Parameter(Mandatory=$True,Position=2)]
+    [ValidateNotNullOrEmpty()]
+    [string]$packVersion
+)
 
-# target version for STM32Cube pack
-$packVersion = "1.11.0"
+# check running path 
+$spotClientPath = Get-Location
+if($spotClientPath.Path.Contains("solutions"))
+{
+    # path includes 'Solutions' so presume that this is being called from a solution project, repository home must be two levels up
+    $spotClientPath = [System.IO.Path]::GetFullPath( [System.IO.Path]::Combine( $spotClientPath, "..","..") )
+    "spot" + $spotClientPath
+}
 
-# STM32 series 
-$seriesName = "F4" 
+# validate pack version
+if(-not ($packVersion -match "\d{1}.\d{2}.\d{2}"))
+{
+    # path includes 'Solutions' so presume that this is being called from a solution project, repository home must be two levels up
+    throw "Pack version is invalid. Must have format N.NN.NN."
+}
 
-Write-Host "Installing STM32Cube CMSIS pack for STM32$seriesName series"
+# validate series name
+if(-not ($seriesName -match "(^F0$|^F1$|^F2$|^F3$|^F4$|^F7$|^L0$|^L1$|^L4$)"))
+{
+    throw "Unsupported series. Valid series are: F0, F1, F2, F3, F4, F7, L0, L1 and L4."
+}
+
+
+Write-Host "Installing STM32Cube CMSIS pack v$packVersion for STM32$seriesName series"
 
 # pack file name
 $packFileName = "stm32cube_fw_" + $seriesName.ToLower() +  "_v" + ($packVersion -replace "[.]","") + ".zip"
 
 # zip folder name
-$zipPackFileName = "STM32Cube_FW_" + $seriesName + "_V" + $packVersion
+$zipPackFileName = "STM32Cube_FW_" + $seriesName.ToUpper() + "_V" + $packVersion
 
 # directory for the SMT32Cube 
-$stmCubePath = [System.IO.Path]::Combine( $SPOCLIENT, "STM32Cube" )
+$stmCubePath = [System.IO.Path]::Combine( $spotClientPath, "STM32Cube" )
 
 # directory for the series under STM32Cube folder
 $seriesPath = [System.IO.Path]::Combine( $stmCubePath, $seriesName )
@@ -108,7 +145,7 @@ finally
 # first make sure the destination directory is empty (if it exists at all) before copying as we don't want to mix versions
 Write-Host "Copying CMSIS driver..."
 
-$cmsisPathForSeries = $SPOCLIENT + "\CMSIS\Device\ST"
+$cmsisPathForSeries = $spotClientPath + "\CMSIS\Device\ST"
 
 if([System.IO.Directory]::Exists( $cmsisPathForSeries ) )
 {
@@ -121,7 +158,7 @@ Copy-Item ( $seriesPath + "\Drivers\CMSIS\Device\ST" ) -Destination $cmsisPathFo
 # first make sure the destination directories are empty (if they exists at all) before copying as we don't want to mix versions
 Write-Host "Copying HAL driver..."
 
-$deviceCodePathForSeries = $SPOCLIENT + "\DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver"
+$deviceCodePathForSeries = $spotClientPath + "\DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver"
 
 if([System.IO.Directory]::Exists( $deviceCodePathForSeries ) )
 {
@@ -131,4 +168,4 @@ if([System.IO.Directory]::Exists( $deviceCodePathForSeries ) )
 
 Copy-Item ( $seriesPath + "\Drivers\STM32" + $seriesName + "xx_HAL_Driver" ) -Destination $deviceCodePathForSeries -recurse -Force
 
-Write-Host "Installation of STM32Cube CMSIS pack for STM32$seriesName series completed"
+Write-Host "Installation of STM32Cube CMSIS pack v$packVersion for STM32$seriesName series completed"
