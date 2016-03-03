@@ -45,6 +45,7 @@ if(-not ($packVersion -match "\d{1}.\d{2}.\d{1}$"))
 }
 
 # validate series name
+$seriesName = $seriesName.ToUpper()
 if(-not ($seriesName -match "(^F0$|^F1$|^F2$|^F3$|^F4$|^F7$|^L0$|^L1$|^L4$)"))
 {
     throw "Unsupported series. Valid series are: F0, F1, F2, F3, F4, F7, L0, L1 and L4."
@@ -57,7 +58,7 @@ Write-Host "Installing STM32Cube CMSIS pack v$packVersion for STM32$seriesName s
 $packFileName = "stm32cube_fw_" + $seriesName.ToLower() +  "_v" + ($packVersion -replace "[.]","") + ".zip"
 
 # zip folder name
-$zipPackFileName = "STM32Cube_FW_" + $seriesName.ToUpper() + "_V" + $packVersion
+$zipPackFileName = "STM32Cube_FW_" + $seriesName + "_V" + $packVersion
 
 # directory for the SMT32Cube 
 $stmCubePath = [System.IO.Path]::Combine( $spotClientPath, "STM32Cube" )
@@ -66,18 +67,18 @@ $stmCubePath = [System.IO.Path]::Combine( $spotClientPath, "STM32Cube" )
 $seriesPath = [System.IO.Path]::Combine( $stmCubePath, $seriesName )
 
 # make sure the destination directory is empty (if it exists at all)
-if([System.IO.Directory]::Exists( $seriesPath ) )
+if( Test-Path $seriesPath )
 {
-    [System.IO.Directory]::Delete( $seriesPath, $true)
+    Remove-Item -Path $seriesPath -Force -Recurse -ErrorAction Ignore | Out-Null
 }
 else
 {
     # need to create destination directory first
-    [System.IO.Directory]::CreateDirectory( $seriesPath )
+    New-Item -Path $seriesPath -Force -ItemType directory | Out-Null
 }
 
 # check is pack file is already there
-if(-not [System.IO.File]::Exists( [System.IO.Path]::Combine( $stmCubePath , $packFileName ) )) 
+if(-not (Test-Path ([System.IO.Path]::Combine( $stmCubePath , $packFileName ))) ) 
 {
     # base URL to download the pack file from
     $packSourceURL = "http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/" + $packFileName 
@@ -123,9 +124,9 @@ try
             $parentDir = [System.IO.Path]::GetDirectoryName( $destinationFile )
 
             # create directory if it doesn't exist
-            if((-not [System.IO.Path]::HasExtension($parentDir)) -And (-not [System.IO.Directory]::Exists( $parentDir )) )
+            if((-not [System.IO.Path]::HasExtension($parentDir)) -And (-not (Test-Path -Path $parentDir)) )
             {
-                [System.IO.Directory]::CreateDirectory( $parentDir )
+                New-Item -Path $parentDir -Force -ItemType directory | Out-Null
             }
             else
             {
@@ -140,31 +141,26 @@ finally
     $zipArchive.Dispose()
 }
 
-# copy CMSIS folder for this series from STM32Cube folder to the respective Device folder in CMSIS folder
-# first make sure the destination directory is empty (if it exists at all) before copying as we don't want to mix versions
+# move CMSIS folder for this series from STM32Cube folder to the respective Device folder in CMSIS folder
+# first clear the destination directory before copying as we don't want to mix versions
 Write-Host "Copying CMSIS driver..."
 
-$cmsisPathForSeries = $spotClientPath + "\CMSIS\Device\ST"
+$cmsisPathForSeries = [System.IO.Path]::Combine($spotClientPath.Path , "CMSIS\Device\ST")
+Remove-Item -Path $cmsisPathForSeries -Force -Recurse -ErrorAction Ignore
+New-Item -Path $cmsisPathForSeries -Force -ItemType directory | Out-Null
+Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\CMSIS\Device\ST\*") ) -Destination $cmsisPathForSeries -Force
 
-if([System.IO.Directory]::Exists( $cmsisPathForSeries ) )
-{
-    [System.IO.Directory]::Delete( $cmsisPathForSeries , $true)
-}
-  
-Copy-Item ( $seriesPath + "\Drivers\CMSIS\Device\ST" ) -Destination $cmsisPathForSeries -recurse -Force
-
-# copy HAL drivers for this series from STM32Cube folder to the respective DeviceCode folder 
-# first make sure the destination directories are empty (if they exists at all) before copying as we don't want to mix versions
+# move HAL drivers for this series from STM32Cube folder to the respective DeviceCode folder 
+# first clear the destination directory before copying as we don't want to mix versions
 Write-Host "Copying HAL driver..."
 
-$deviceCodePathForSeries = $spotClientPath + "\DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver"
+$deviceCodePathForSeries = [System.IO.Path]::Combine( $spotClientPath.Path, "DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver")
+Remove-Item -Path $deviceCodePathForSeries -Force -Recurse -ErrorAction Ignore
+New-Item -Path $deviceCodePathForSeries -Force -ItemType directory | Out-Null
+Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\STM32" + $seriesName + "xx_HAL_Driver\*") ) -Destination $deviceCodePathForSeries -Force 
 
-if([System.IO.Directory]::Exists( $deviceCodePathForSeries ) )
-{
-    [System.IO.Directory]::Delete( $deviceCodePathForSeries , $true)
-}
+# delete source folder in STM32Cube becasause we don't need it anymore
+Remove-Item -Path $seriesPath -Force -Recurse -ErrorAction Ignore
 
-
-Copy-Item ( $seriesPath + "\Drivers\STM32" + $seriesName + "xx_HAL_Driver" ) -Destination $deviceCodePathForSeries -recurse -Force
-
+# done here
 Write-Host "Installation of STM32Cube CMSIS pack v$packVersion for STM32$seriesName series completed"
