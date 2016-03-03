@@ -14,7 +14,7 @@ Install-CMSIS-STM32.ps1 F4 1.11.00
 STM32 series name. Valid series are: F0, F1, F2, F3, F4, F7, L0, L1 and L4.
 
 .PARAMETER packVersion
-The pack version to donwload. Format is N.NN.NN. Example: 1.11.00.
+The pack version to donwload. Format is N.NN.N. Example: 1.11.0
 
 #>
 
@@ -31,18 +31,17 @@ Param(
 
 # check running path 
 $spotClientPath = Get-Location
-if($spotClientPath.Path.Contains("solutions"))
+if($spotClientPath.Path.Contains("Solutions"))
 {
     # path includes 'Solutions' so presume that this is being called from a solution project, repository home must be two levels up
     $spotClientPath = [System.IO.Path]::GetFullPath( [System.IO.Path]::Combine( $spotClientPath, "..","..") )
-    "spot" + $spotClientPath
 }
 
 # validate pack version
-if(-not ($packVersion -match "\d{1}.\d{2}.\d{2}"))
+if(-not ($packVersion -match "\d{1}.\d{2}.\d{1}$"))
 {
     # path includes 'Solutions' so presume that this is being called from a solution project, repository home must be two levels up
-    throw "Pack version is invalid. Must have format N.NN.NN."
+    throw "Pack version is invalid. Must have format N.NN.N"
 }
 
 # validate series name
