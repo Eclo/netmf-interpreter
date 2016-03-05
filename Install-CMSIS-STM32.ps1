@@ -145,7 +145,7 @@ finally
 # first clear the destination directory before copying as we don't want to mix versions
 Write-Host "Copying CMSIS driver..."
 
-$cmsisPathForSeries = [System.IO.Path]::Combine($spotClientPath.Path , "CMSIS\Device\ST")
+$cmsisPathForSeries = [System.IO.Path]::Combine($spotClientPath , "CMSIS\Device\ST")
 Remove-Item -Path $cmsisPathForSeries -Force -Recurse -ErrorAction Ignore
 New-Item -Path $cmsisPathForSeries -Force -ItemType directory | Out-Null
 Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\CMSIS\Device\ST\*") ) -Destination $cmsisPathForSeries -Force
@@ -154,7 +154,7 @@ Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\CMSIS\Device\S
 # first clear the destination directory before copying as we don't want to mix versions
 Write-Host "Copying HAL driver..."
 
-$deviceCodePathForSeries = [System.IO.Path]::Combine( $spotClientPath.Path, "DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver")
+$deviceCodePathForSeries = [System.IO.Path]::Combine( $spotClientPath, "DeviceCode\Targets\Native\STM32" + $seriesName + "xx\HAL_Driver")
 Remove-Item -Path $deviceCodePathForSeries -Force -Recurse -ErrorAction Ignore
 New-Item -Path $deviceCodePathForSeries -Force -ItemType directory | Out-Null
 Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\STM32" + $seriesName + "xx_HAL_Driver\*") ) -Destination $deviceCodePathForSeries -Force 
