@@ -1426,8 +1426,8 @@ bool Loader_Engine::Monitor_MemoryMap( WP_Message* msg )
     map[ 0 ].m_length  = HalSystemConfig.RAM1.Size;
     map[ 0 ].m_flags   = CLR_DBG_Commands::Monitor_MemoryMap::c_RAM;
 
-    map[ 1 ].m_address = HalSystemConfig.FLASH.Base;
-    map[ 1 ].m_length  = HalSystemConfig.FLASH.Size;
+    map[ 1 ].m_address = HalSystemConfig.FLASH1.Base;
+    map[ 1 ].m_length  = HalSystemConfig.FLASH1.Size;
     map[ 1 ].m_flags   = CLR_DBG_Commands::Monitor_MemoryMap::c_FLASH;
 
     ReplyToCommand( msg, true, false, map, sizeof(map) );
