@@ -285,58 +285,37 @@ BOOL CPU_GPIO_Initialize( )
         g_int_state[ i ].completion.InitializeForISR( &GPIO_DebounceHandler );
     }
 
-#if defined (STM32F401xC) || defined (STM32F401xE) || (STM32F411xE)
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
+    #if defined (RCC_AHB1ENR_GPIOAEN)
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOBEN)
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOCEN)
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIODEN)
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOEEN)
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOFEN)
+    __HAL_RCC_GPIOF_CLK_ENABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOGEN)
+    __HAL_RCC_GPIOG_CLK_ENABLE(); 
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOHEN)
+    __HAL_RCC_GPIOH_CLK_ENABLE(); 
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOIEN)
+    __HAL_RCC_GPIOI_CLK_ENABLE(); 
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOJEN)
+    __HAL_RCC_GPIOJ_CLK_ENABLE(); 
+    #endif
 
-
-#elif defined (STM32F427xx) || defined (STM32F429xx) || defined (STM32F437xx) || \
-        defined (STM32F439xx) || defined (STM32F469xx) || defined (STM32F479xx)
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE(); 
-  __HAL_RCC_GPIOH_CLK_ENABLE(); 
-  __HAL_RCC_GPIOI_CLK_ENABLE(); 
-  __HAL_RCC_GPIOJ_CLK_ENABLE(); 
-
-                 
-#elif defined (STM32F405xx) || defined (STM32F407xx) || defined (STM32F415xx) || \
-        defined (STM32F417xx) 
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE(); 
-  __HAL_RCC_GPIOH_CLK_ENABLE(); 
-  __HAL_RCC_GPIOI_CLK_ENABLE(); 
-
-#elif defined (STM32F410Cx) || defined (STM32F410Rx) || defined (STM32F410Tx)
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE(); 
-                  
-#elif defined (STM32F446xx)
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE(); 
-  __HAL_RCC_GPIOH_CLK_ENABLE(); 
-
-#endif
 
 
     EXTI->IMR = 0; // disable all external interrups;
