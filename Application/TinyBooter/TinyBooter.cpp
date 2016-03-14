@@ -16,11 +16,11 @@ extern bool WaitForTinyBooterUpload( INT32 &timeout_ms );
 
 Loader_Engine g_eng;
 
-//--//
+// //--//
 
-HAL_DECLARE_CUSTOM_HEAP( SimpleHeap_Allocate, SimpleHeap_Release, SimpleHeap_ReAllocate );
+// HAL_DECLARE_CUSTOM_HEAP( SimpleHeap_Allocate, SimpleHeap_Release, SimpleHeap_ReAllocate );
 
-//--//
+// //--//
 
 void ApplicationEntryPoint()
 {
@@ -32,7 +32,7 @@ void ApplicationEntryPoint()
     UINT32 SizeInBytes;                                 
                                                         
     HeapLocation         ( BaseAddress, SizeInBytes );  
-    SimpleHeap_Initialize( BaseAddress, SizeInBytes );  
+    //SimpleHeap_Initialize( BaseAddress, SizeInBytes );  
 
     g_eng.Initialize( HalSystemConfig.DebuggerPorts[ 0 ] );
 
@@ -55,10 +55,11 @@ void ApplicationEntryPoint()
 
     if(enterBootMode)
     {
-        LCD_Clear();
-        
-        hal_fprintf( STREAM_LCD, "TinyBooter v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
-        hal_fprintf( STREAM_LCD, "%s Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__ );
+        // FIXME
+        //LCD_Clear();
+        // FIXME
+        //hal_fprintf( STREAM_LCD, "TinyBooter v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
+        //hal_fprintf( STREAM_LCD, "%s Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__ );
 
         DebuggerPort_Initialize( HalSystemConfig.DebuggerPorts[ 0 ] );
 

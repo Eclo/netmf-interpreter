@@ -1191,97 +1191,97 @@ UINT32 Stack_MaxUsed();
 
 #endif  // defined(PLATFORM_ARM)
 
-//--//
+// //--//
 
-// Simple Heap is for use by Porting Kit users who need private memory allocation.
-/*************************************************************************************
-**
-** Function: SimpleHeap_Allocate
-**
-** Synopsis: Initializes simple heap from supplied buffer.
-** Pointer to buffer is saved in global variable.
-** Later is used for allocation of blocks by SimpleHeap_Allocate
-**
-** Arguments: [pHeapBuffer] - Pointer to heap buffer. This pointer is saved in global variable,
-**                            later used by SimpleHeap_* function.
-**            [pHeapBuffer] - Size of memory block pointed by pHeapBuffer
-**
-**************************************************************************************/
-void SimpleHeap_Initialize( void* pHeapBuffer, UINT32 heapBuufferSize );
+// // Simple Heap is for use by Porting Kit users who need private memory allocation.
+// /*************************************************************************************
+// **
+// ** Function: SimpleHeap_Allocate
+// **
+// ** Synopsis: Initializes simple heap from supplied buffer.
+// ** Pointer to buffer is saved in global variable.
+// ** Later is used for allocation of blocks by SimpleHeap_Allocate
+// **
+// ** Arguments: [pHeapBuffer] - Pointer to heap buffer. This pointer is saved in global variable,
+// **                            later used by SimpleHeap_* function.
+// **            [pHeapBuffer] - Size of memory block pointed by pHeapBuffer
+// **
+// **************************************************************************************/
+// void SimpleHeap_Initialize( void* pHeapBuffer, UINT32 heapBuufferSize );
 
-/**********************************************************************
-**
-** Function: SimpleHeap_Allocate
-**
-** Synopsis: Allocates block of memory from heap buffer initialized by SimpleHeap_Initialize
-**
-**
-** Arguments: [len]                  - Size of block to allocate.
-**
-** Returns:   Pointer to newly allocated memory
-              or NULL if there is no free memory to accomodate block of size len
-**********************************************************************/
-void* SimpleHeap_Allocate   ( size_t len );
+// /**********************************************************************
+// **
+// ** Function: SimpleHeap_Allocate
+// **
+// ** Synopsis: Allocates block of memory from heap buffer initialized by SimpleHeap_Initialize
+// **
+// **
+// ** Arguments: [len]                  - Size of block to allocate.
+// **
+// ** Returns:   Pointer to newly allocated memory
+//               or NULL if there is no free memory to accomodate block of size len
+// **********************************************************************/
+// void* SimpleHeap_Allocate   ( size_t len );
 
-/**********************************************************************
-**
-** Function: SimpleHeap_Release
-**
-** Synopsis: Releases memory block allocated by SimpleHeap_Allocate
-**
-**
-** Arguments: [pHeapBlock] - Memory block to release.
-**
-**********************************************************************/
-void  SimpleHeap_Release    ( void*  pHeapBlock );
-
-
-/**********************************************************************
-**
-** Function: SimpleHeap_ReAllocate
-**
-** Synopsis: Reallocates memory on an existing pointer and copies bck the
-** data
-**
-** Arguments: [pHeapBlock] - Memory block to reallocate.
-** Arguments: [len]        - Size of block to allocate.
-**
-**********************************************************************/
-void* SimpleHeap_ReAllocate( void*  pHeapBlock, size_t len );
-
-/**********************************************************************
-**
-** Function: SimpleHeap_IsAllocated
-**
-** Synopsis: Checks if pHeapBlock points to memory block allocated by SimpleHeap_Allocate
-**
-** Arguments: [pHeapBlock] - Memory block to release.
-**
-** Returns:   TRUE if pHeapBlock points to memory allocated, FALSE otherwise.
-**********************************************************************/
-BOOL  SimpleHeap_IsAllocated( void*  pHeapBlock );
-
-/**********************************************************************
-**
-** Function: HAL_Init_Custom_Heap
-**
-** Synopsis: Initializes simple heap with memory buffer provided by CustomHeapLocation function.
-**
-**********************************************************************/
-inline void HAL_Init_Custom_Heap()
-{
-    UINT8* BaseAddress = 0;
-    UINT32 SizeInBytes = 0;
-
-    // Retrieve location for Custom Heap. The location is defined in scatter file.
-    CustomHeapLocation( BaseAddress, SizeInBytes );
-
-    // Initialize custom heap with heap block returned from CustomHeapLocation
-    SimpleHeap_Initialize( BaseAddress, SizeInBytes );
-}
+// /**********************************************************************
+// **
+// ** Function: SimpleHeap_Release
+// **
+// ** Synopsis: Releases memory block allocated by SimpleHeap_Allocate
+// **
+// **
+// ** Arguments: [pHeapBlock] - Memory block to release.
+// **
+// **********************************************************************/
+// void  SimpleHeap_Release    ( void*  pHeapBlock );
 
 
-//--//
+// /**********************************************************************
+// **
+// ** Function: SimpleHeap_ReAllocate
+// **
+// ** Synopsis: Reallocates memory on an existing pointer and copies bck the
+// ** data
+// **
+// ** Arguments: [pHeapBlock] - Memory block to reallocate.
+// ** Arguments: [len]        - Size of block to allocate.
+// **
+// **********************************************************************/
+// void* SimpleHeap_ReAllocate( void*  pHeapBlock, size_t len );
+
+// /**********************************************************************
+// **
+// ** Function: SimpleHeap_IsAllocated
+// **
+// ** Synopsis: Checks if pHeapBlock points to memory block allocated by SimpleHeap_Allocate
+// **
+// ** Arguments: [pHeapBlock] - Memory block to release.
+// **
+// ** Returns:   TRUE if pHeapBlock points to memory allocated, FALSE otherwise.
+// **********************************************************************/
+// BOOL  SimpleHeap_IsAllocated( void*  pHeapBlock );
+
+// /**********************************************************************
+// **
+// ** Function: HAL_Init_Custom_Heap
+// **
+// ** Synopsis: Initializes simple heap with memory buffer provided by CustomHeapLocation function.
+// **
+// **********************************************************************/
+// inline void HAL_Init_Custom_Heap()
+// {
+//     UINT8* BaseAddress = 0;
+//     UINT32 SizeInBytes = 0;
+
+//     // Retrieve location for Custom Heap. The location is defined in scatter file.
+//     CustomHeapLocation( BaseAddress, SizeInBytes );
+
+//     // Initialize custom heap with heap block returned from CustomHeapLocation
+//     SimpleHeap_Initialize( BaseAddress, SizeInBytes );
+// }
+
+
+// //--//
 
 // hal cleanup for CLR reboot
 
@@ -1537,6 +1537,22 @@ extern bool g_fDoNotUninitializeDebuggerPort;
 #include <tinypal.h>
 #include <drivers.h>
 #include <tinybooterentry.h>
+
+//--//
+
+// HAL includes for CMSIS vendor implementations
+
+// STM32F4 series
+#if defined STM32F405xx|| defined STM32F415xx|| defined STM32F407xx|| defined STM32F417xx|| \
+    defined STM32F427xx|| defined STM32F437xx|| defined STM32F429xx|| defined STM32F439xx|| \
+    defined STM32F401xC|| defined STM32F401xE|| defined STM32F410Tx|| defined STM32F410Cx|| \
+    defined STM32F410Rx|| defined STM32F411xE|| defined STM32F446xx|| defined STM32F469xx|| \
+    defined STM32F479xx
+
+#include "stm32f4xx_hal.h"
+
+#endif
+
 
 //--//
 

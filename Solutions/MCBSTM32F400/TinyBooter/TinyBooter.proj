@@ -146,11 +146,11 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Configuration\dotNetMF_loader.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="SimpleHeap.$(LIB_EXT)" />
+        <!--<DriverLibs Include="SimpleHeap.$(LIB_EXT)" />-->
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\SimpleHeap\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="SimpleHeap_config.$(LIB_EXT)" />
+        <!--<DriverLibs Include="SimpleHeap_config.$(LIB_EXT)" />-->
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\SimpleHeap_config\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
