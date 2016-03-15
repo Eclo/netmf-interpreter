@@ -53,7 +53,11 @@ ReleaseNotesCrypto.txt
 *.opendb
 *.dbgconf
 
-# STM32 Cube and installation folders
+# STM32 Cube
 STM32Cube/*
 !STM32Cube/ReadMe.m
-DeviceCode/Targets/Native/ST/STM32F4XX/*
+
+# CMSIS PAL and HAL folders
+DeviceCode/Targets/Native/STM32F4XX/HAL_Driver
+!DeviceCode/Targets/Native/*.proj
+!DeviceCode/Targets/Native/*.settings
