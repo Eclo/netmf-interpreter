@@ -170,6 +170,12 @@ Remove-Item -Path $usbClientLibPath -Force -Recurse -ErrorAction Ignore
 New-Item -Path $usbClientLibPath -Force -ItemType directory | Out-Null
 Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Middlewares\ST\STM32_USB_Device_Library\Core\*") ) -Destination $usbClientLibPath -Force 
 
+# rename the USB device client library source files to cpp extension so they get compiled as CPP code
+Get-childItem -Path ( [System.IO.Path]::Combine($usbClientLibPath, "Src") ) *.c | rename-item -newname { $_.name -replace '\.c','.cpp' }
+
+# delete the template files from USB device client library destination folder 
+Remove-Item -Path ( [System.IO.Path]::Combine($usbClientLibPath, "Src\usbd_conf_template.cpp") ) -Force
+Remove-Item -Path ( [System.IO.Path]::Combine($usbClientLibPath, "Inc\usbd_conf_template.h") ) -Force
 
 # delete source folder in STM32Cube becasause we don't need it anymore
 Remove-Item -Path $seriesPath -Force -Recurse -ErrorAction Ignore
