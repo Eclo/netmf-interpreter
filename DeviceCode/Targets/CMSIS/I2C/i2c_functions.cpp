@@ -5,7 +5,7 @@
 //  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 //
 //  Copyright (c) Microsoft Corporation. All rights reserved.
-//  Implementation for STM32F4: Copyright (c) Oberon microsystems, Inc.
+//  Implementation for CMSIS: Copyright (c) Eclo Solutions Lda. Based in original code from Oberon microsystems, Inc.
 //
 //  *** I2C Driver ***
 //
@@ -13,7 +13,7 @@
 
 #include <tinyhal.h> 
 //////////////////////////////////////
-// to simplify, as NETMF only use I2C1, other ports will be despised
+// to simplify, becasue NETMF only use a single I2C1 port
 //////////////////////////////////////
 // #if I2C_PORT == 2
 //     #define I2Cx                   I2C2 

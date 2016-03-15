@@ -18,48 +18,6 @@
     <Required>False</Required>
     <IgnoreDefaultLibPath>False</IgnoreDefaultLibPath>
     <IsStub>False</IsStub>
-    <!--<LibraryCategory>
-      <MFComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SPI_HAL" Guid="{705CCD97-0A0F-410D-B535-78B862D742B1}" xmlns="">
-        <VersionDependency xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">
-          <Major>4</Major>
-          <Minor>0</Minor>
-          <Revision>0</Revision>
-          <Build>0</Build>
-          <Extra />
-          <Date>2009-04-30</Date>
-          <Author>Oberon microsystems, Inc.</Author>
-        </VersionDependency>
-        <ComponentType xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">LibraryCategory</ComponentType>
-      </MFComponent>
-    </LibraryCategory>-->
-	<!--<ProcessorSpecific>
-		<MFComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="STM32F2" Guid="{002E00B2-009B-0009-B2F8-127FE8E839D1}" xmlns="">
-        <VersionDependency xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">
-          <Major>4</Major>
-          <Minor>0</Minor>
-          <Revision>0</Revision>
-          <Build>0</Build>
-          <Extra />
-          <Date>2009-04-30</Date>
-          <Author>Oberon microsystems, Inc.</Author>
-        </VersionDependency>
-        <ComponentType xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">Processor</ComponentType>
-		</MFComponent>
-	</ProcessorSpecific>-->
-	<!--<ProcessorSpecific>  	  
-		<MFComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="STM32F4" Guid="{007400A6-0088-008A-A158-3C166CD3322C}" xmlns="">
-        <VersionDependency xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">
-          <Major>4</Major>
-          <Minor>0</Minor>
-          <Revision>0</Revision>
-          <Build>0</Build>
-          <Extra />
-          <Date>2009-04-30</Date>
-          <Author>Oberon microsystems, Inc.</Author>
-        </VersionDependency>
-        <ComponentType xmlns="http://schemas.microsoft.com/netmf/InventoryFormat.xsd">Processor</ComponentType>
-      </MFComponent>
-    </ProcessorSpecific>-->
     <Directory>DeviceCode\Targets\CMSIS\SPI</Directory>
     <OutputType>Library</OutputType>
     <PlatformIndependentBuild>false</PlatformIndependentBuild>
