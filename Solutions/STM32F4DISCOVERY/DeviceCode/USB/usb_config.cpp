@@ -73,6 +73,7 @@ ADS_PACKED struct GNU_PACKED USB_DYNAMIC_CONFIGURATION
 
 extern const ADS_PACKED struct GNU_PACKED USB_DYNAMIC_CONFIGURATION UsbDefaultConfiguration;
 
+
 const struct USB_DYNAMIC_CONFIGURATION UsbDefaultConfiguration =
 {
     // Device descriptor

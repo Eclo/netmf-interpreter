@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+    <PropertyGroup>
+        <Author>Eclo Solutions</Author>
+        <Description>
+        <!-- Configuration file to select which features are to be added/enabled -->
+        </Description>
+        <Documentation />
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <FEATURE_GPIO>True</FEATURE_GPIO>
+        <FEATURE_SPI>False</FEATURE_SPI>
+        <FEATURE_I2C>False</FEATURE_I2C>
+
+        <FEATURE_LCD>False</FEATURE_LCD>
+        <FEATURE_BACKLIGHT>False</FEATURE_BACKLIGHT>
+        <FEATURE_PIEZO>False</FEATURE_PIEZO>
+        <FEATURE_BATTERY>False</FEATURE_BATTERY>
+        <FEATURE_CHARGER>False</FEATURE_CHARGER>
+        <FEATURE_GESTURE>False</FEATURE_GESTURE>
+        <FEATURE_INK>False</FEATURE_INK>
+        <FEATURE_FS>False</FEATURE_FS>        
+        <FEATURE_BUTTONS>False</FEATURE_BUTTONS>
+    </PropertyGroup>
+</Project>

@@ -26,6 +26,9 @@
 #if defined(PLATFORM_ARM_MCBSTM32F400)
 #define HAL_SYSTEM_NAME "MCBSTM32F400"
 
+// FIXME
+// the following can be removed after complete migration to CMSIS HAL/PAL 
+#define STM32F4XX 1 
 #define PLATFORM_ARM_STM32F4 1 // STM32F407 cpu
 #define STM32F4_ETH_PHY_RMII 1
 #define USB_ALLOW_CONFIGURATION_OVERRIDE 1

@@ -9,7 +9,7 @@
         <IsClrProject>False</IsClrProject>
         <InteropFeatures />
         <ExtraAssemblies />
-        <MFSettingsFile>$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\STM32F4DISCOVERY.settings</MFSettingsFile>
+        <MFSettingsFile>$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\TinyBooter\TinyBooter.settings</MFSettingsFile>
         <IsSolutionWizardVisible>True</IsSolutionWizardVisible>
         <reducesize>true</reducesize>
     </PropertyGroup>
@@ -23,15 +23,12 @@
         <ExtraTargets>$(ExtraTargets);CompressBin</ExtraTargets>
         <ScatterFileDefinition>scatterfile_bootloader_$(COMPILER_TOOL).$(SCATTER_EXT)</ScatterFileDefinition>
         <EXEScatterFileDefinition>scatterfile_bootloader_$(COMPILER_TOOL).$(SCATTER_EXT)</EXEScatterFileDefinition>
+        <NewlibNano Condition="'$(COMPILER_TOOL)'=='GCC'">true</NewlibNano>        
     </PropertyGroup>
     <ItemGroup />
     <ItemGroup>
         <Compile Include="$(SRC_DIR)\Allocator.cpp" />
         <Compile Include="$(SRC_DIR)\TinyBooterEntry.cpp" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="CortexMx_ItmPort.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\ItmPort\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <PlatformIndependentLibs Include="TinybooterLib.$(LIB_EXT)" />
@@ -42,20 +39,42 @@
         <RequiredProjects Include="$(SPOCLIENT)\Crypto\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="GlobalLock_hal_Cortex.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\GlobalLock\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="TinyHal_loader_Cortex.$(LIB_EXT)"/>
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\dotnetmf_loader.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\dotNetMF_loader.proj" />
+        <DriverLibs Include="TinyHAL_loader_STM32F4xx.$(LIB_EXT)"/>
+        <DriverLibs Condition="'$(FEATURE_GPIO)' == 'True'" Include="CMSIS_GPIO.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_GPIO)' != 'True'" Include="cpu_gpio_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_SPI)' == 'True'" Include="CMSIS_SPI.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_SPI)' != 'True'" Include="cpu_spi_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="CMSIS_I2C.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="cpu_i2c_stubs.$(LIB_EXT)" />
+
+        <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="cpu_LCD_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_lcd\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_BACKLIGHT)' != 'True'" Include="backlight_hal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_BACKLIGHT)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Backlight\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_PIEZO)' != 'True'" Include="piezo_pal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_PIEZO)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\Piezo\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_CHARGER)' != 'True'" Include="batterycharger_hal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_CHARGER)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryCharger\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_BATTERY)' != 'True'" Include="batterymeasurement_hal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_BATTERY)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryMeasurement\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_GESTURE)' != 'True'" Include="Gesture_pal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_GESTURE)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\Gesture\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_INK)' != 'True'" Include="Ink_pal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_INK)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\Ink\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_FS)' != 'True'" Include="fs_pal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_FS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\fs\stubs\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_FS)' != 'True'" Include="FS_Config_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_FS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\FS\stubs\config\dotnetmf.proj" />
+        <DriverLibs Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="Buttons_pal_stubs.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
+
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="cpu_prestackinit_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\Processor\stubs_PreStackInit\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_bootstrap.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Bootstrap\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="cpu_cache_stubs.$(LIB_EXT)" />
@@ -64,10 +83,6 @@
     <ItemGroup>
         <DriverLibs Include="cpu_ebiu_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_EBIU\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_GPIO.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_GPIO\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="STM32F4_INTC.$(LIB_EXT)" />
@@ -86,16 +101,12 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_time\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="cpu_spi_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\Processor\stubs_SPI\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="cpu_usart_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\processor\stubs_USART\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="STM32F4_USB.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_USB\dotNetMF.proj" />
+        <DriverLibs Include="CMSIS_USB.$(LIB_EXT)" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USB\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="cpu_watchdog_stubs.$(LIB_EXT)" />
@@ -118,10 +129,6 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\BlockStorage\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="Buttons_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="COM_pal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\dotNetMF.proj" />
     </ItemGroup>
@@ -130,36 +137,20 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Config\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="i2c_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="usart_pal_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="usb_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USB\dotNetMF.proj" />
+        <DriverLibs Include="usb_cmsis_pal.$(LIB_EXT)" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USB_CMSIS\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="config_pal_loader.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Configuration\dotNetMF_loader.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="SimpleHeap.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\SimpleHeap\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="SimpleHeap_config.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\SimpleHeap_config\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="heap_pal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Heap\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="piezo_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Piezo\stubs\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="tinycrt_pal_loader.$(LIB_EXT)" />
@@ -174,22 +165,6 @@
         <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="fs_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\fs\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="FS_Config_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\FS\stubs\config\dotnetmf.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="Ink_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Ink\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="Gesture_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Gesture\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="palevent_pal_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\palevent\stubs\dotNetMF.proj" />
     </ItemGroup>
@@ -202,28 +177,8 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\stubs\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="backlight_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Backlight\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="batterycharger_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryCharger\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="batterymeasurement_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryMeasurement\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="lcd_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="cpu_LCD_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_lcd\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_Flash.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Flash\dotNetMF.proj" />
+        <DriverLibs Include="STM32F4xx_Flash.$(LIB_EXT)" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\Flash\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="events_pal.$(LIB_EXT)" />

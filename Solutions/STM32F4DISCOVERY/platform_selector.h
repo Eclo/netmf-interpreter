@@ -25,7 +25,9 @@
 
 #if defined(PLATFORM_ARM_STM32F4DISCOVERY)
 #define HAL_SYSTEM_NAME "STM32F4DISCOVERY"
-
+// FIXME
+// the following can be removed after complete migration to CMSIS HAL/PAL 
+#define STM32F4XX 1 
 #define PLATFORM_ARM_STM32F4 1 // STM32F407 cpu
 #define USB_ALLOW_CONFIGURATION_OVERRIDE 1
 

@@ -279,4 +279,3 @@ BOOL TinyBooter_GetReleaseInfo(MfReleaseInfo& releaseInfo)
                     );
     return TRUE;
 }
-

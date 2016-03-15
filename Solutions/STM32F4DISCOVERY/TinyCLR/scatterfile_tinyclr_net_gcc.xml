@@ -167,7 +167,8 @@
             <FileMapping Name="__text_end = .;"/>
             <!-- define a global symbols at end of code -->
             <FileMapping Name="_etext = .;"/>
-            <FileMapping Name="PROVIDE(__text_end = __text_end);"/>     
+            <FileMapping Name="PROVIDE(__text_end = __text_end);"/>
+            
         </ExecRegion>
 
         <FileMapping Name=". = ALIGN(4);"/>
