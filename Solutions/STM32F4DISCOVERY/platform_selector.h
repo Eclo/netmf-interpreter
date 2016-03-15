@@ -25,9 +25,10 @@
 
 #if defined(PLATFORM_ARM_STM32F4DISCOVERY)
 #define HAL_SYSTEM_NAME "STM32F4DISCOVERY"
+
 // FIXME
 // the following can be removed after complete migration to CMSIS HAL/PAL 
-#define STM32F4XX 1 
+#define STM32F4XX 1
 #define PLATFORM_ARM_STM32F4 1 // STM32F407 cpu
 #define USB_ALLOW_CONFIGURATION_OVERRIDE 1
 
@@ -110,9 +111,11 @@
 #define STM32F4_PWM_CHNL  {0,1,2,3}
 #define STM32F4_PWM_PINS  {60,61,62,63} // PD12-PD15
 
-#define STM32F4_SPI_SCLK_PINS {5, 29, 42} // PA5, PB13, PC10
-#define STM32F4_SPI_MISO_PINS {6, 30, 43} // PA6, PB14, PC11
-#define STM32F4_SPI_MOSI_PINS {7, 31, 44} // PA7, PB15, PC12
+// #define STM32F4_SPI_SCLK_PINS {5, 29, 42} // PA5, PB13, PC10
+// #define STM32F4_SPI_MISO_PINS {6, 30, 43} // PA6, PB14, PC11
+// #define STM32F4_SPI_MOSI_PINS {7, 31, 44} // PA7, PB15, PC12
+#define SPI_PORTS   {SPI1, SPI2, SPI3}
+
 
 #define STM32F4_I2C_PORT     1
 #define STM32F4_I2C_SCL_PIN  PORT_PIN( GPIO_PORTB, 8 ) // PB8
@@ -138,7 +141,7 @@
 // constants
 /////////////////////////////////////////////////////////
 
-#include <processor_selector.h>
+#include "processor_selector.h"
 
 #endif // PLATFORM_ARM_STM32F4DISCOVERY
 

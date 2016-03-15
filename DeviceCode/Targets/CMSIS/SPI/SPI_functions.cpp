@@ -56,6 +56,10 @@ typedef  SPI_TypeDef* ptr_SPI_TypeDef;
 
 // #endif
 
+#if !defined(SPI_PORTS)
+#error "No SPI ports defined! Please go to platform_selector.h (in solution folder) and uncomment the define that matches the SPI ports available in the device datasheet"
+#endif
+
 static const ptr_SPI_TypeDef g_STM32_Spi_Port[] = SPI_PORTS;
 
 
