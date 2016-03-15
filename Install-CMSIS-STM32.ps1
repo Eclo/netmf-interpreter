@@ -111,6 +111,7 @@ try
     $halDriverIncFolder = $zipPackFileName + "/Drivers/STM32" + $seriesName + "xx_HAL_Driver/Inc/"
     $halDriverSrcFolder = $zipPackFileName + "/Drivers/STM32" + $seriesName + "xx_HAL_Driver/Src/"
     $halDriverReleaseNotes = $zipPackFileName + "/Drivers/STM32" + $seriesName + "xx_HAL_Driver/Release_Notes.html"
+    $cmsisUSBClientLib = $zipPackFileName + "/Middlewares/ST/STM32_USB_Device_Library/"
 
     foreach($zipItem in $zipArchive.Entries)
     {
@@ -118,7 +119,8 @@ try
         if($zipItem.FullName.StartsWith( $cmsisDeviceFolder ) -Or
             $zipItem.FullName.StartsWith( $halDriverIncFolder ) -Or
             $zipItem.FullName.StartsWith( $halDriverSrcFolder ) -Or
-            $zipItem.FullName.StartsWith( $halDriverReleaseNotes ))
+            $zipItem.FullName.StartsWith( $halDriverReleaseNotes ) -Or
+            $zipItem.FullName.StartsWith( $cmsisUSBClientLib ))
         {
             $destinationFile   = [System.IO.Path]::Combine( $seriesPath, $zipItem.FullName.Replace($zipPackFileName, "").Replace("/", "\").SubString(1))
             $parentDir = [System.IO.Path]::GetDirectoryName( $destinationFile )
@@ -158,6 +160,16 @@ $deviceCodePathForSeries = [System.IO.Path]::Combine( $spotClientPath, "DeviceCo
 Remove-Item -Path $deviceCodePathForSeries -Force -Recurse -ErrorAction Ignore
 New-Item -Path $deviceCodePathForSeries -Force -ItemType directory | Out-Null
 Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\STM32" + $seriesName + "xx_HAL_Driver\*") ) -Destination $deviceCodePathForSeries -Force 
+
+# move USB device client library from STM32Cube folder to USB DeviceCode folder 
+# first clear the destination directory before copying as we don't want to mix versions
+Write-Host "Copying USB device client library..."
+
+$usbClientLibPath = [System.IO.Path]::Combine( $spotClientPath, "DeviceCode\Targets\CMSIS\USB\STM32_USB_Device_Library")
+Remove-Item -Path $usbClientLibPath -Force -Recurse -ErrorAction Ignore
+New-Item -Path $usbClientLibPath -Force -ItemType directory | Out-Null
+Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Middlewares\ST\STM32_USB_Device_Library\Core\*") ) -Destination $usbClientLibPath -Force 
+
 
 # delete source folder in STM32Cube becasause we don't need it anymore
 Remove-Item -Path $seriesPath -Force -Recurse -ErrorAction Ignore
