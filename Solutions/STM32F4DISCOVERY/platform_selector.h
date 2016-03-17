@@ -111,15 +111,20 @@
 #define STM32F4_PWM_CHNL  {0,1,2,3}
 #define STM32F4_PWM_PINS  {60,61,62,63} // PD12-PD15
 
-// #define STM32F4_SPI_SCLK_PINS {5, 29, 42} // PA5, PB13, PC10
-// #define STM32F4_SPI_MISO_PINS {6, 30, 43} // PA6, PB14, PC11
-// #define STM32F4_SPI_MOSI_PINS {7, 31, 44} // PA7, PB15, PC12
-#define SPI_PORTS   {SPI1, SPI2, SPI3}
+// add to SPI_PORTS array the SPI ports that are available in the solution 
+// please check which SPI ports are available in the device datasheet
+// uncomment the following define and leave the SPI ports that are available in your hardware
+//#define SPI_PORTS   {SPI1, SPI2, SPI3, SPI4, SPI5, SPI6}
 
-
-#define STM32F4_I2C_PORT     1
-#define STM32F4_I2C_SCL_PIN  PORT_PIN( GPIO_PORTB, 8 ) // PB8
-#define STM32F4_I2C_SDA_PIN  PORT_PIN( GPIO_PORTB, 9 ) // PB9
+// add to USART_PORTS array the USART ports that are available in the solution 
+// please check which USART ports are available in the device datasheet
+// uncomment the following define and leave the USART ports that are available in your hardware and you intend to use
+// NOTE: UART5 is not supported because TX and RX are handled in different ports
+#define USART_PORTS                 {USART1, USART2, USART6}
+#define USART_PORTS_TX_RX           {GPIOA, GPIOD, GPIOC, GPIOC, GPIOG}
+// to use flow control, uncomment below define and leave the USART ports that are available in your hardware and you intend to use
+#define GPIO_NO_PORT                0
+#define USART_PORTS_FLOW_CONTROL    {GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT}
 
 #define STM32F4_UART_RXD_PINS {23, 54, 43} // PB7, D6, C11
 #define STM32F4_UART_TXD_PINS {22, 53, 42} // PB6, D5, C10
