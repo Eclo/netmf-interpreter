@@ -38,7 +38,11 @@ void ConfigurationSectorManager::LocateConfigurationSector( UINT32 BlockUsage )
             m_fSupportsXIP = TRUE;
             m_fUsingRAM = FALSE;
             // Get the real address 
+#ifdef FEATURE_CPUCACHE            
             m_configurationSector = (ConfigurationSector *)CPU_GetUncachableAddress( m_cfgPhysicalAddress );
+#else
+            m_configurationSector = (ConfigurationSector *)m_cfgPhysicalAddress;
+#endif            
         }
         else
         {
@@ -74,7 +78,11 @@ void ConfigurationSectorManager::LoadConfiguration()
     if (m_fSupportsXIP)
     {
         // Get the real address 
+#ifdef FEATURE_CPUCACHE            
         m_configurationSector = (ConfigurationSector *)CPU_GetUncachableAddress( m_cfgPhysicalAddress );
+#else
+        m_configurationSector = (ConfigurationSector *)m_cfgPhysicalAddress;
+#endif        
         return ;
 
     }

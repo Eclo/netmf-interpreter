@@ -87,7 +87,11 @@ void HAL_EnterBooterMode()
                     {
 
                         // will be either directly read from  NOR
+#ifdef FEATURE_CPUCACHE            
                         dataAddress = (volatile UINT32*)CPU_GetUncachableAddress(&pAddr[i]);
+#else
+                        dataAddress = (volatile UINT32*)&pAddr[i];
+#endif                        
 
                         // write directly
                         bRet = (TRUE == pBlockDevice->Write( (UINT32)dataAddress, sizeof(UINT32), (PBYTE)&c_Key, FALSE ));
@@ -362,61 +366,74 @@ extern "C"
 // defined as weak to allow it to be overriden by equivalent function at Solution level  
 __attribute__((weak)) int main(void)
 {
-    HAL_Init();
-    
-    /* Configure the system clock */
-    SystemClock_Config();
-    
-    HAL_Time_Initialize();
-
-    HAL_Initialize();
-
-#if !defined(BUILD_RTM) 
-    DEBUG_TRACE4( STREAM_LCD, ".NetMF v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
-    DEBUG_TRACE3(TRACE_ALWAYS, "%s, Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__);
-#if defined(__GNUC__)
-    DEBUG_TRACE1(TRACE_ALWAYS, "GNU Compiler version %d\r\n", __GNUC__);
-#else
-    DEBUG_TRACE1(TRACE_ALWAYS, "ARM Compiler version %d\r\n", __ARMCC_VERSION);
-#endif
-
-    UINT8* BaseAddress;
-    UINT32 SizeInBytes;
-
-    HeapLocation( BaseAddress,    SizeInBytes );
-    memset      ( BaseAddress, 0, SizeInBytes );
-
-    lcd_printf("\f");
- 
-    lcd_printf("%-15s\r\n", HalName);
-    lcd_printf("%-15s\r\n", "Build Date:");
-    lcd_printf("  %-13s\r\n", __DATE__);
-    lcd_printf("  %-13s\r\n", __TIME__);
-
-#endif  // !defined(BUILD_RTM)
-
-    /***********************************************************************************/
-
+    /* CMSIS HAL library initialization:
+       - Configure the Flash prefetch, instruction and Data caches
+       - Configure the Systick to generate an interrupt each 1 msec
+       - Set NVIC Group Priority to 4
+       - Global MSP (MCU Support Package) initialization
+    */
+    if(HAL_Init() == HAL_OK)
     {
-#if defined(FIQ_SAMPLING_PROFILER)
-        FIQ_Profiler_Init();
-#endif
-    }
+        
+        /* Configure the system clock */
+        SystemClock_Config();
+        
+CPU_USB_Initialize(0);
+        
+        HAL_Time_Initialize();
 
-    // 
-    // the runtime is by default using a watchdog 
-    // 
-   
-    Watchdog_GetSetTimeout ( WATCHDOG_TIMEOUT , TRUE );
-    Watchdog_GetSetBehavior( WATCHDOG_BEHAVIOR, TRUE );
-    Watchdog_GetSetEnabled ( WATCHDOG_ENABLE, TRUE );
+        HAL_Initialize();
 
- 
-    // HAL initialization completed.  Interrupts are enabled.  Jump to the Application routine
-    ApplicationEntryPoint();
+    #if !defined(BUILD_RTM) 
+        DEBUG_TRACE4( STREAM_LCD, ".NetMF v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
+        DEBUG_TRACE3(TRACE_ALWAYS, "%s, Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__);
+    #if defined(__GNUC__)
+        DEBUG_TRACE1(TRACE_ALWAYS, "GNU Compiler version %d\r\n", __GNUC__);
+    #else
+        DEBUG_TRACE1(TRACE_ALWAYS, "ARM Compiler version %d\r\n", __ARMCC_VERSION);
+    #endif
 
-    lcd_printf("\fmain exited!!???.  Halting CPU\r\n");
-    debug_printf("main exited!!???.  Halting CPU\r\n");
+        UINT8* BaseAddress;
+        UINT32 SizeInBytes;
+
+        HeapLocation( BaseAddress,    SizeInBytes );
+        memset      ( BaseAddress, 0, SizeInBytes );
+
+        #ifdef FEATURE_LCD
+        lcd_printf("\f");
+    
+        lcd_printf("%-15s\r\n", HalName);
+        lcd_printf("%-15s\r\n", "Build Date:");
+        lcd_printf("  %-13s\r\n", __DATE__);
+        lcd_printf("  %-13s\r\n", __TIME__);
+        #endif
+
+    #endif  // !defined(BUILD_RTM)
+
+        /***********************************************************************************/
+
+        {
+    #if defined(FIQ_SAMPLING_PROFILER)
+            FIQ_Profiler_Init();
+    #endif
+        }
+
+        // 
+        // the runtime is by default using a watchdog 
+        // 
+    
+        Watchdog_GetSetTimeout ( WATCHDOG_TIMEOUT , TRUE );
+        Watchdog_GetSetBehavior( WATCHDOG_BEHAVIOR, TRUE );
+        Watchdog_GetSetEnabled ( WATCHDOG_ENABLE, TRUE );
+
+        // CMSIS & NETMF HALs initialization completed.  Interrupts are enabled.  Jump to the Application routine
+        ApplicationEntryPoint();
+
+    #ifdef FEATURE_LCD
+        lcd_printf("\fmain exited!!???.  Halting CPU\r\n");
+    #endif    
+        //debug_printf("main exited!!???.  Halting CPU\r\n");        
+    }    
 
 #if defined(BUILD_RTM)
     CPU_Reset();
@@ -431,6 +448,7 @@ __attribute__((weak)) int main(void)
 
 #if !defined(BUILD_RTM)
 
+#ifdef FEATURE_LCD
 void lcd_printf( const char* format, ... );
 
 void debug_printf( const char* format, ... )
@@ -460,5 +478,5 @@ void lcd_printf( const char* format, ... )
 
     hal_vfprintf( STREAM_LCD, format, arg_ptr );
 }
-
+#endif  // !defined(FEATURE_LCD)
 #endif  // !defined(BUILD_RTM)

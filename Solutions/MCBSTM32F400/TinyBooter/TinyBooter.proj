@@ -47,6 +47,8 @@
         <DriverLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="CMSIS_I2C.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="cpu_i2c_stubs.$(LIB_EXT)" />        
 
+        <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
+
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
         <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="cpu_LCD_stubs.$(LIB_EXT)" />
@@ -78,10 +80,6 @@
     <ItemGroup>
         <DriverLibs Include="STM32F4_bootstrap.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Bootstrap\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="cpu_cache_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="cpu_ebiu_stubs.$(LIB_EXT)" />

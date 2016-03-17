@@ -140,7 +140,12 @@ struct BitFieldManager
             dataAddr = (volatile FLASH_WORD*)&m_signatureCheck->BitField[ sectorIndex / BITS_PER_UINT32 ];
             
             // read back the 
+
+#ifdef FEATURE_CPUCACHE            
             dataRdAddr = (volatile FLASH_WORD*)CPU_GetUncachableAddress( dataAddr );
+#else
+            dataRdAddr = (volatile FLASH_WORD*)dataAddr;
+#endif            
             data = (*dataRdAddr) & ~( 1ul << (sectorIndex % BITS_PER_UINT32) );
 
             // write directly
@@ -259,7 +264,11 @@ struct BitFieldManager
             else // XIP device
             {
 
+#ifdef FEATURE_CPUCACHE            
                 configSector = (ConfigurationSector*)CPU_GetUncachableAddress( m_cfgPhysicalAddress ); // global config not in flash for bootloader
+#else
+                configSector = (ConfigurationSector*)m_cfgPhysicalAddress; // global config not in flash for bootloader
+#endif
             
                 m_signatureCheck = NULL;
                 
@@ -1076,8 +1085,9 @@ void Loader_Engine::Launch( ApplicationStartAddress startAddress )
     if (retAddress != NULL)
         startAddress = retAddress;
 
-    // FIXME
-    //LCD_Clear();
+    #ifdef FEATURE_LCD
+    LCD_Clear();
+    #endif
 
     DebuggerPort_Flush( m_port );
     
@@ -1089,10 +1099,14 @@ void Loader_Engine::Launch( ApplicationStartAddress startAddress )
     }
 
     DISABLE_INTERRUPTS();
-// FIXME
-    //LCD_Uninitialize();
 
+    #ifdef FEATURE_LCD
+    LCD_Uninitialize();
+    #endif
+
+    #ifdef FEATURE_CPUCACHE            
     CPU_DisableCaches();
+    #endif
 
     if(Tinybooter_ImageIsCompressed())
     {

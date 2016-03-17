@@ -74,6 +74,8 @@
         <PlatformIndependentLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="I2C.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="cpu_i2c_stubs.$(LIB_EXT)" />
 
+        <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
+
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
         <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="cpu_LCD_stubs.$(LIB_EXT)" />
@@ -216,11 +218,6 @@
     <ItemGroup>
         <PlatformIndependentLibs Include="Graphics_stub.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Graphics\dotNetMF_stub.proj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <DriverLibs Include="cpu_cache_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="STM32F4_Flash.$(LIB_EXT)" />

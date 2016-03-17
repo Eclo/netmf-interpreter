@@ -10,7 +10,11 @@ extern int g_ConfigBufferLength;
 
 CryptoState::CryptoState( UINT32 dataAddress, UINT32 dataLength, BYTE* sig, UINT32 sigLength, UINT32 sectorType ) : 
 #if defined(ARM_V1_2)
+#ifdef FEATURE_CPUCACHE            
     m_dataAddress( CPU_GetCachableAddress( dataAddress ) ),
+#else
+    m_dataAddress(dataAddress),
+#endif
 #else
     m_dataAddress( dataAddress    ),
 #endif

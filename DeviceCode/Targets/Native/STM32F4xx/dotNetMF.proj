@@ -36,16 +36,16 @@
       <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\Interlocked.s" />
       <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\OtherHandlers.s" />  
       <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\tinyhal.cpp" />
-    <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\SystemState.cpp" />
-    <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\stm32f4xx_hal_msp.c" />
+      <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\SystemState.cpp" />
  </ItemGroup>
   
   <ItemGroup>
-    <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\Int_Handlers.cpp" />
-    <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\SystemClock_Config.c" />
+    <Compile Include="stm32f4xx_hal_msp.c" />
+    <Compile Include="system_stm32f4xx.c" />
+    <Compile Include="Int_Handlers.cpp" />
+    <Compile Include="SystemClock_Config.c" />
   </ItemGroup>  
   
-
   <ItemGroup>
     <HFiles Include="$(SPOCLIENT)\DeviceCode\Initialization\MasterConfig.h" />
     <!-- FIXME replace with correct file first entry is not anymore -->
@@ -85,7 +85,16 @@
         <ItemGroup Condition="'$(FEATURE_I2C)' != 'True'">
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_I2C\dotNetMF.proj" />
         </ItemGroup>        
-        
+      
+        <!-- CPU Cache -->
+        <Message Condition="'$(FEATURE_CPUCACHE)' == 'True'" Text="HAL SPI: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_CPUCACHE)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_CPUCACHE" />
+        </ItemGroup>        
+        <ItemGroup Condition="'$(FEATURE_CPUCACHE)' != 'True'">
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
+        </ItemGroup>
+       
     </Target>
 
     <ItemGroup>
