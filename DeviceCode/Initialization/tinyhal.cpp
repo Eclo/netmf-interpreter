@@ -87,11 +87,11 @@ void HAL_EnterBooterMode()
                     {
 
                         // will be either directly read from  NOR
-#ifdef FEATURE_CPUCACHE            
+                    #ifdef FEATURE_CPUCACHE            
                         dataAddress = (volatile UINT32*)CPU_GetUncachableAddress(&pAddr[i]);
-#else
+                    #else
                         dataAddress = (volatile UINT32*)&pAddr[i];
-#endif                        
+                    #endif                        
 
                         // write directly
                         bRet = (TRUE == pBlockDevice->Write( (UINT32)dataAddress, sizeof(UINT32), (PBYTE)&c_Key, FALSE ));
@@ -377,45 +377,44 @@ __attribute__((weak)) int main(void)
         
         /* Configure the system clock */
         SystemClock_Config();
-        
-CPU_USB_Initialize(0);
-        
+               
         HAL_Time_Initialize();
 
         HAL_Initialize();
 
-    #if !defined(BUILD_RTM) 
-        DEBUG_TRACE4( STREAM_LCD, ".NetMF v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
-        DEBUG_TRACE3(TRACE_ALWAYS, "%s, Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__);
-    #if defined(__GNUC__)
-        DEBUG_TRACE1(TRACE_ALWAYS, "GNU Compiler version %d\r\n", __GNUC__);
-    #else
-        DEBUG_TRACE1(TRACE_ALWAYS, "ARM Compiler version %d\r\n", __ARMCC_VERSION);
-    #endif
+        #if !defined(BUILD_RTM) 
+            //DEBUG_TRACE4( STREAM_LCD, ".NetMF v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
+            //DEBUG_TRACE3(TRACE_ALWAYS, "%s, Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__);
+            
+            #if defined(__GNUC__)
+                //DEBUG_TRACE1(TRACE_ALWAYS, "GNU Compiler version %d\r\n", __GNUC__);
+            #else
+                //DEBUG_TRACE1(TRACE_ALWAYS, "ARM Compiler version %d\r\n", __ARMCC_VERSION);
+            #endif
 
-        UINT8* BaseAddress;
-        UINT32 SizeInBytes;
+            UINT8* BaseAddress;
+            UINT32 SizeInBytes;
 
-        HeapLocation( BaseAddress,    SizeInBytes );
-        memset      ( BaseAddress, 0, SizeInBytes );
+            HeapLocation( BaseAddress,    SizeInBytes );
+            memset      ( BaseAddress, 0, SizeInBytes );
 
-        #ifdef FEATURE_LCD
-        lcd_printf("\f");
-    
-        lcd_printf("%-15s\r\n", HalName);
-        lcd_printf("%-15s\r\n", "Build Date:");
-        lcd_printf("  %-13s\r\n", __DATE__);
-        lcd_printf("  %-13s\r\n", __TIME__);
-        #endif
+            #ifdef FEATURE_LCD
+                lcd_printf("\f");
+            
+                lcd_printf("%-15s\r\n", HalName);
+                lcd_printf("%-15s\r\n", "Build Date:");
+                lcd_printf("  %-13s\r\n", __DATE__);
+                lcd_printf("  %-13s\r\n", __TIME__);
+            #endif
 
-    #endif  // !defined(BUILD_RTM)
+        #endif  // !defined(BUILD_RTM)
 
         /***********************************************************************************/
 
         {
-    #if defined(FIQ_SAMPLING_PROFILER)
-            FIQ_Profiler_Init();
-    #endif
+            #if defined(FIQ_SAMPLING_PROFILER)
+                    FIQ_Profiler_Init();
+            #endif
         }
 
         // 
@@ -429,17 +428,17 @@ CPU_USB_Initialize(0);
         // CMSIS & NETMF HALs initialization completed.  Interrupts are enabled.  Jump to the Application routine
         ApplicationEntryPoint();
 
-    #ifdef FEATURE_LCD
-        lcd_printf("\fmain exited!!???.  Halting CPU\r\n");
-    #endif    
+        #ifdef FEATURE_LCD
+            lcd_printf("\fmain exited!!???.  Halting CPU\r\n");
+        #endif    
         //debug_printf("main exited!!???.  Halting CPU\r\n");        
     }    
 
-#if defined(BUILD_RTM)
-    CPU_Reset();
-#else
-    CPU_Halt();
-#endif
+    #if defined(BUILD_RTM)
+        CPU_Reset();
+    #else
+        CPU_Halt();
+    #endif
 }
 
 } // extern "C"
@@ -447,9 +446,6 @@ CPU_USB_Initialize(0);
 //--//
 
 #if !defined(BUILD_RTM)
-
-#ifdef FEATURE_LCD
-void lcd_printf( const char* format, ... );
 
 void debug_printf( const char* format, ... )
 {
@@ -470,6 +466,9 @@ void debug_printf( const char* format, ... )
     va_end( arg_ptr );
 }
 
+#ifdef FEATURE_LCD
+void lcd_printf( const char* format, ... );
+
 void lcd_printf( const char* format, ... )
 {
     va_list arg_ptr;
@@ -479,4 +478,5 @@ void lcd_printf( const char* format, ... )
     hal_vfprintf( STREAM_LCD, format, arg_ptr );
 }
 #endif  // !defined(FEATURE_LCD)
+
 #endif  // !defined(BUILD_RTM)
