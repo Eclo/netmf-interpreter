@@ -46,6 +46,10 @@
         <DriverLibs Condition="'$(FEATURE_SPI)' != 'True'" Include="cpu_spi_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="CMSIS_I2C.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="cpu_i2c_stubs.$(LIB_EXT)" />        
+        <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="CMSIS_USART.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="usart_pal.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="cpu_usart_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="usart_pal_stubs.$(LIB_EXT)" />
 
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
 
@@ -102,10 +106,6 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_time\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="STM32F4_USART.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_USART\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="STM32F4_USB.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_USB\dotNetMF.proj" />
     </ItemGroup>
@@ -136,10 +136,6 @@
     <ItemGroup>
         <DriverLibs Include="DebuggerPort_SSL_Config_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Config\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="usart_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="usb_pal.$(LIB_EXT)" />

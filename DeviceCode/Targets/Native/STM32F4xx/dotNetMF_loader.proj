@@ -129,6 +129,18 @@
         <ItemGroup Condition="'$(FEATURE_I2C)' != 'True'">
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_I2C\dotNetMF.proj" />
         </ItemGroup>
+        
+        <!-- USART -->
+        <Message Condition="'$(FEATURE_USART)' == 'True'" Text="HAL USART: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_USART)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_USART" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USART\dotNetMF.proj" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(FEATURE_USART)' != 'True'">
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\processor\stubs_USART\dotNetMF.proj" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />
+        </ItemGroup>        
      
         <!-- CPU Cache -->
         <Message Condition="'$(FEATURE_CPUCACHE)' == 'True'" Text="HAL SPI: included" Importance="High"/>
@@ -138,7 +150,7 @@
         <ItemGroup Condition="'$(FEATURE_CPUCACHE)' != 'True'">
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
         </ItemGroup>
-                
+
     </Target>
     
   <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Targets" />
