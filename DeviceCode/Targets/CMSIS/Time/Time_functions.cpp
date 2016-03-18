@@ -304,7 +304,7 @@ UINT64 CPU_TicksToTime(UINT32 ticks32)
     return (UINT64)ticks32 * 10;
 }
 
-// must add pragma/section here otherwise the linker doesn't replace the weak declaration for it that is in startup  
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
 extern "C" void TIM2_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&masterTimerHandle);
