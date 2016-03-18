@@ -39,7 +39,6 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern PCD_HandleTypeDef hpcd;
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
@@ -150,40 +149,13 @@ __weak void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
-// defined as weak so it can be overriden at the solution  
+// defined as weak so it can be overriden at the solution
 __weak void SysTick_Handler(void)
 {
-  HAL_IncTick();
-  
-  /* Call user callback */
-  HAL_SYSTICK_IRQHandler();
-  
+    // required to provide accurate timming for HAL
+    // the following call ensures a milliseconds timming 
+    HAL_IncTick();
+    HAL_SYSTICK_IRQHandler();
 }
 
-/******************************************************************************/
-/*                 STM32F4xx Peripherals Interrupt Handlers                   */
-/*  Add here the Interrupt Handler for the used peripheral(s) , for the  */
-/*  available peripheral interrupt handler's name please refer to the startup */
-/*  file (startup_stm32f407xx.s).                                               */
-/******************************************************************************/
-
-/**
-  * @brief  This function handles External line 0 interrupt request.
-  * @param  None
-  * @retval None
-  */
-void EXTI0_IRQHandler(void)
-{
-  //HAL_GPIO_EXTI_IRQHandler(KEY_BUTTON_PIN);
-}
-
-/**
-  * @brief  This function handles USB-On-The-Go FS/HS global interrupt request.
-  * @param  None
-  * @retval None
-  */
-void OTG_FS_IRQHandler(void)
-{
-  HAL_PCD_IRQHandler(&hpcd);
-}
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

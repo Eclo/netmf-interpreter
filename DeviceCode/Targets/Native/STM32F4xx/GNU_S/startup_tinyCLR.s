@@ -59,6 +59,7 @@
     .global CustomHeapEnd
     .global __initial_sp
 
+.external FAULT_SubHandler
 
 /* start address for the initialization values of the .data section. 
 defined in linker script */
@@ -303,19 +304,19 @@ ARM_Vectors:
 * 
 *******************************************************************************/
    .weak      NMI_Handler
-   .thumb_set NMI_Handler,Default_Handler
+   .thumb_set NMI_Handler,FAULT_SubHandler
   
    .weak      HardFault_Handler
-   .thumb_set HardFault_Handler,Default_Handler
+   .thumb_set HardFault_Handler,FAULT_SubHandler
   
    .weak      MemManage_Handler
    .thumb_set MemManage_Handler,Default_Handler
   
-   .weak      BusFault_Handler
-   .thumb_set BusFault_Handler,Default_Handler
+   /*.weak      BusFault_Handler
+   .thumb_set BusFault_Handler,Default_Handler*/
 
-   .weak      UsageFault_Handler
-   .thumb_set UsageFault_Handler,Default_Handler
+   /*.weak      UsageFault_Handler
+   .thumb_set UsageFault_Handler,Default_Handler*/
 
    .weak      SVC_Handler
    .thumb_set SVC_Handler,Default_Handler
@@ -326,8 +327,9 @@ ARM_Vectors:
    .weak      PendSV_Handler
    .thumb_set PendSV_Handler,Default_Handler
 
-   .weak      SysTick_Handler
-   .thumb_set SysTick_Handler,Default_Handler              
+   /* implemented at Int_Handlers.c */
+   /*.weak      SysTick_Handler
+   .thumb_set SysTick_Handler,Default_Handler*/
   
    .weak      WWDG_IRQHandler                   
    .thumb_set WWDG_IRQHandler,Default_Handler      
@@ -413,8 +415,9 @@ ARM_Vectors:
    .weak      TIM1_CC_IRQHandler   
    .thumb_set TIM1_CC_IRQHandler,Default_Handler
                   
-   .weak      TIM2_IRQHandler            
-   .thumb_set TIM2_IRQHandler,Default_Handler
+   /* implemented at Time_functions.cpp */
+   /*.weak      TIM2_IRQHandler            
+   .thumb_set TIM2_IRQHandler,Default_Handler*/
                   
    .weak      TIM3_IRQHandler            
    .thumb_set TIM3_IRQHandler,Default_Handler

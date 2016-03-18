@@ -80,13 +80,4 @@ void SystemClock_Config(void)
     {
         while(1) { ; }
     }
-    
-    HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_PLLCLK, RCC_MCODIV_4);
-
-    HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
-
-    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-    /* SysTick_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
 }
