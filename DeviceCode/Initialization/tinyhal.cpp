@@ -374,10 +374,16 @@ __attribute__((weak)) int main(void)
     */
     if(HAL_Init() == HAL_OK)
     {
-        
+        // debug enable options
+        #if !defined(BUILD_RTM)     
+            HAL_DBGMCU_EnableDBGSleepMode();
+            HAL_DBGMCU_EnableDBGStopMode();
+            HAL_DBGMCU_EnableDBGStandbyMode();
+        #endif
+                
         /* Configure the system clock */
         SystemClock_Config();
-               
+
         HAL_Time_Initialize();
 
         HAL_Initialize();
