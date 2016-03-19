@@ -77,31 +77,14 @@
         <DriverLibs Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="Buttons_pal_stubs.$(LIB_EXT)" />
         <RequiredProjects Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
 
-
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="cpu_ebiu_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_EBIU\dotNetMF.proj" />
-    </ItemGroup>
+        <DriverLibs Include="CMSIS_power_loader.$(LIB_EXT)" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Power\dotNetMF_loader.proj" />
+    </ItemGroup>    
     <ItemGroup>
-        <DriverLibs Include="STM32F4_INTC.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_INTC\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="cpu_mmu_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_MMU\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_Power.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_power\dotNetMF.proj" />
-    </ItemGroup>
-    <!--<ItemGroup>
         <DriverLibs Include="CMSIS_time.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Time\dotNetMF.proj" />
-    </ItemGroup>-->
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_time.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_time\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="CMSIS_USB.$(LIB_EXT)" />

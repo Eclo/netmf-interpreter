@@ -387,7 +387,14 @@ __attribute__((weak)) int main(void)
         HAL_Time_Initialize();
 
         HAL_Initialize();
-
+  
+        // check if system is waking-up from STANDBY power mode 
+        if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+        {
+            // TODO
+            // we may want to handle this to pass it somehow to the NETMF API
+        }
+        
         #if !defined(BUILD_RTM) 
             //DEBUG_TRACE4( STREAM_LCD, ".NetMF v%d.%d.%d.%d\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, VERSION_REVISION);
             //DEBUG_TRACE3(TRACE_ALWAYS, "%s, Build Date:\r\n\t%s %s\r\n", HalName, __DATE__, __TIME__);

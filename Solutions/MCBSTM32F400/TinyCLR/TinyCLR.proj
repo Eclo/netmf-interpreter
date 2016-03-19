@@ -189,9 +189,9 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Bootstrap\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="STM32F4_Power.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_power\dotNetMF.proj" />
-    </ItemGroup>
+        <DriverLibs Include="CMSIS_power.$(LIB_EXT)" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Power\dotNetMF.proj" />
+    </ItemGroup>   
     <ItemGroup>
         <DriverLibs Include="STM32F4_time.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_time\dotNetMF.proj" />
