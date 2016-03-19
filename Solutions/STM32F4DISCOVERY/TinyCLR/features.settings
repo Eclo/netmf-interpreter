@@ -13,11 +13,8 @@
         <FEATURE_SPI>False</FEATURE_SPI>
         <FEATURE_I2C>False</FEATURE_I2C>
         <FEATURE_USART>True</FEATURE_USART>
-<<<<<<< Updated upstream
 
         <FEATURE_CPUCACHE>False</FEATURE_CPUCACHE>
-=======
->>>>>>> Stashed changes
 
         <FEATURE_LCD>False</FEATURE_LCD>
         <FEATURE_BACKLIGHT>False</FEATURE_BACKLIGHT>
