@@ -92,18 +92,3 @@
 //
 // communicaiton facilities
 /////////////////////////////////////////////////////////
-
-// // disable conflicting and overly generic macro definitions
-//#undef FLASH
-//#undef CRC
-// #undef HASH
-
-// CMSIS-Core SOC Specific header
-//#include "stm32f4xx_hal.h"
-
-// // disable conflicting and overly generic macro definitions
-//#undef FLASH
-//#undef CRC
-//#undef __FPU_PRESENT
-// #undef HASH
-// #endif
