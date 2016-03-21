@@ -32,7 +32,6 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "Int_Handlers.h"
 
 /* USER CODE BEGIN 0 */
 
