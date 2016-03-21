@@ -10,7 +10,7 @@
         <LibraryFile>CMSIS_time.$(LIB_EXT)</LibraryFile>
         <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Time\dotNetMF.proj</ProjectPath>
         <ManifestFile>CMSIS_time.$(LIB_EXT).manifest</ManifestFile>
-        <Groups>Processor\STM32F4</Groups>
+        <Groups></Groups>
         <Documentation>
         </Documentation>
         <PlatformIndependent>False</PlatformIndependent>
