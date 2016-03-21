@@ -5,7 +5,7 @@
 //  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 //
 //  Copyright (c) Microsoft Corporation. All rights reserved.
-//  Implementation for STM32F4: Copyright (c) Eclo Solutions Lda.
+//  Implementation for CMSIS: Copyright (c) Eclo Solutions Lda.
 //
 //  *** System Timer Driver ***
 //
