@@ -588,6 +588,53 @@ void DisableUSARTInt(int comPortNum)
     #endif
 }
 
+uint32_t GetUSARTInterruptEnableState(int comPortNum)
+{
+    if(g_Uart_Ports[comPortNum] == USART1)
+    {
+        return HAL_NVIC_GetActive(USART1_IRQn);
+    }
+    #ifdef USART2
+    else if(g_Uart_Ports[comPortNum] == USART2)
+    {
+        return HAL_NVIC_GetActive(USART2_IRQn);
+    }
+    #endif
+    #ifdef USART3
+    else if(g_Uart_Ports[comPortNum] == USART3)
+    {
+        return HAL_NVIC_GetActive(USART3_IRQn);
+    }
+    #endif
+    #ifdef UART4
+    else if(g_Uart_Ports[comPortNum] == UART4)
+    {
+        return HAL_NVIC_GetActive(UART4_IRQn);
+    }
+    #endif
+    #ifdef USART6
+    else if(g_Uart_Ports[comPortNum] == USART6)
+    {
+        return HAL_NVIC_GetActive(USART6_IRQn);
+    }
+    #endif
+    #ifdef UART7
+    else if(g_Uart_Ports[comPortNum] == UART7)
+    {
+        return HAL_NVIC_GetActive(UART7_IRQn);
+    }
+    #endif
+    #ifdef UART8
+    else if(g_Uart_Ports[comPortNum] == UART8)
+    {
+        return HAL_NVIC_GetActive(UART8_IRQn);
+    }
+    #endif
+    
+    // shouldn't reach here
+    return -1;
+}
+
 /**
   * @brief UART MSP Initialization 
   *        This function configures the hardware resources used:
