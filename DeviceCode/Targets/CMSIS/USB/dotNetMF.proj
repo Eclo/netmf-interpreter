@@ -28,7 +28,7 @@
 
     <ItemGroup>
         <!-- implementation of WinUSB and HAL driver -->
-        <Compile Include="usb_functions.cpp"/>
+        <Compile Include="USB_functions.cpp"/>
         <Compile Include="usbd_winusb.cpp"/>
         <Compile Include="usb_conf.cpp"/>
         <Compile Include="usbd_desc.cpp"/>
