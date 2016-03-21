@@ -80,6 +80,7 @@
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="cpu_usart_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="usart_pal_stubs.$(LIB_EXT)" />
 
+        <DriverLibs Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Include="CMSIS_Flash.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
         
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
@@ -219,10 +220,6 @@
     <ItemGroup>
         <PlatformIndependentLibs Include="Graphics_stub.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Graphics\dotNetMF_stub.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_Flash.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Flash\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="STM32F4_USB.$(LIB_EXT)" />

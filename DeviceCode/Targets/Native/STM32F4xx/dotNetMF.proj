@@ -99,7 +99,14 @@
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\processor\stubs_USART\dotNetMF.proj" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />
         </ItemGroup>
-      
+          
+        <!-- Cortex-M internal FLASH -->
+        <Message Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Text="Cortex-M Flash: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_CORTEX_FLASH" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Flash\dotNetMF.proj" />
+        </ItemGroup>
+              
         <!-- CPU Cache -->
         <Message Condition="'$(FEATURE_CPUCACHE)' == 'True'" Text="HAL SPI: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CPUCACHE)' == 'True'">
