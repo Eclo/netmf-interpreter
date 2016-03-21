@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="BeforeBuild" DefaultTargets="Build">
     <PropertyGroup>
         <Directory>Solutions\MCBSTM32F400</Directory>
-        <SolutionRoot>$(SPOCLIENT)\Solutions\STM32F4DISCOVERY</SolutionRoot>
+        <SolutionRoot>$(SPOCLIENT)\Solutions\MCBSTM32F400</SolutionRoot>
         <MFSettingsFile>$(SPOCLIENT)\Solutions\MCBSTM32F400\MCBSTM32F400.settings</MFSettingsFile>
     </PropertyGroup>
     <ItemGroup>
