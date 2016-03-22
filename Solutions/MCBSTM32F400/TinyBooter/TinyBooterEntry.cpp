@@ -17,6 +17,9 @@
 #define BUTTON_ENTR     BUTTON_B4
 #define BUTTON_USER_IDX BUTTON_B5_BITIDX
 
+extern GenericPortTableEntry const Itm0GenericPort;
+extern GenericPortTableEntry const* const g_GenericPorts[TOTAL_GENERIC_PORTS] = { &Itm0GenericPort };
+
 ////////////////////////////////////////////////////////////////////////////////
 //  Tinybooter_ProgramWordCheck
 //

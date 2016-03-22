@@ -180,10 +180,6 @@
         <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\Blockstorage\addDevices\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="IO_Init_STM32F4DISCOVERY.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\Init\dotnetmf.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="usb_pal_config_STM32F4DISCOVERY.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\USB\dotnetmf.proj" />
     </ItemGroup>

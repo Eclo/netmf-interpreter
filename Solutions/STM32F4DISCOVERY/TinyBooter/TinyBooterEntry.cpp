@@ -14,6 +14,9 @@
 #include <tinyhal.h>
 #include <TinyBooterEntry.h>
 
+extern GenericPortTableEntry const Itm0GenericPort;
+extern GenericPortTableEntry const* const g_GenericPorts[TOTAL_GENERIC_PORTS] = { &Itm0GenericPort };
+
 ////////////////////////////////////////////////////////////////////////////////
 //  Tinybooter_ProgramWordCheck
 //
