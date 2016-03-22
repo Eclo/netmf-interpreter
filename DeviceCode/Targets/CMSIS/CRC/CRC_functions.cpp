@@ -13,9 +13,14 @@
 
 #include <tinyhal.h>
 
-UINT32 SUPPORT_ComputeCRC( const void* rgBlock ,
-                           int         nLength ,
-                           UINT32      crc     )
+/*
+    Interface to Cortex-M CRC calculation unit that implements the equivalent to the software implementation in Support\CRC project.
+    CRC-32 (Ethernet) polynomial: 0x4C11DB7.
+    rgBlock: pointer to the region block to be CRCed
+    nLength: lenght of rgBlock to compute CRC
+    crc: previous CRC value to start CRC computing
+*/
+UINT32 SUPPORT_ComputeCRC(const void* rgBlock, int nLength, UINT32 crc)
 {
     CRC_HandleTypeDef hcrc;
     uint32_t index = 0U;
