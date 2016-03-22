@@ -66,6 +66,7 @@
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="Watchdog_pal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_SOCKETS)' != 'True'" Include="sockets_pal_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_SOCKETS)' != 'True'" Include="DebuggerPort_SSL_Config_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="TimeService_pal.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="timeservice_hal_generic.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' != 'True'" Include="TimeService_pal_stubs.$(LIB_EXT)" />
@@ -86,20 +87,39 @@
         <DriverLibs Include="CMSIS_power_loader.$(LIB_EXT)" />
         <DriverLibs Include="CMSIS_time.$(LIB_EXT)" />
         <DriverLibs Include="Time_pal.$(LIB_EXT)" />
-  
+        <DriverLibs Include="system_initialization_hal_loader.$(LIB_EXT)" />
+        <DriverLibs Include="asyncproccall_pal.$(LIB_EXT)" />
+        <DriverLibs Include="blockstorage_pal.$(LIB_EXT)" />
+        <DriverLibs Include="COM_pal.$(LIB_EXT)" />
+        <DriverLibs Include="config_pal_loader.$(LIB_EXT)" />
+        <DriverLibs Include="heap_pal.$(LIB_EXT)" />
+        <DriverLibs Include="tinycrt_pal_loader.$(LIB_EXT)" />
+        <DriverLibs Include="events_pal.$(LIB_EXT)" />
+        <PlatformIndependentLibs Include="WireProtocol.$(LIB_EXT)" />
+
     </ItemGroup>
     
-    <!-- HAL/PAL mandatory features -->
+    <!-- HAL/PAL mandatory features projects -->
     <ItemGroup>
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Time\dotNetMF.proj" />        
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Time\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Initialization\dotNetMF_loader.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\AsyncProcCall\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\BlockStorage\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Configuration\dotNetMF_loader.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Heap\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\devicecode\pal\TinyCRT\dotNetMF_loader.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Events\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Config\dotNetMF.proj" />
     </ItemGroup>
 
-    <!-- Core features here -->
+    <!-- Core features projects here -->
     <ItemGroup>
         <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
     </ItemGroup>
 
-    <!-- PAL features here -->
+    <!-- PAL features projects here -->
     <ItemGroup>
         <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\dotNetMF.proj" />
         <RequiredProjects Condition="'$(FEATURE_USART)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
@@ -108,7 +128,7 @@
         <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
     </ItemGroup>
     
-    <!-- All PAL stubs go here -->
+    <!-- All PAL stubs projects here -->
     <ItemGroup>
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Piezo\stubs\dotNetMF.proj" />
@@ -120,6 +140,7 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Sockets\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\stubs\dotNetMF.proj" />
+       
     </ItemGroup>
    
     <ItemGroup>
@@ -127,56 +148,18 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USB\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="system_initialization_hal_loader.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Initialization\dotNetMF_loader.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="asyncproccall_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\AsyncProcCall\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="blockstorage_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\BlockStorage\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="COM_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="DebuggerPort_SSL_Config_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Config\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="usb_cmsis_pal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USB_CMSIS\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="config_pal_loader.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Configuration\dotNetMF_loader.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="heap_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Heap\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="tinycrt_pal_loader.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\devicecode\pal\TinyCRT\dotNetMF_loader.proj" />
     </ItemGroup>
     <ItemGroup>
         <PlatformIndependentLibs Include="CRC.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <PlatformIndependentLibs Include="WireProtocol.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="palevent_pal_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\palevent\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="events_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Events\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="diagnostics_pal.$(LIB_EXT)" Condition="'$(FLAVOR)'=='Instrumented'" />
