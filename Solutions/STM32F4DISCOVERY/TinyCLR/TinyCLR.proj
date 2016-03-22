@@ -95,31 +95,19 @@
         <DriverLibs Condition="'$(FEATURE_SOCKETS)' == 'True'" Include="sockets_pal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_SOCKETS)' != 'True'" Include="sockets_pal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="TimeService_pal.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="timeservice_hal_generic.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' != 'True'" Include="TimeService_pal_stubs.$(LIB_EXT)" />
    
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="cpu_LCD_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_lcd\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_BACKLIGHT)' != 'True'" Include="backlight_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_BACKLIGHT)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Backlight\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_PIEZO)' != 'True'" Include="piezo_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_PIEZO)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\Piezo\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_CHARGER)' != 'True'" Include="batterycharger_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_CHARGER)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryCharger\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_BATTERY)' != 'True'" Include="batterymeasurement_hal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_BATTERY)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryMeasurement\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_GESTURE)' != 'True'" Include="Gesture_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_GESTURE)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\Gesture\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_FS)' != 'True'" Include="fs_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_FS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\fs\stubs\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_FS)' != 'True'" Include="FS_Config_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_FS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\FS\stubs\config\dotnetmf.proj" />
         <DriverLibs Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="Buttons_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
         
         <!-- Mandatory features -->
         <DriverLibs Include="CMSIS_power.$(LIB_EXT)" />
@@ -132,7 +120,21 @@
     <ItemGroup>
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Time\dotNetMF.proj" />        
     </ItemGroup>
-       
+    
+    <!-- Core features here -->
+    <ItemGroup>
+        <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
+    </ItemGroup>
+
+    <!-- PAL features here -->
+    <ItemGroup>
+        <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_USART)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\dotNetMF.proj" />        
+        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
+    </ItemGroup>
+ 
     <!-- All PAL stubs go here -->
     <ItemGroup>
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />

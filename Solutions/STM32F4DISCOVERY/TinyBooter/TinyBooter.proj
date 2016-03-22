@@ -67,9 +67,7 @@
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="Watchdog_pal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_SOCKETS)' != 'True'" Include="sockets_pal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="TimeService_pal.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="timeservice_hal_generic.$(LIB_EXT)" />
-        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' != 'True'" Include="TimeService_pal_stubs.$(LIB_EXT)" />
         
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
@@ -94,6 +92,20 @@
     <!-- HAL/PAL mandatory features -->
     <ItemGroup>
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Time\dotNetMF.proj" />        
+    </ItemGroup>
+
+    <!-- Core features here -->
+    <ItemGroup>
+        <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
+    </ItemGroup>
+
+    <!-- PAL features here -->
+    <ItemGroup>
+        <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_USART)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\dotNetMF.proj" />        
+        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
     </ItemGroup>
     
     <!-- All PAL stubs go here -->

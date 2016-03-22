@@ -74,8 +74,6 @@
         <ItemGroup Condition="'$(FEATURE_I2C)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_I2C" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\I2C\dotNetMF.proj" />
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\dotNetMF.proj" />
-            <RequiredProjects Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
         </ItemGroup>     
         
         <!-- USART -->
@@ -83,7 +81,6 @@
         <ItemGroup Condition="'$(FEATURE_USART)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_USART" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USART\dotNetMF.proj" />
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- Analog (ADC) -->
@@ -124,9 +121,6 @@
         <Message Condition="'$(FEATURE_WATCHDOG)' == 'True'" Text="Watchdog: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_WATCHDOG)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_WATCHDOG" />
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\dotNetMF.proj" />
-            <!-- NOT IMPLEMENTED -->
-            <!--<RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />-->
         </ItemGroup>
 
         <!-- Sockets -->
