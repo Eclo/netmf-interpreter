@@ -85,7 +85,14 @@
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USART\dotNetMF.proj" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
         </ItemGroup>
-          
+        
+        <!-- Analog (ADC) -->
+        <Message Condition="'$(FEATURE_ANALOG)' == 'True'" Text="HAL Analog (ADC): included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_ANALOG)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_ANALOG" />
+            <RequiredProjects Include="$(FEATURE_ANALOG)\DeviceCode\Targets\CMSIS\Analog\dotNetMF.proj" />
+        </ItemGroup>
+                  
         <!-- Cortex-M internal FLASH -->
         <Message Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Text="Cortex-M Flash: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'">
@@ -122,6 +129,7 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_SPI\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_I2C\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\processor\stubs_USART\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_analog\dotNetMF.proj" />        
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_lcd\dotNetMF.proj" />

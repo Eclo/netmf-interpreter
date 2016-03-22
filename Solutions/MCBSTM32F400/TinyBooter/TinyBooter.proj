@@ -50,7 +50,9 @@
         <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="usart_pal.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="cpu_usart_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="usart_pal_stubs.$(LIB_EXT)" />
-
+        <DriverLibs Condition="'$(FEATURE_ANALOG)' == 'True'" Include="CMSIS_Analog.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_ANALOG)' != 'True'" Include="cpu_analog_stubs.$(LIB_EXT)" />
+        
         <DriverLibs Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Include="CMSIS_Flash.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
@@ -200,10 +202,6 @@
     <ItemGroup>
         <DriverLibs Include="diagnostics_pal.$(LIB_EXT)" Condition="'$(FLAVOR)'=='Instrumented'" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Diagnostics\dotNetMF.proj" Condition="'$(FLAVOR)'=='Instrumented'" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="cpu_analog_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_analog\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="cpu_pwm_stubs.$(LIB_EXT)" />

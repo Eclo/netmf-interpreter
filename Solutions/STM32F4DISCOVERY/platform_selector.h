@@ -58,15 +58,15 @@
 #define SYSTEM_APB1_CLOCK_HZ             42000000   //  42 MHz
 #define SYSTEM_APB2_CLOCK_HZ             84000000   //  84 MHz
 
-#define SYSTEM_CRYSTAL_CLOCK_HZ           8000000   // 8 MHz external clock
+//#define SYSTEM_CRYSTAL_CLOCK_HZ           8000000   // 8 MHz external clock
 
-#define SUPPLY_VOLTAGE_MV                    3300   // 3.3V supply
+//#define SUPPLY_VOLTAGE_MV                    3300   // 3.3V supply
 
-#define CLOCK_COMMON_FACTOR               1000000   // GCD(SYSTEM_CLOCK_HZ, 1M)
+//#define CLOCK_COMMON_FACTOR               1000000   // GCD(SYSTEM_CLOCK_HZ, 1M)
 
 #define SLOW_CLOCKS_PER_SECOND            1000000   // 1 MHz
-#define SLOW_CLOCKS_TEN_MHZ_GCD           1000000   // GCD(SLOW_CLOCKS_PER_SECOND, 10M)
-#define SLOW_CLOCKS_MILLISECOND_GCD          1000   // GCD(SLOW_CLOCKS_PER_SECOND, 1k)
+// #define SLOW_CLOCKS_TEN_MHZ_GCD           1000000   // GCD(SLOW_CLOCKS_PER_SECOND, 10M)
+// #define SLOW_CLOCKS_MILLISECOND_GCD          1000   // GCD(SLOW_CLOCKS_PER_SECOND, 1k)
 
 #define FLASH_MEMORY_Base               0x08000000
 #define FLASH_MEMORY_Size               0x00100000
@@ -100,8 +100,16 @@
 #define USB_MAX_QUEUES                  4  // 4 endpoints (EP0 + 3)
 
 // System Timer Configuration
-#define STM32F4_32B_TIMER 2
-#define STM32F4_16B_TIMER 3
+// #define HAL_32B_TIMER 2
+// #define HAL_16B_TIMER 3
+
+/* Choose if wake-up from STOP mode is in fast mode or not.
+This selects which regulator is on during stop mode.
+By keeping the internal regulator ON during Stop mode, the consumption 
+is higher although the startup time is reduced.  
+When the voltage regulator operates in low power mode, an additional 
+startup delay is incurred when waking up from Stop mode. */
+//#define FAST_WAKEUP_FROM_STOP
 
 // Pin Configuration
 #define STM32F4_ADC 3

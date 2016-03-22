@@ -79,7 +79,9 @@
         <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="usart_pal.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="cpu_usart_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="usart_pal_stubs.$(LIB_EXT)" />
-
+        <DriverLibs Condition="'$(FEATURE_ANALOG)' == 'True'" Include="CMSIS_Analog.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_ANALOG)' != 'True'" Include="cpu_analog_stubs.$(LIB_EXT)" />
+        
         <DriverLibs Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Include="CMSIS_Flash.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
@@ -243,10 +245,6 @@
     <ItemGroup>
         <DriverLibs Include="STM32F4_PWM.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_PWM\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_Analog.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Analog\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="STM32F4_DA.$(LIB_EXT)" />
