@@ -128,7 +128,13 @@
             <!-- NOT IMPLEMENTED -->
             <!--<RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />-->
         </ItemGroup>
-        
+
+        <!-- Sockets -->
+        <Message Condition="'$(FEATURE_SOCKETS)' == 'True'" Text="Sockets: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_SOCKETS)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_SOCKETS" />
+        </ItemGroup>
+
     </Target>
 
     <!-- HAL mandatory features -->
