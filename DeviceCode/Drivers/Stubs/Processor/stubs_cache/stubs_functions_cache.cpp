@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <tinyhal.h>
 #include <stdio.h>
 
 //--//
@@ -28,11 +29,11 @@ __weak void CPU_DisableCaches()
 
 //--//
 
-__weak template <typename T> void CPU_InvalidateAddress( T* address )
+template <typename T> void CPU_InvalidateAddress( T* address )
 {
 }
 
-__weak template <typename T> void CPU_InvalidateAddress( volatile T* address )
+template <typename T> void CPU_InvalidateAddress( volatile T* address )
 {
 }
 
