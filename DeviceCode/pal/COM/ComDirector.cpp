@@ -9,8 +9,10 @@ BOOL DebuggerPort_Initialize( COM_HANDLE ComPortNum )
     NATIVE_PROFILE_PAL_COM();
     switch(ExtractTransport(ComPortNum))
     {
+    #ifdef FEATURE_USART
         case USART_TRANSPORT:
             return USART_Initialize( ConvertCOM_ComPort(ComPortNum), HalSystemConfig.USART_DefaultBaudRate, USART_PARITY_NONE, 8, USART_STOP_BITS_ONE, USART_FLOW_NONE );
+    #endif
 
         case USB_TRANSPORT:
             if(USB_CONFIG_ERR_OK != USB_Configure( ConvertCOM_UsbController(ComPortNum), NULL ))
@@ -38,8 +40,10 @@ BOOL DebuggerPort_Uninitialize( COM_HANDLE ComPortNum )
     NATIVE_PROFILE_PAL_COM();
     switch(ExtractTransport(ComPortNum))
     {
+    #ifdef FEATURE_USART        
         case USART_TRANSPORT:
             return USART_Uninitialize( ConvertCOM_ComPort(ComPortNum) );
+    #endif
 
         case USB_TRANSPORT:
             USB_CloseStream( ConvertCOM_UsbStream(ComPortNum) );
@@ -72,9 +76,11 @@ int DebuggerPort_Write( COM_HANDLE ComPortNum, const char* Data, size_t size, in
         
         switch(transport)
         {
+        #ifdef FEATURE_USART            
             case USART_TRANSPORT:
                 ret = USART_Write( ConvertCOM_ComPort( ComPortNum ), dataTmp, size );
                 break;
+        #endif        
                 
             case USB_TRANSPORT:
                 ret = USB_Write( ConvertCOM_UsbStream( ComPortNum ), dataTmp, size );
@@ -125,9 +131,11 @@ int DebuggerPort_Read( COM_HANDLE ComPortNum, char* Data, size_t size )
 
     switch(ExtractTransport(ComPortNum))
     {
+    #ifdef FEATURE_USART        
         case USART_TRANSPORT:
             ret = USART_Read( ConvertCOM_ComPort( ComPortNum ), Data, size );
             break;
+    #endif
 
         case USB_TRANSPORT:
             ret = USB_Read( ConvertCOM_UsbStream( ComPortNum ), Data, size );
@@ -152,8 +160,10 @@ BOOL DebuggerPort_Flush( COM_HANDLE ComPortNum )
     NATIVE_PROFILE_PAL_COM();
     switch( ExtractTransport( ComPortNum ) )
     {
+    #ifdef FEATURE_USART        
         case USART_TRANSPORT:
             return USART_Flush( ConvertCOM_ComPort( ComPortNum ) );
+    #endif
 
         case USB_TRANSPORT:
             return USB_Flush( ConvertCOM_UsbStream( ComPortNum ) );
@@ -182,8 +192,10 @@ BOOL DebuggerPort_IsSslSupported( COM_HANDLE ComPortNum )
 
         case GENERIC_TRANSPORT:
             return GenericPort_IsSslSupported( ConvertCOM_GenericPort( ComPortNum ) );
-            
+
+    #ifdef FEATURE_USART            
         case USART_TRANSPORT:
+    #endif        
         case USB_TRANSPORT:
         default:
             break;
@@ -249,9 +261,11 @@ void InitializePort( COM_HANDLE ComPortNum )
 {
     switch(ExtractTransport(ComPortNum))
     {
+    #ifdef FEATURE_USART        
         case USART_TRANSPORT:
             USART_Initialize( ConvertCOM_ComPort( ComPortNum ), HalSystemConfig.USART_DefaultBaudRate, USART_PARITY_NONE, 8, USART_STOP_BITS_ONE, USART_FLOW_NONE );
             break;
+    #endif
 
         case USB_TRANSPORT:
             USB_Initialize( ConvertCOM_UsbStream( ComPortNum ) );
@@ -273,9 +287,11 @@ void UninitializePort( COM_HANDLE ComPortNum )
 {
     switch(ExtractTransport(ComPortNum))
     {
+    #ifdef FEATURE_USART        
         case USART_TRANSPORT:
             USART_Uninitialize( ConvertCOM_ComPort( ComPortNum ) );
             break;
+    #endif
 
         case USB_TRANSPORT:
             if(USB_CONFIG_ERR_OK == USB_Configure( ConvertCOM_UsbController(ComPortNum), NULL ))
@@ -344,18 +360,20 @@ void CPU_ProtectCommunicationGPIOs( BOOL On )
 
     switch(ExtractTransport(HalSystemConfig.DebugTextPort))
     {
-    case USART_TRANSPORT:
-        CPU_USART_ProtectPins( ConvertCOM_ComPort(HalSystemConfig.DebugTextPort), On );
-        return ;
+    #ifdef FEATURE_USART        
+        case USART_TRANSPORT:
+            CPU_USART_ProtectPins( ConvertCOM_ComPort(HalSystemConfig.DebugTextPort), On );
+            return ;
+    #endif
+    
+        case USB_TRANSPORT:
+            CPU_USB_ProtectPins( ConvertCOM_UsbController(HalSystemConfig.DebugTextPort), On );
+            return;
 
-    case USB_TRANSPORT:
-        CPU_USB_ProtectPins( ConvertCOM_UsbController(HalSystemConfig.DebugTextPort), On );
-        return;
+        case GENERIC_TRANSPORT:
+            GenericPort_ProtectPins( ConvertCOM_GenericPort(HalSystemConfig.DebugTextPort), On );
 
-    case GENERIC_TRANSPORT:
-        GenericPort_ProtectPins( ConvertCOM_GenericPort(HalSystemConfig.DebugTextPort), On );
-
-    default:
-        return;
+        default:
+            return;
     }
 }
