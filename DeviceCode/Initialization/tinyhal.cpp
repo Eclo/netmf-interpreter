@@ -81,7 +81,10 @@ void HAL_EnterBooterMode()
             switch(pAddr[i])
             {
                 case c_Empty:
-                    ::Watchdog_ResetCounter();
+                
+                    #ifdef FEATURE_WATCHDOG
+                        ::Watchdog_ResetCounter();
+                    #endif
 
                     if(deviceInfo->Attribute.SupportsXIP)
                     {
@@ -123,7 +126,9 @@ void HAL_EnterBooterMode()
             // reading whole block, not just the configurationsector
             const BlockRegionInfo * pBlockRegionInfo = &deviceInfo->Regions[iRegion];
 
-            ::Watchdog_ResetCounter();
+            #ifdef FEATURE_WATCHDOG
+                ::Watchdog_ResetCounter();
+            #endif
 
             BYTE *data  = (BYTE*)  private_malloc(pBlockRegionInfo->BytesPerBlock);
 
@@ -149,7 +154,9 @@ void HAL_EnterBooterMode()
 
                 pBlockDevice->EraseBlock(configSectAddress);
 
-                ::Watchdog_ResetCounter();
+                #ifdef FEATURE_WATCHDOG
+                    ::Watchdog_ResetCounter();
+                #endif
 
                 // write back to sector, as we only change one bit from 0 to 1, no need to erase sector
                 bRet = (TRUE == pBlockDevice->Write( configSectAddress, pBlockRegionInfo->BytesPerBlock, data, FALSE ));
@@ -430,14 +437,12 @@ __attribute__((weak)) int main(void)
             #endif
         }
 
-        // 
-        // the runtime is by default using a watchdog 
-        // 
-    
-        Watchdog_GetSetTimeout ( WATCHDOG_TIMEOUT , TRUE );
-        Watchdog_GetSetBehavior( WATCHDOG_BEHAVIOR, TRUE );
-        Watchdog_GetSetEnabled ( WATCHDOG_ENABLE, TRUE );
-
+        #ifdef FEATURE_WATCHDOG
+            Watchdog_GetSetTimeout ( WATCHDOG_TIMEOUT , TRUE );
+            Watchdog_GetSetBehavior( WATCHDOG_BEHAVIOR, TRUE );
+            Watchdog_GetSetEnabled ( WATCHDOG_ENABLE, TRUE );
+        #endif
+            
         // CMSIS & NETMF HALs initialization completed.  Interrupts are enabled.  Jump to the Application routine
         ApplicationEntryPoint();
 
