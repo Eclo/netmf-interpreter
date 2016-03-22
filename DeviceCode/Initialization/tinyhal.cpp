@@ -188,7 +188,10 @@ void HAL_Initialize()
     HAL_COMPLETION  ::InitializeList();
 
     Time_Initialize();
+    
+#ifdef FEATURE_PALEVENT
     Events_Initialize();
+#endif    
 
 #ifdef FEATURE_GPIO
     CPU_GPIO_Initialize();
@@ -251,7 +254,10 @@ void HAL_Initialize()
     Charger_Initialize();
 #endif
 
+#ifdef FEATURE_PALEVENT
     PalEvent_Initialize();
+#endif    
+    
 #ifdef FEATURE_GESTURE 
     Gesture_Initialize();
 #endif
@@ -267,6 +273,12 @@ void HAL_Initialize()
 #if defined(ENABLE_NATIVE_PROFILER)
     Native_Profiler_Init();
 #endif
+
+#ifdef FEATURE_CORTEX_CRC
+    // enable clock for the CRC calculation module
+    __HAL_RCC_CRC_CLK_ENABLE();
+#endif
+    
 }
 
 void HAL_UnReserveAllGpios()
@@ -296,6 +308,11 @@ void HAL_Uninitialize()
             break;
         }
     }    
+
+#ifdef FEATURE_CORTEX_CRC
+    // disable clock for the CRC calculation module
+    __HAL_RCC_CRC_CLK_DISABLE();
+#endif
 
 #ifdef FEATURE_LCD
     LCD_Uninitialize();
@@ -335,7 +352,9 @@ void HAL_Uninitialize()
     Gesture_Uninitialize();
 #endif
     
+#ifdef FEATURE_PALEVENT
     PalEvent_Uninitialize();
+#endif 
 
     SOCKETS_CloseConnections();
 
@@ -363,7 +382,10 @@ void HAL_Uninitialize()
 
     DISABLE_INTERRUPTS();
 
+#ifdef FEATURE_PALEVENT
     Events_Uninitialize();
+#endif
+    
     Time_Uninitialize();
 
     HAL_CONTINUATION::Uninitialize();

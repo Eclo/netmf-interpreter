@@ -179,6 +179,21 @@
         <ItemGroup Condition="'$(FEATURE_PALEVENT)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_PALEVENT" />
         </ItemGroup>
+                      
+        <!-- Cortex-M CRC -->
+        <Message Condition="'$(FEATURE_CORTEX_CRC)' == 'True' AND '$(FEATURE_CRC)' != 'True'" Text="Cortex-M CRC Unit: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_CORTEX_CRC)' == 'True' AND '$(FEATURE_CRC)' != 'True'">
+            <CC_CPP_Defines Include="FEATURE_CORTEX_CRC" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\CRC\dotNetMF.proj" />
+        </ItemGroup>
+                              
+        <!-- Software CRC -->
+        <Message Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'" Text="Software CRC: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'">
+            <CC_CPP_Defines Include="FEATURE_CRC" />
+        </ItemGroup>
+
+        <Error Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' == 'True'" Text="Can't have both Cortex-M CRC Unit and Software CRC selected. Check 'features.setting' file for TinyBooter."/>
 
     </Target>
 

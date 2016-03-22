@@ -95,7 +95,9 @@
         <DriverLibs Condition="'$(FEATURE_PWM)' != 'True'" Include="cpu_pwm_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_DA)' == 'True'" Include="CMSIS_DA.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_DA)' != 'True'" Include="cpu_DA_stubs.$(LIB_EXT)" />
-    
+        <PlatformIndependentLibs Condition="'$(FEATURE_CRC)' == 'True'" Include="CRC.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_CORTEX_CRC)' == 'True'" Include="CMSIS_CRC.$(LIB_EXT)" />
+
         <DriverLibs Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Include="CMSIS_Flash.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
@@ -152,10 +154,11 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Config\dotNetMF.proj" />
     </ItemGroup>
 
-    <!-- Core features here -->
+    <!-- Core and support features projects here -->
     <ItemGroup>
         <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
-        <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />        
+        <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />        
     </ItemGroup>
 
     <!-- PAL features here -->
@@ -259,10 +262,6 @@
     <ItemGroup>
         <DriverLibs Include="MCBSTM32F400_tinyhal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\Solutions\MCBSTM32F400\DeviceCode\TinyHal\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <PlatformIndependentLibs Include="CRC.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <PlatformIndependentLibs Include="Graphics_stub.$(LIB_EXT)" />

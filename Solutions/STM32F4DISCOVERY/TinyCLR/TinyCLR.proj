@@ -142,10 +142,11 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Config\dotNetMF.proj" />     
     </ItemGroup>
     
-    <!-- Core features here -->
+    <!-- Core and support features projects here -->
     <ItemGroup>
         <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />        
     </ItemGroup>
 
     <!-- PAL features here -->
@@ -227,10 +228,6 @@
     <ItemGroup>
         <DriverLibs Include="TinyHal_Cortex.$(LIB_EXT)"/>
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\dotnetmf.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <PlatformIndependentLibs Include="CRC.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <PlatformIndependentLibs Include="Graphics_stub.$(LIB_EXT)" />
