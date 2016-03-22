@@ -66,7 +66,12 @@
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="Watchdog_pal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_SOCKETS)' != 'True'" Include="sockets_pal_stubs.$(LIB_EXT)" />
-
+        <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="TimeService_pal.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="timeservice_hal_generic.$(LIB_EXT)" />
+        <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
+        <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' != 'True'" Include="TimeService_pal_stubs.$(LIB_EXT)" />
+        
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="cpu_LCD_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_BACKLIGHT)' != 'True'" Include="backlight_hal_stubs.$(LIB_EXT)" />
@@ -79,13 +84,15 @@
         <DriverLibs Condition="'$(FEATURE_FS)' != 'True'" Include="FS_Config_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="Buttons_pal_stubs.$(LIB_EXT)" />
 
+        <!-- Mandatory features -->
+        <DriverLibs Include="CMSIS_power_loader.$(LIB_EXT)" />
+        <DriverLibs Include="CMSIS_time.$(LIB_EXT)" />
+        <DriverLibs Include="Time_pal.$(LIB_EXT)" />
+  
     </ItemGroup>
     
     <!-- HAL/PAL mandatory features -->
     <ItemGroup>
-        <DriverLibs Include="CMSIS_power_loader.$(LIB_EXT)" />
-        <DriverLibs Include="CMSIS_time.$(LIB_EXT)" />
-        <DriverLibs Include="Time_pal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Time\dotNetMF.proj" />        
     </ItemGroup>
     
@@ -100,6 +107,7 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\Sockets\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\stubs\dotNetMF.proj" />
     </ItemGroup>
    
     <ItemGroup>
@@ -153,14 +161,6 @@
     <ItemGroup>
         <DriverLibs Include="palevent_pal_stubs.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\palevent\stubs\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="Time_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Time\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="TimeService_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\stubs\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="events_pal.$(LIB_EXT)" />

@@ -259,8 +259,10 @@ void HAL_Initialize()
 #ifdef FEATURE_INK    
     Ink_Initialize();
 #endif    
-    
+   
+#ifdef FEATURE_TIMESERVICE    
     TimeService_Initialize();
+#endif
 
 #if defined(ENABLE_NATIVE_PROFILER)
     Native_Profiler_Init();

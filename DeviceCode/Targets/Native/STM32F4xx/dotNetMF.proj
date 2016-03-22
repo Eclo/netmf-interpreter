@@ -134,6 +134,12 @@
         <ItemGroup Condition="'$(FEATURE_SOCKETS)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_SOCKETS" />
         </ItemGroup>
+        
+        <!-- Time Service -->
+        <Message Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Text="Time service: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_TIMESERVICE)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_TIMESERVICE" />
+        </ItemGroup>
 
     </Target>
 
