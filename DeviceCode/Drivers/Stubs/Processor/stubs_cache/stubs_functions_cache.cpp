@@ -6,47 +6,46 @@
 
 //--//
 
-void CPU_FlushCaches()
+__weak void CPU_FlushCaches()
 {
 }
 
-void CPU_DrainWriteBuffers()
+__weak void CPU_DrainWriteBuffers()
 {
 }
 
-void CPU_InvalidateCaches()
+__weak void CPU_InvalidateCaches()
 {
 }
 
-void CPU_EnableCaches()
+__weak void CPU_EnableCaches()
 {
 }
 
-void CPU_DisableCaches()
-{
-}
-
-//--//
-
-template <typename T> void CPU_InvalidateAddress( T* address )
-{
-}
-
-template <typename T> void CPU_InvalidateAddress( volatile T* address )
+__weak void CPU_DisableCaches()
 {
 }
 
 //--//
 
-size_t CPU_GetCachableAddress( size_t address )
+__weak template <typename T> void CPU_InvalidateAddress( T* address )
+{
+}
+
+__weak template <typename T> void CPU_InvalidateAddress( volatile T* address )
+{
+}
+
+//--//
+
+__weak size_t CPU_GetCachableAddress( size_t address )
 {
     return address;
 }
 
 //--//
 
-size_t CPU_GetUncachableAddress( size_t address )
+__weak size_t CPU_GetUncachableAddress( size_t address )
 {
     return address;
 }
-

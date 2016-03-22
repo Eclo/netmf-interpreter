@@ -319,14 +319,15 @@ BOOL CPU_GPIO_Initialize( )
 
 
     EXTI->IMR = 0; // disable all external interrups;
-        
-    CPU_INTC_ActivateInterrupt( EXTI0_IRQn, GPIO_Interrupt0, 0 );
-    CPU_INTC_ActivateInterrupt( EXTI1_IRQn, GPIO_Interrupt1, 0 );
-    CPU_INTC_ActivateInterrupt( EXTI2_IRQn, GPIO_Interrupt2, 0 );
-    CPU_INTC_ActivateInterrupt( EXTI3_IRQn, GPIO_Interrupt3, 0 );
-    CPU_INTC_ActivateInterrupt( EXTI4_IRQn, GPIO_Interrupt4, 0 );
-    CPU_INTC_ActivateInterrupt( EXTI9_5_IRQn, GPIO_Interrupt5, 0 );
-    CPU_INTC_ActivateInterrupt( EXTI15_10_IRQn, GPIO_Interrupt10, 0 );
+    
+    // FIXME        
+    // CPU_INTC_ActivateInterrupt( EXTI0_IRQn, GPIO_Interrupt0, 0 );
+    // CPU_INTC_ActivateInterrupt( EXTI1_IRQn, GPIO_Interrupt1, 0 );
+    // CPU_INTC_ActivateInterrupt( EXTI2_IRQn, GPIO_Interrupt2, 0 );
+    // CPU_INTC_ActivateInterrupt( EXTI3_IRQn, GPIO_Interrupt3, 0 );
+    // CPU_INTC_ActivateInterrupt( EXTI4_IRQn, GPIO_Interrupt4, 0 );
+    // CPU_INTC_ActivateInterrupt( EXTI9_5_IRQn, GPIO_Interrupt5, 0 );
+    // CPU_INTC_ActivateInterrupt( EXTI15_10_IRQn, GPIO_Interrupt10, 0 );
 
     return TRUE;
 }
@@ -341,13 +342,14 @@ BOOL CPU_GPIO_Uninitialize( )
     }
 
     EXTI->IMR = 0; // disable all external interrups;
-    CPU_INTC_DeactivateInterrupt( EXTI0_IRQn );
-    CPU_INTC_DeactivateInterrupt( EXTI1_IRQn );
-    CPU_INTC_DeactivateInterrupt( EXTI2_IRQn );
-    CPU_INTC_DeactivateInterrupt( EXTI3_IRQn );
-    CPU_INTC_DeactivateInterrupt( EXTI4_IRQn );
-    CPU_INTC_DeactivateInterrupt( EXTI9_5_IRQn );
-    CPU_INTC_DeactivateInterrupt( EXTI15_10_IRQn );
+    // FIXME
+    // CPU_INTC_DeactivateInterrupt( EXTI0_IRQn );
+    // CPU_INTC_DeactivateInterrupt( EXTI1_IRQn );
+    // CPU_INTC_DeactivateInterrupt( EXTI2_IRQn );
+    // CPU_INTC_DeactivateInterrupt( EXTI3_IRQn );
+    // CPU_INTC_DeactivateInterrupt( EXTI4_IRQn );
+    // CPU_INTC_DeactivateInterrupt( EXTI9_5_IRQn );
+    // CPU_INTC_DeactivateInterrupt( EXTI15_10_IRQn );
 
     return TRUE;
 }

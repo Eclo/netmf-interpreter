@@ -47,7 +47,7 @@
 //
 // Returns: FALSE - failed
 //
-SMALLINT owAcquire(int portnum, char *port_zstr)
+__weak SMALLINT owAcquire(int portnum, char *port_zstr)
 {
   return (FALSE);
 }
@@ -58,9 +58,7 @@ SMALLINT owAcquire(int portnum, char *port_zstr)
 // 'portnum'    - number 0 to MAX_PORTNUM-1.  This number is provided to
 //                indicate the symbolic port number.
 //
-void owRelease(int portnum)
+__weak void owRelease(int portnum)
 {
    portnum = 0;
 }
-
-
