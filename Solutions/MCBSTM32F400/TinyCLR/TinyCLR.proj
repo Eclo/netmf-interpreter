@@ -92,6 +92,10 @@
 
         <DriverLibs Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Include="CMSIS_Flash.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="Watchdog_pal.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="cpu_watchdog_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_WATCHDOG)' != 'True'" Include="Watchdog_pal_stubs.$(LIB_EXT)" />
 
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
         <RequiredProjects Condition="'$(FEATURE_LCD)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
@@ -117,6 +121,25 @@
         <RequiredProjects Condition="'$(FEATURE_BUTTONS)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
 
     </ItemGroup>
+  
+    <!-- HAL/PAL mandatory features -->
+    <ItemGroup>
+        <DriverLibs Include="CMSIS_power.$(LIB_EXT)" />
+        <DriverLibs Include="CMSIS_time.$(LIB_EXT)" />
+    </ItemGroup>
+            
+    <!-- All PAL stubs go here -->
+    <ItemGroup>
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Piezo\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Gesture\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Ink\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\fs\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\fs\stubs\config\dotnetmf.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Buttons\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\stubs\dotNetMF.proj" />
+    </ItemGroup>
+    
     <ItemGroup>
         <PlatformIndependentLibs Include="System_Xml.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Libraries\System_Xml\dotNetMF.proj" />
@@ -190,28 +213,12 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_Bootstrap\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
-        <DriverLibs Include="CMSIS_power.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Power\dotNetMF.proj" />
-    </ItemGroup>   
-    <ItemGroup>
-        <DriverLibs Include="STM32F4_time.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_time\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="cpu_watchdog_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
         <DriverLibs Include="MCBSTM32F400_initialization_hal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\Solutions\MCBSTM32F400\DeviceCode\Initialization\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="MCBSTM32F400_tinyhal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\Solutions\MCBSTM32F400\DeviceCode\TinyHal\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="Watchdog_pal_stubs.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\stubs\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="asyncproccall_pal.$(LIB_EXT)" />

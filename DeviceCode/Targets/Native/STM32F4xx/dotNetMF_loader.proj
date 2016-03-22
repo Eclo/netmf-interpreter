@@ -100,18 +100,12 @@
             <CC_CPP_Defines Include="FEATURE_GPIO" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\GPIO\dotNetMF.proj" />
         </ItemGroup>
-        <ItemGroup Condition="'$(FEATURE_GPIO)' != 'True'">
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_GPIO\dotNetMF.proj" />
-        </ItemGroup>
         
         <!-- SPI -->
         <Message Condition="'$(FEATURE_SPI)' == 'True'" Text="HAL SPI: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_SPI)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_SPI" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\SPI\dotNetMF.proj" />
-        </ItemGroup>
-        <ItemGroup Condition="'$(FEATURE_SPI)' != 'True'">
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_SPI\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- I2C -->
@@ -122,9 +116,6 @@
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\dotNetMF.proj" />
             <RequiredProjects Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
         </ItemGroup>
-        <ItemGroup Condition="'$(FEATURE_I2C)' != 'True'">
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_I2C\dotNetMF.proj" />
-        </ItemGroup>
         
         <!-- USART -->
         <Message Condition="'$(FEATURE_USART)' == 'True'" Text="HAL USART: included" Importance="High"/>
@@ -133,10 +124,6 @@
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USART\dotNetMF.proj" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\dotNetMF.proj" />
         </ItemGroup>
-        <ItemGroup Condition="'$(FEATURE_USART)' != 'True'">
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\processor\stubs_USART\dotNetMF.proj" />
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USART\stubs\dotNetMF.proj" />
-        </ItemGroup>        
           
         <!-- Cortex-M internal FLASH -->
         <Message Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Text="Cortex-M Flash: included" Importance="High"/>
@@ -150,11 +137,38 @@
         <ItemGroup Condition="'$(FEATURE_CPUCACHE)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_CPUCACHE" />
         </ItemGroup>        
-        <ItemGroup Condition="'$(FEATURE_CPUCACHE)' != 'True'">
-            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
+        
+        <!-- Watchdog -->
+        <Message Condition="'$(FEATURE_WATCHDOG)' == 'True'" Text="Watchdog: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_WATCHDOG)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_WATCHDOG" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\dotNetMF.proj" />
+            <!-- NOT IMPLEMENTED -->
+            <!--<RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />-->
         </ItemGroup>
 
     </Target>
+
+    <!-- HAL mandatory features -->
+    <ItemGroup>
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Power\dotNetMF_loader.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Time\dotNetMF.proj" />
+    </ItemGroup>
+    
+    <!-- All HAL stubs go here -->
+    <ItemGroup>
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_GPIO\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_SPI\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_I2C\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Stubs\processor\stubs_USART\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_cache\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Display\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\processor\stubs_lcd\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\Backlight\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryCharger\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryMeasurement\stubs\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />
+    </ItemGroup>
 
     <ItemGroup>
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\$(AS_SUBDIR)\startup_tinyBooter.s" />
