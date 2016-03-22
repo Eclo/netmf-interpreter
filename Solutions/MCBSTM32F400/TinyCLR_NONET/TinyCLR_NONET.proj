@@ -95,6 +95,8 @@
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="TimeService_pal.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="timeservice_hal_generic.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_TIMESERVICE)' != 'True'" Include="TimeService_pal_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_PALEVENT)' == 'True'" Include="palevent_pal.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_PALEVENT)' != 'True'" Include="palevent_pal_stubs.$(LIB_EXT)" />
 
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="lcd_hal_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_LCD)' != 'True'" Include="cpu_LCD_stubs.$(LIB_EXT)" />
@@ -151,6 +153,7 @@
         <RequiredProjects Condition="'$(FEATURE_WATCHDOG)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\Watchdog\dotNetMF.proj" />        
         <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\TimeService\dotNetMF.proj" />
         <RequiredProjects Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Include="$(SPOCLIENT)\DeviceCode\pal\timeservice\driver\dotNetMF.proj" />
+        <RequiredProjects Condition="'$(FEATURE_PALEVENT)' != 'True'" Include="$(SPOCLIENT)\DeviceCode\Pal\palevent\dotNetMF.proj" />
     </ItemGroup>
 
     <!-- All PAL stubs go here -->
@@ -226,10 +229,6 @@
     <ItemGroup>
         <PlatformIndependentLibs Include="CRC.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="palevent_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Pal\palevent\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <PlatformIndependentLibs Include="Graphics_stub.$(LIB_EXT)" />

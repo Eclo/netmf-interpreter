@@ -135,6 +135,12 @@
             <CC_CPP_Defines Include="FEATURE_TIMESERVICE" />
         </ItemGroup>
 
+        <!-- PAL event -->
+        <Message Condition="'$(FEATURE_PALEVENT)' == 'True'" Text="PAL event: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_PALEVENT)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_PALEVENT" />
+        </ItemGroup>
+
     </Target>
 
     <!-- HAL mandatory features -->
