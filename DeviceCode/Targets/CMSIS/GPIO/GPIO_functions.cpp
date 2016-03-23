@@ -440,78 +440,61 @@ BOOL CPU_GPIO_Initialize()
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Pin = GPIO_PIN_All;
+
     #if defined (RCC_AHB1ENR_GPIOAEN)
+    #if !defined(BUILD_RTM)
+    // don't change PA13 and PA14 as they maybe used in JTAG
+    GPIO_InitStruct.Pin = GPIO_PIN_All & (~GPIO_PIN_13) & (~GPIO_PIN_14);
+    #endif 
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    #if defined(BUILD_RTM)
+    __HAL_RCC_GPIOA_CLK_DISABLE();
+    #endif
     #endif
     #if defined (RCC_AHB1ENR_GPIOBEN)
     __HAL_RCC_GPIOB_CLK_ENABLE();
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    __HAL_RCC_GPIOB_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOCEN)
     __HAL_RCC_GPIOC_CLK_ENABLE();
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    __HAL_RCC_GPIOC_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIODEN)
     __HAL_RCC_GPIOD_CLK_ENABLE();
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+    __HAL_RCC_GPIOD_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOEEN)
     __HAL_RCC_GPIOE_CLK_ENABLE();
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+    __HAL_RCC_GPIOE_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOFEN)
     __HAL_RCC_GPIOF_CLK_ENABLE();
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+    __HAL_RCC_GPIOF_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOGEN)
     __HAL_RCC_GPIOG_CLK_ENABLE(); 
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+    __HAL_RCC_GPIOG_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOHEN)
     __HAL_RCC_GPIOH_CLK_ENABLE(); 
     HAL_GPIO_Init(GPIOH, &GPIO_InitStruct); 
+    __HAL_RCC_GPIOH_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOIEN)
     __HAL_RCC_GPIOI_CLK_ENABLE(); 
     HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+    __HAL_RCC_GPIOI_CLK_DISABLE();
     #endif
     #if defined (RCC_AHB1ENR_GPIOJEN)
     __HAL_RCC_GPIOJ_CLK_ENABLE(); 
     HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
-    #endif
-
-
-    // FIXME        
-    // Disable GPIOs clock
-    #if defined (RCC_AHB1ENR_GPIOAEN)
-    __HAL_RCC_GPIOA_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOBEN)
-    __HAL_RCC_GPIOB_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOCEN)
-    __HAL_RCC_GPIOC_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIODEN)
-    __HAL_RCC_GPIOD_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOEEN)
-    __HAL_RCC_GPIOE_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOFEN)
-    __HAL_RCC_GPIOF_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOGEN)
-    __HAL_RCC_GPIOG_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOHEN)
-    __HAL_RCC_GPIOH_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOIEN)
-    __HAL_RCC_GPIOI_CLK_DISABLE();
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOJEN)
     __HAL_RCC_GPIOJ_CLK_DISABLE();
     #endif
 
@@ -527,7 +510,47 @@ BOOL CPU_GPIO_Uninitialize()
         g_int_state[i].completion.Abort();
     }
 
-    EXTI->IMR = 0; // disable all external interrups;
+    // disable all GPIO external interrups and clock;
+    #if defined (RCC_AHB1ENR_GPIOAEN)
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_All);
+    __HAL_RCC_GPIOA_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOBEN)
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All);
+    __HAL_RCC_GPIOB_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOCEN)
+    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_All);
+    __HAL_RCC_GPIOC_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIODEN)
+    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_All);
+    __HAL_RCC_GPIOD_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOEEN)
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_All);
+    __HAL_RCC_GPIOE_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOFEN)
+    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_All);
+    __HAL_RCC_GPIOF_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOGEN)
+    HAL_GPIO_DeInit(GPIOG, GPIO_PIN_All);
+    __HAL_RCC_GPIOG_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOHEN)
+    HAL_GPIO_DeInit(GPIOH, GPIO_PIN_All);
+    __HAL_RCC_GPIOH_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOIEN)
+    HAL_GPIO_DeInit(GPIOI, GPIO_PIN_All);
+    __HAL_RCC_GPIOI_CLK_DISABLE();
+    #endif
+    #if defined (RCC_AHB1ENR_GPIOJEN)
+    HAL_GPIO_DeInit(GPIOJ, GPIO_PIN_All);
+    __HAL_RCC_GPIOJ_CLK_DISABLE();
+    #endif
 
     return TRUE;
 }
