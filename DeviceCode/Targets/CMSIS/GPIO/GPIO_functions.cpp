@@ -415,42 +415,6 @@ void GPIO_Pin_Config(GPIO_PIN packed_port_pin, UINT32 mode, GPIO_RESISTOR resist
         EnableIRQ(gpio_pin);
     }
     #endif
-
-    
-    // GPIO_TypeDef* port = Port(pin >> 4); // pointer to the actual port registers
-    // pin &= 0x0F; // bit number
-    // UINT32 bit = 1 << pin;
-    // UINT32 shift = pin << 1; // 2 bits / pin
-    // UINT32 mask = 0x3 << shift;
-    // UINT32 pull = 0;
-    // if(resistor == RESISTOR_PULLUP)
-    //     pull = GPIO_PUPDR_PUPDR0_0;
-
-    // if(resistor == RESISTOR_PULLDOWN)
-    //     pull = GPIO_PUPDR_PUPDR0_1;
-
-    // pull <<= shift;
-    // mode <<= shift;
-    // UINT32 speed = (alternate >> 8) << shift;
-    // UINT32 altSh = (pin & 0x7) << 2; // 4 bits / pin
-    // UINT32 altMsk = 0xF << altSh;
-    // UINT32 idx = pin >> 3;
-    // UINT32 af = ((alternate >> 4) & 0xF) << altSh;
-
-    // GLOBAL_LOCK(irq);
-
-    // port->MODER = port->MODER & ~mask | mode;
-    // port->PUPDR = port->PUPDR & ~mask | pull;
-    // port->OSPEEDR = port->OSPEEDR & ~mask | speed;
-    // port->AFR[idx] = port->AFR[idx] & ~altMsk | af;
-    // if(alternate & 1)
-    // { // open drain
-    //     port->OTYPER |= bit;
-    // }
-    // else
-    // {
-    //     port->OTYPER &= ~bit;
-    // }
 }
 
 BOOL CPU_GPIO_Initialize()
@@ -550,16 +514,6 @@ BOOL CPU_GPIO_Initialize()
     #if defined (RCC_AHB1ENR_GPIOJEN)
     __HAL_RCC_GPIOJ_CLK_DISABLE();
     #endif
-   
-    // EXTI->IMR = 0; // disable all external interrups;
-    // FIXME        
-    // CPU_INTC_ActivateInterrupt(EXTI0_IRQn, GPIO_Interrupt0, 0);
-    // CPU_INTC_ActivateInterrupt(EXTI1_IRQn, GPIO_Interrupt1, 0);
-    // CPU_INTC_ActivateInterrupt(EXTI2_IRQn, GPIO_Interrupt2, 0);
-    // CPU_INTC_ActivateInterrupt(EXTI3_IRQn, GPIO_Interrupt3, 0);
-    // CPU_INTC_ActivateInterrupt(EXTI4_IRQn, GPIO_Interrupt4, 0);
-    // CPU_INTC_ActivateInterrupt(EXTI9_5_IRQn, GPIO_Interrupt5, 0);
-    // CPU_INTC_ActivateInterrupt(EXTI15_10_IRQn, GPIO_Interrupt10, 0);
 
     return TRUE;
 }
@@ -574,14 +528,6 @@ BOOL CPU_GPIO_Uninitialize()
     }
 
     EXTI->IMR = 0; // disable all external interrups;
-    // FIXME
-    // CPU_INTC_DeactivateInterrupt(EXTI0_IRQn);
-    // CPU_INTC_DeactivateInterrupt(EXTI1_IRQn);
-    // CPU_INTC_DeactivateInterrupt(EXTI2_IRQn);
-    // CPU_INTC_DeactivateInterrupt(EXTI3_IRQn);
-    // CPU_INTC_DeactivateInterrupt(EXTI4_IRQn);
-    // CPU_INTC_DeactivateInterrupt(EXTI9_5_IRQn);
-    // CPU_INTC_DeactivateInterrupt(EXTI15_10_IRQn);
 
     return TRUE;
 }
