@@ -32,6 +32,18 @@ static BYTE g_Uart_TxD_Pins[ARRAYSIZE(g_Uart_Ports)];
 
 static UART_HandleTypeDef * uartHandlers[ARRAYSIZE(g_Uart_Ports)];
 
+#define CHECK_ARRAY_SIZE(condition) ((void)sizeof(char[(-1) + 1*!!(condition)]))
+
+void DummyToPerformArrayCheck()
+{
+    // g_Uart_Ports and g_Uart_Ports_Tx_Rx (and g_Uart_Ports_Flow_Control, if defined) arrays size must match
+    // Please go to platform_selector.h (in solution folder) and check related arrays 
+    CHECK_ARRAY_SIZE(sizeof(g_Uart_Ports) == sizeof(g_Uart_Ports_Tx_Rx));
+    #ifdef USART_PORTS_FLOW_CONTROL
+        CHECK_ARRAY_SIZE(sizeof(g_Uart_Ports) == sizeof(g_Uart_Ports_Flow_Control));
+    #endif
+}
+
 /**
   * @brief Get USART/UART Index 
   *        This function goes throw g_Uart_Ports to find uart index
@@ -79,18 +91,6 @@ void USART_Handle_TX_IRQ (int comPortNum, USART_TypeDef* uart)
 
 BOOL ComputeUSARTPins()
 {
-    // sanity check
-    if(ARRAYSIZE(g_Uart_Ports) != ARRAYSIZE(g_Uart_Ports_Tx_Rx))
-    {
-        return FALSE;
-    }
-    #ifdef USART_PORTS_FLOW_CONTROL
-        if(ARRAYSIZE(g_Uart_Ports) != ARRAYSIZE(g_Uart_Ports_Flow_Control))
-        {
-            return FALSE;
-        }
-    #endif
-
     // fill arrays with user USART ports definitions
     for(int i = 0; i < ARRAYSIZE(g_Uart_Ports); i++)
     {
