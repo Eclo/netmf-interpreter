@@ -73,17 +73,18 @@ static BYTE g_Spi_Mosi_Pins[ARRAYSIZE(g_STM32_Spi_Port)];
 
 #define SPI_MODS ARRAYSIZE_CONST_EXPR(g_Spi_Sclk_Pins) // number of modules
 
-
-BOOL CPU_SPI_Initialize()
+void ComputeSPIPins()
 {
-    for (int i = 0; i < ARRAYSIZE( g_STM32_Spi_Port ); i++)
+    for (int i = 0; i < ARRAYSIZE(g_STM32_Spi_Port); i++)
     {
+        #if defined (SPI1)
         if(g_STM32_Spi_Port[i] == SPI1)
         {
             g_Spi_Sclk_Pins[i] = 5; // PA5
             g_Spi_Miso_Pins[i] = 6; // PA6
             g_Spi_Mosi_Pins[i] = 7; // PA7
         }
+        #endif
         #if defined (SPI2)
         else if(g_STM32_Spi_Port[i] == SPI2)
         {
@@ -125,6 +126,415 @@ BOOL CPU_SPI_Initialize()
         }
         #endif
     }
+}
+
+void Configure_GPIOs()
+{
+    for (int i = 0; i < ARRAYSIZE(g_STM32_Spi_Port); i++)
+    {
+        GPIO_InitTypeDef GPIO_InitStruct;
+
+        #if defined (SPI1)
+        if(g_STM32_Spi_Port[i] == SPI1)
+        {
+            /*##-1- Enable peripherals and GPIO Clocks #################################*/
+            /* Enable GPIO TX/RX clock */
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            /* Enable SPI clock */
+            __HAL_RCC_SPI1_CLK_ENABLE(); 
+
+            /*##-2- Configure peripheral GPIO ##########################################*/  
+            /* SPI SCK GPIO pin configuration  */
+            GPIO_InitStruct.Pin       = GPIO_PIN_5;
+            GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull      = GPIO_PULLUP;
+            GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+            #if defined (GPIO_AF5_SPI1)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+            #elif defined (GPIO_AF6_SPI1)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI1;
+            #endif
+
+            HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+            /* SPI MISO GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_6;
+            #if defined (GPIO_AF5_SPI1)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+            #elif defined (GPIO_AF6_SPI1)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI1;
+            #endif
+
+            HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+            /* SPI MOSI GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_7;
+            #if defined (GPIO_AF5_SPI1)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+            #elif defined (GPIO_AF6_SPI1)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI1;
+            #endif
+
+            HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+        }
+        #endif
+        #if defined (SPI2)
+        else if(g_STM32_Spi_Port[i] == SPI2)
+        {
+            /*##-1- Enable peripherals and GPIO Clocks #################################*/
+            /* Enable GPIO TX/RX clock */
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+            /* Enable SPI clock */
+            __HAL_RCC_SPI2_CLK_ENABLE(); 
+
+            /*##-2- Configure peripheral GPIO ##########################################*/  
+            /* SPI SCK GPIO pin configuration  */
+            GPIO_InitStruct.Pin       = GPIO_PIN_13;
+            GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull      = GPIO_PULLUP;
+            GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+            #if defined (GPIO_AF5_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+            #elif defined (GPIO_AF6_SPI2)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI2;
+            #elif defined (GPIO_AF7_SPI2)
+            GPIO_InitStruct.Alternate = GPIO_AF7_SPI2;
+            #endif
+
+            HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+            /* SPI MISO GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_14;
+            #if defined (GPIO_AF5_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+            #elif defined (GPIO_AF6_SPI2)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI2;
+            #elif defined (GPIO_AF7_SPI2)
+            GPIO_InitStruct.Alternate = GPIO_AF7_SPI2;
+            #endif
+
+            HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+            /* SPI MOSI GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_15;
+            #if defined (GPIO_AF5_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+            #elif defined (GPIO_AF6_SPI2)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI2;
+            #elif defined (GPIO_AF7_SPI2)
+            GPIO_InitStruct.Alternate = GPIO_AF7_SPI2;
+            #endif
+
+            HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+        }
+        #endif
+        #if defined (SPI3)
+        else if(g_STM32_Spi_Port[i] == SPI3)
+        {
+            /*##-1- Enable peripherals and GPIO Clocks #################################*/
+            /* Enable GPIO TX/RX clock */
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+            /* Enable SPI clock */
+            __HAL_RCC_SPI3_CLK_ENABLE(); 
+
+            /*##-2- Configure peripheral GPIO ##########################################*/  
+            /* SPI SCK GPIO pin configuration  */
+            GPIO_InitStruct.Pin       = GPIO_PIN_10;
+            GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull      = GPIO_PULLUP;
+            GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+            #if defined (GPIO_AF5_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI3;
+            #elif defined (GPIO_AF6_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+            #elif defined (GPIO_AF7_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF7_SPI3;
+            #endif
+
+            HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+            /* SPI MISO GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_11;
+            #if defined (GPIO_AF5_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI3;
+            #elif defined (GPIO_AF6_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+            #elif defined (GPIO_AF7_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF7_SPI3;
+            #endif
+
+            HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+            /* SPI MOSI GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_12;
+            #if defined (GPIO_AF5_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI3;
+            #elif defined (GPIO_AF6_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+            #elif defined (GPIO_AF7_SPI3)
+            GPIO_InitStruct.Alternate = GPIO_AF7_SPI3;
+            #endif
+
+            HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+        }
+        #endif
+        #if defined (SPI4)
+        else if(g_STM32_Spi_Port[i] == SPI4)
+        {
+            /*##-1- Enable peripherals and GPIO Clocks #################################*/
+            /* Enable GPIO TX/RX clock */
+            __HAL_RCC_GPIOE_CLK_ENABLE();
+            /* Enable SPI clock */
+            __HAL_RCC_SPI4_CLK_ENABLE(); 
+
+            /*##-2- Configure peripheral GPIO ##########################################*/  
+            /* SPI SCK GPIO pin configuration  */
+            GPIO_InitStruct.Pin       = GPIO_PIN_12;
+            GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull      = GPIO_PULLUP;
+            GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+            #if defined (GPIO_AF5_SPI4)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+            #elif defined (GPIO_AF6_SPI4)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI4;
+            #endif
+
+            HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+            /* SPI MISO GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_13;
+            #if defined (GPIO_AF5_SPI4)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+            #elif defined (GPIO_AF6_SPI4)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI4;
+            #endif
+
+            HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+            /* SPI MOSI GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_14;
+            #if defined (GPIO_AF5_SPI4)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+            #elif defined (GPIO_AF6_SPI4)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI4;
+            #endif
+
+            HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+        }
+        #endif
+        #if defined (SPI5)
+        else if(g_STM32_Spi_Port[i] == SPI5)
+        {
+            /*##-1- Enable peripherals and GPIO Clocks #################################*/
+            /* Enable GPIO TX/RX clock */
+            __HAL_RCC_GPIOF_CLK_ENABLE();
+            /* Enable SPI clock */
+            __HAL_RCC_SPI5_CLK_ENABLE(); 
+
+            /*##-2- Configure peripheral GPIO ##########################################*/  
+            /* SPI SCK GPIO pin configuration  */
+            GPIO_InitStruct.Pin       = GPIO_PIN_7;
+            GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull      = GPIO_PULLUP;
+            GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+            #if defined (GPIO_AF5_SPI5)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+            #elif defined (GPIO_AF6_SPI5)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI5;
+            #endif
+
+            HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+            /* SPI MISO GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_8;
+            #if defined (GPIO_AF5_SPI5)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+            #elif defined (GPIO_AF6_SPI5)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI5;
+            #endif
+
+            HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+            /* SPI MOSI GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_9;
+            #if defined (GPIO_AF5_SPI5)
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+            #elif defined (GPIO_AF6_SPI5)
+            GPIO_InitStruct.Alternate = GPIO_AF6_SPI5;
+            #endif
+
+            HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+        }
+        #endif
+        #if defined (SPI6)
+        else if(g_STM32_Spi_Port[i] == SPI6)
+        {
+            /*##-1- Enable peripherals and GPIO Clocks #################################*/
+            /* Enable GPIO TX/RX clock */
+            __HAL_RCC_GPIOG_CLK_ENABLE();
+            /* Enable SPI clock */
+            __HAL_RCC_SPI6_CLK_ENABLE(); 
+
+            /*##-2- Configure peripheral GPIO ##########################################*/  
+            /* SPI SCK GPIO pin configuration  */
+            GPIO_InitStruct.Pin       = GPIO_PIN_13;
+            GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull      = GPIO_PULLUP;
+            GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
+
+            HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+            /* SPI MISO GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_12;
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
+
+            HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+            /* SPI MOSI GPIO pin configuration  */
+            GPIO_InitStruct.Pin = GPIO_PIN_14;
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI6;
+
+            HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+        }
+        #endif
+    }
+}
+
+void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
+{
+    if(g_Spi_Sclk_Pins[0] == 0)
+    {
+        // need to fill SPI pin arrays
+        ComputeSPIPins();
+        // configure and enable GPIO clocks
+        Configure_GPIOs();
+    }
+}
+
+void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
+{
+    for (int i = 0; i < ARRAYSIZE(g_STM32_Spi_Port); i++)
+    {
+        #if defined (SPI1)
+        if(g_STM32_Spi_Port[i] == SPI1)
+        {
+            /*##-1- Reset peripherals ##################################################*/
+            __HAL_RCC_SPI1_FORCE_RESET();
+            __HAL_RCC_SPI1_RELEASE_RESET();
+
+            /*##-2- Disable peripherals and GPIO Clocks ################################*/
+            /* Configure SPI SCK as alternate function  */
+            HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5);
+            /* Configure SPI MISO as alternate function  */
+            HAL_GPIO_DeInit(GPIOA, GPIO_PIN_6);
+            /* Configure SPI MOSI as alternate function  */
+            HAL_GPIO_DeInit(GPIOA, GPIO_PIN_7);
+
+            /*##-3- Disable the NVIC for SPI ###########################################*/
+            HAL_NVIC_DisableIRQ(SPI1_IRQn);
+        }
+        #endif
+        #if defined (SPI2)
+        else if(g_STM32_Spi_Port[i] == SPI2)
+        {
+            /*##-1- Reset peripherals ##################################################*/
+            __HAL_RCC_SPI2_FORCE_RESET();
+            __HAL_RCC_SPI2_RELEASE_RESET();
+
+            /*##-2- Disable peripherals and GPIO Clocks ################################*/
+            /* Configure SPI SCK as alternate function  */
+            HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
+            /* Configure SPI MISO as alternate function  */
+            HAL_GPIO_DeInit(GPIOB, GPIO_PIN_14);
+            /* Configure SPI MOSI as alternate function  */
+            HAL_GPIO_DeInit(GPIOB, GPIO_PIN_15);
+
+            /*##-3- Disable the NVIC for SPI ###########################################*/
+            HAL_NVIC_DisableIRQ(SPI2_IRQn);
+        }
+        #endif
+        #if defined (SPI3)
+        else if(g_STM32_Spi_Port[i] == SPI3)
+        {
+            /*##-1- Reset peripherals ##################################################*/
+            __HAL_RCC_SPI3_FORCE_RESET();
+            __HAL_RCC_SPI3_RELEASE_RESET();
+
+            /*##-2- Disable peripherals and GPIO Clocks ################################*/
+            /* Configure SPI SCK as alternate function  */
+            HAL_GPIO_DeInit(GPIOC, GPIO_PIN_10);
+            /* Configure SPI MISO as alternate function  */
+            HAL_GPIO_DeInit(GPIOC, GPIO_PIN_11);
+            /* Configure SPI MOSI as alternate function  */
+            HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
+
+            /*##-3- Disable the NVIC for SPI ###########################################*/
+            HAL_NVIC_DisableIRQ(SPI3_IRQn);
+        }
+        #endif
+        #if defined (SPI4)
+        else if(g_STM32_Spi_Port[i] == SPI4)
+        {
+            /*##-1- Reset peripherals ##################################################*/
+            __HAL_RCC_SPI4_FORCE_RESET();
+            __HAL_RCC_SPI4_RELEASE_RESET();
+
+            /*##-2- Disable peripherals and GPIO Clocks ################################*/
+            /* Configure SPI SCK as alternate function  */
+            HAL_GPIO_DeInit(GPIOE, GPIO_PIN_12);
+            /* Configure SPI MISO as alternate function  */
+            HAL_GPIO_DeInit(GPIOE, GPIO_PIN_13);
+            /* Configure SPI MOSI as alternate function  */
+            HAL_GPIO_DeInit(GPIOE, GPIO_PIN_14);
+
+            /*##-3- Disable the NVIC for SPI ###########################################*/
+            HAL_NVIC_DisableIRQ(SPI4_IRQn);
+        }
+        #endif
+        #if defined (SPI5)
+        else if(g_STM32_Spi_Port[i] == SPI5)
+        {
+            /*##-1- Reset peripherals ##################################################*/
+            __HAL_RCC_SPI5_FORCE_RESET();
+            __HAL_RCC_SPI5_RELEASE_RESET();
+
+            /*##-2- Disable peripherals and GPIO Clocks ################################*/
+            /* Configure SPI SCK as alternate function  */
+            HAL_GPIO_DeInit(GPIOF, GPIO_PIN_7);
+            /* Configure SPI MISO as alternate function  */
+            HAL_GPIO_DeInit(GPIOF, GPIO_PIN_8);
+            /* Configure SPI MOSI as alternate function  */
+            HAL_GPIO_DeInit(GPIOF, GPIO_PIN_9);
+
+            /*##-3- Disable the NVIC for SPI ###########################################*/
+            HAL_NVIC_DisableIRQ(SPI5_IRQn);
+        }
+        #endif
+        #if defined (SPI6)
+        else if(g_STM32_Spi_Port[i] == SPI6)
+        {
+            /*##-1- Reset peripherals ##################################################*/
+            __HAL_RCC_SPI6_FORCE_RESET();
+            __HAL_RCC_SPI6_RELEASE_RESET();
+
+            /*##-2- Disable peripherals and GPIO Clocks ################################*/
+            /* Configure SPI SCK as alternate function  */
+            HAL_GPIO_DeInit(GPIOG, GPIO_PIN_13);
+            /* Configure SPI MISO as alternate function  */
+            HAL_GPIO_DeInit(GPIOG, GPIO_PIN_12);
+            /* Configure SPI MOSI as alternate function  */
+            HAL_GPIO_DeInit(GPIOG, GPIO_PIN_14);
+
+            /*##-3- Disable the NVIC for SPI ###########################################*/
+            HAL_NVIC_DisableIRQ(SPI6_IRQn);
+        }
+        #endif
+    }
+}
+
+BOOL CPU_SPI_Initialize()
+{
     return TRUE;
 }
 
@@ -180,94 +590,84 @@ BOOL CPU_SPI_nWrite8_nRead8( const SPI_CONFIGURATION& Configuration, UINT8* Writ
 
 BOOL CPU_SPI_Xaction_Start( const SPI_CONFIGURATION& Configuration )
 {
+    // SPI handler declaration
+    SPI_HandleTypeDef SpiHandle;
+
     NATIVE_PROFILE_HAL_PROCESSOR_SPI();
     if (Configuration.SPI_mod >= SPI_MODS)
         return FALSE;
     
+    // Configure the SPI peripheral 
+    // Set the SPI parameters
     switch (Configuration.SPI_mod)
     {
+#if defined (SPI1)
     case 0:
-        RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
-        break; // enable SPI1 clock
-
-// #if defined (STM32F401xC) || defined (STM32F401xE) || defined (STM32F446xx) || \
-//     defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F405xx) || defined (STM32F407xx) || \
-//     defined (STM32F415xx) || defined (STM32F417xx) || defined (STM32F410Cx) || \
-//     defined (STM32F410Rx)
+        SpiHandle.Instance = SPI1;
+        break; // set instance
+#endif
 #if defined (SPI2)
-
     case 1:
-        RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
-        break; // enable SPI2 clock
+        SpiHandle.Instance = SPI2;
+        break; // set instance
 #endif 
-
-// #if defined (STM32F401xC) || defined (STM32F401xE) || defined (STM32F446xx) || \
-//     defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F405xx) || defined (STM32F407xx) || \
-//     defined (STM32F415xx) || defined (STM32F417xx) || defined (STM32F410Cx) || \
-//     defined (STM32F410Rx)
 #if defined (SPI3)
-
     case 2:
-        RCC->APB1ENR |= RCC_APB1ENR_SPI3EN;
-        break; // enable SPI3 clock
+        SpiHandle.Instance = SPI3;
+        break; // set instance
 #endif
-
-// #if defined (STM32F401xC) || defined (STM32F401xE) || defined (STM32F446xx) || \
-//     defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F405xx) 
 #if defined (SPI4)
-    
     case 3:
-        RCC->APB2ENR |= RCC_APB2ENR_SPI4EN;
-        break; // enable SPI4 clock
+        SpiHandle.Instance = SPI4;
+        break; // set instance
 #endif
-
-// #if defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F410Cx) || defined (STM32F410Rx)   
 #if defined (SPI5)
-    
     case 4:
-        RCC->APB2ENR |= RCC_APB2ENR_SPI5EN;
-        break; // enable SPI5 clock
+        SpiHandle.Instance = SPI5;
+        break; // set instance
 #endif
-
-// #if defined (STM32F427xx) || defined (STM32F429xx) || defined (STM32F437xx) || \
-//     defined (STM32F439xx) || defined (STM32F469xx) || defined (STM32F479xx)
 #if defined (SPI6)
-     
     case 5:
-        RCC->APB2ENR |= RCC_APB2ENR_SPI6EN;
-        break; // enable SPI6 clock
+        SpiHandle.Instance = SPI6;
+        break; // set instance
 #endif
-
     }
+
+    SpiHandle.Init.Mode              = SPI_MODE_MASTER;
+    SpiHandle.Init.Direction         = SPI_DIRECTION_2LINES;
+    SpiHandle.Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
+    SpiHandle.Init.CRCPolynomial     = 7;
+    SpiHandle.Init.FirstBit          = SPI_FIRSTBIT_MSB;
+    SpiHandle.Init.TIMode            = SPI_TIMODE_DISABLE;
     
-    ptr_SPI_TypeDef spi = g_STM32_Spi_Port[Configuration.SPI_mod];
+    //ptr_SPI_TypeDef spi = g_STM32_Spi_Port[Configuration.SPI_mod];
     
     // set mode bits
-    UINT32 cr1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_MSTR | SPI_CR1_SPE;
+    //UINT32 cr1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_MSTR | SPI_CR1_SPE;
+    SpiHandle.Init.NSS = SPI_NSS_SOFT;
+    
+    SpiHandle.Init.DataSize = SPI_DATASIZE_8BIT;
     if (Configuration.MD_16bits)
     {
-        cr1 |= SPI_CR1_DFF;
+        //cr1 |= SPI_CR1_DFF;
+        SpiHandle.Init.DataSize = SPI_DATASIZE_16BIT;
     }
 
     if (Configuration.MSK_IDLE)
     {
-        cr1 |= SPI_CR1_CPOL | SPI_CR1_CPHA;
+        //cr1 |= SPI_CR1_CPOL | SPI_CR1_CPHA;
+        SpiHandle.Init.CLKPhase = SPI_PHASE_2EDGE;
+        SpiHandle.Init.CLKPolarity = SPI_POLARITY_HIGH;
     }
 
     if (!Configuration.MSK_SampleEdge)
     {
-        cr1 ^= SPI_CR1_CPHA; // toggle phase
+        //cr1 ^= SPI_CR1_CPHA; // toggle phase
+        SpiHandle.Init.CLKPhase = SPI_PHASE_1EDGE;
     }
     
     // set clock prescaler
+    SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
     UINT32 clock = SYSTEM_APB2_CLOCK_HZ / 2000; // SPI1 on APB2
     if (Configuration.SPI_mod > 0 && Configuration.SPI_mod < 3)
     {
@@ -277,40 +677,49 @@ BOOL CPU_SPI_Xaction_Start( const SPI_CONFIGURATION& Configuration )
     if (clock > Configuration.Clock_RateKHz << 3)
     {
         clock >>= 4;
-        cr1 |= SPI_CR1_BR_2;
+        // cr1 |= SPI_CR1_BR_2;
+        SpiHandle.Init.BaudRatePrescaler |= SPI_BAUDRATEPRESCALER_32;
     }
 
     if (clock > Configuration.Clock_RateKHz << 1)
     {
         clock >>= 2;
-        cr1 |= SPI_CR1_BR_1;
+        // cr1 |= SPI_CR1_BR_1;
+        SpiHandle.Init.BaudRatePrescaler |= SPI_BAUDRATEPRESCALER_8;
     }
 
     if (clock > Configuration.Clock_RateKHz)
     {
-        cr1 |= SPI_CR1_BR_0;
+        // cr1 |= SPI_CR1_BR_0;
+        SpiHandle.Init.BaudRatePrescaler |= SPI_BAUDRATEPRESCALER_4;
     }
-    spi->CR1 = cr1;
+    //spi->CR1 = cr1;
     
-    // I/O setup
-    GPIO_PIN msk, miso, mosi;
-    CPU_SPI_GetPins(Configuration.SPI_mod, msk, miso, mosi);
-    UINT32 alternate = 0x252; // AF5, speed = 2 (50MHz)
-    if (Configuration.SPI_mod == 2 && mosi != 54)
+    if(HAL_SPI_Init(&SpiHandle) != HAL_OK)
     {
-        alternate = 0x262; // SPI3 on AF6
+        /* Initialization Error */
+        return FALSE;
     }
 
-    CPU_GPIO_DisablePin( msk,  RESISTOR_DISABLED, 1, (GPIO_ALT_MODE)alternate);
-    CPU_GPIO_DisablePin( miso, RESISTOR_DISABLED, 0, (GPIO_ALT_MODE)alternate);
-    CPU_GPIO_DisablePin( mosi, RESISTOR_DISABLED, 1, (GPIO_ALT_MODE)alternate);
+    // // I/O setup
+    // GPIO_PIN msk, miso, mosi;
+    // CPU_SPI_GetPins(Configuration.SPI_mod, msk, miso, mosi);
+    // UINT32 alternate = 0x252; // AF5, speed = 2 (50MHz)
+    // if (Configuration.SPI_mod == 2 && mosi != 54)
+    // {
+    //     alternate = 0x262; // SPI3 on AF6
+    // }
+
+    // CPU_GPIO_DisablePin( msk,  RESISTOR_DISABLED, 1, (GPIO_ALT_MODE)alternate);
+    // CPU_GPIO_DisablePin( miso, RESISTOR_DISABLED, 0, (GPIO_ALT_MODE)alternate);
+    // CPU_GPIO_DisablePin( mosi, RESISTOR_DISABLED, 1, (GPIO_ALT_MODE)alternate);
     
-    // CS setup
-    CPU_GPIO_EnableOutputPin( Configuration.DeviceCS, Configuration.CS_Active );
-    if(Configuration.CS_Setup_uSecs)
-    {
-        HAL_Time_Sleep_MicroSeconds_InterruptEnabled( Configuration.CS_Setup_uSecs );
-    }
+    // // CS setup
+    // CPU_GPIO_EnableOutputPin( Configuration.DeviceCS, Configuration.CS_Active );
+    // if(Configuration.CS_Setup_uSecs)
+    // {
+    //     HAL_Time_Sleep_MicroSeconds_InterruptEnabled( Configuration.CS_Setup_uSecs );
+    // }
     
     return TRUE;
 }
@@ -343,66 +752,36 @@ BOOL CPU_SPI_Xaction_Stop( const SPI_CONFIGURATION& Configuration )
     
     switch (Configuration.SPI_mod)
     {
+#if defined (SPI6)
     case 0:
         RCC->APB2ENR &= ~RCC_APB2ENR_SPI1EN;
         break; // disable SPI1 clock
-
-// #if defined (STM32F401xC) || defined (STM32F401xE) || defined (STM32F446xx) || \
-//     defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F405xx) || defined (STM32F407xx) || \
-//     defined (STM32F415xx) || defined (STM32F417xx) || defined (STM32F410Cx) || \
-//     defined (STM32F410Rx)
+#endif
 #if defined (SPI2)
-
     case 1: 
         RCC->APB1ENR &= ~RCC_APB1ENR_SPI2EN;
         break; // disable SPI2 clock
 #endif 
-
-// #if defined (STM32F401xC) || defined (STM32F401xE) || defined (STM32F446xx) || \
-//     defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F405xx) || defined (STM32F407xx) || \
-//     defined (STM32F415xx) || defined (STM32F417xx) || defined (STM32F410Cx) || \
-//     defined (STM32F410Rx)
 #if defined (SPI3)
-
     case 2:
         RCC->APB1ENR &= ~RCC_APB1ENR_SPI3EN;
         break; // disable SPI3 clock
 #endif
-
-// #if defined (STM32F401xC) || defined (STM32F401xE) || defined (STM32F446xx) || \
-//     defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F405xx) 
 #if defined (SPI4)
-    
     case 3:
         RCC->APB2ENR &= ~RCC_APB2ENR_SPI4EN;
         break; // disable SPI4 clock
 #endif
-
-// #if defined (STM32F411xE) || defined (STM32F427xx) || defined (STM32F429xx) || \
-//     defined (STM32F437xx) || defined (STM32F439xx) || defined (STM32F469xx) || \
-//     defined (STM32F479xx) || defined (STM32F410Cx) || defined (STM32F410Rx)   
 #if defined (SPI5)
-    
     case 4:
         RCC->APB2ENR &= ~RCC_APB2ENR_SPI5EN;
         break; // disable SPI5 clock
 #endif
-
-// #if defined (STM32F427xx) || defined (STM32F429xx) || defined (STM32F437xx) || \
-//     defined (STM32F439xx) || defined (STM32F469xx) || defined (STM32F479xx)
 #if defined (SPI6)
-     
     case 5:
         RCC->APB2ENR &= ~RCC_APB2ENR_SPI6EN;
         break; // disable SPI6 clock
 #endif
-
     }
 
     return TRUE;
