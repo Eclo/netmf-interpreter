@@ -460,42 +460,42 @@ void SetUSARTPriority(int comPortNum)
     // USART/UART alternate function
     if(g_Uart_Ports[comPortNum] == USART1)
     {
-        HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(USART1_IRQn, USART1_PRIORITY, 1);
     }
     #ifdef USART2
     else if(g_Uart_Ports[comPortNum] == USART2)
     {
-        HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(USART2_IRQn, USART2_PRIORITY, 1);
     }
     #endif
     #ifdef USART3
     else if(g_Uart_Ports[comPortNum] == USART3)
     {
-        HAL_NVIC_SetPriority(USART3_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(USART3_IRQn, USART3_PRIORITY, 1);
     }
     #endif
     #ifdef UART4
     else if(g_Uart_Ports[comPortNum] == UART4)
     {
-        HAL_NVIC_SetPriority(UART4_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(UART4_IRQn, USART4_PRIORITY, 1);
     }
     #endif
     #ifdef USART6
     else if(g_Uart_Ports[comPortNum] == USART6)
     {
-        HAL_NVIC_SetPriority(USART6_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(USART6_IRQn, USART6_PRIORITY, 1);
     }
     #endif
     #ifdef UART7
     else if(g_Uart_Ports[comPortNum] == UART7)
     {
-        HAL_NVIC_SetPriority(UART7_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(UART7_IRQn, USART7_PRIORITY, 1);
     }
     #endif
     #ifdef UART8
     else if(g_Uart_Ports[comPortNum] == UART8)
     {
-        HAL_NVIC_SetPriority(UART8_IRQn, 0, 1);
+        HAL_NVIC_SetPriority(UART8_IRQn, USART8_PRIORITY, 1);
     }
     #endif
 }
