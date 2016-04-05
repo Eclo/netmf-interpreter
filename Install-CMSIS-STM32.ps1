@@ -165,7 +165,7 @@ Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Drivers\STM32" + $seri
 # first clear the destination directory before copying as we don't want to mix versions
 Write-Host "Copying USB device client library..."
 
-$usbClientLibPath = [System.IO.Path]::Combine( $spotClientPath, "DeviceCode\Targets\CMSIS\USB\STM32_USB_Device_Library")
+$usbClientLibPath = [System.IO.Path]::Combine( $spotClientPath, "DeviceCode\Targets\Native\STM32" + $seriesName + "xx\USB\STM32_USB_Device_Library")
 Remove-Item -Path $usbClientLibPath -Force -Recurse -ErrorAction Ignore
 New-Item -Path $usbClientLibPath -Force -ItemType directory | Out-Null
 Move-Item -Path ( [System.IO.Path]::Combine($seriesPath, "Middlewares\ST\STM32_USB_Device_Library\Core\*") ) -Destination $usbClientLibPath -Force 
