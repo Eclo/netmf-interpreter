@@ -14,48 +14,71 @@
 #include <tinyhal.h>
 
 /*
-    Interface to Cortex-M CRC calculation unit that implements the equivalent to the software implementation in Support\CRC project.
+    Interface to Cortex-M CRC calculation unit that implements the equivalent to the software implementation at Support\CRC project.
     CRC-32 (Ethernet) polynomial: 0x4C11DB7.
-    rgBlock: pointer to the region block to be CRCed
-    nLength: lenght of rgBlock to compute CRC
+    buffer: pointer to the region block to be CRCed
+    size: lenght of buffer to compute CRC
     crc: previous CRC value to start CRC computing
 */
-UINT32 SUPPORT_ComputeCRC(const void* rgBlock, int nLength, UINT32 crc)
+UINT32 SUPPORT_ComputeCRC(const void* buffer, int size, UINT32 initCrc)
 {
     CRC_HandleTypeDef hcrc;
+    
     uint32_t index = 0U;
-
+    uint32_t arg1;
+    UINT32 crc;
+  
+    // anything to do here?
+    if(size == 0)
+    {
+        return initCrc;
+    }
+    
     // init CRC unit    
     hcrc.Instance = CRC;
     HAL_CRC_Init(&hcrc);
 
-    // Process Locked
-    __HAL_LOCK(&hcrc); 
+    // Reset CRC Calculation Unit
+    __HAL_CRC_DR_RESET(&hcrc);
+    
+    // // if crc (argument for initial value) is not 0, init the CRC calculation unit with this value
+    // if(crc != 0)
+    // {
+    //     // init CRC value
+    //     hcrc.Instance->DR = __RBIT(crc);      
+    // }
 
-    // Change CRC peripheral state
-    hcrc.State = HAL_CRC_STATE_BUSY;
+    uint8_t* ptr = (uint8_t*)buffer;
 
-    // if crc (argument for initial value) is not 0, init the CRC calculation unit with this value
-    if(crc != 0)
+    // CRC calculation unit is initialed with 0xFFFFFFFF which is not good for our CRC calculations
+    // feeding 0xFFFFFFFF to the calculation unit will set the register to 0x00000000
+    
+    while(hcrc.Instance->DR != 0x0)
     {
-        // init CRC value
-        hcrc.Instance->DR = crc;      
-    }
+        hcrc.Instance->DR = 0xFFFFFFFF;        
+    } 
 
-    const UINT8* ptr = (const UINT8*)rgBlock;
+    // we'll be reading the buffer in steps of 4 bytes, so the size must be recalculated accordingly
+    size = size >> 2;
 
     // Enter Data to the CRC calculator
-    for(index = 0U; index < nLength; index++)
+    for(index = 0U; index < size; index++)
     {
-        hcrc.Instance->DR = (uint32_t)*ptr++;
+        // take the next 4 bytes as if they were a UINT32
+        // because the CRC calculation unit expects the bytes in reverse order, reverse the byte order first 
+        arg1 = __REV(*(uint32_t*)(ptr));
+
+        // feed the bytes to the CRC 
+        hcrc.Instance->DR = arg1;
+
+        // copy to return value
+        crc = (uint32_t)hcrc.Instance->DR;
+
+        // increase pointer by 4 to the next position
+        // we are reading UINT32 from a UINT8 pointer 
+        ptr +=4;
     }
 
-    // Change CRC peripheral state to ready
-    hcrc.State = HAL_CRC_STATE_READY;
-
-    // Process Unlocked
-    __HAL_UNLOCK(&hcrc);
-
     // Return the CRC computed value
-    return hcrc.Instance->DR;    
+    return crc;    
 }
