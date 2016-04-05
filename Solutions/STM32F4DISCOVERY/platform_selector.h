@@ -112,27 +112,28 @@ startup delay is incurred when waking up from Stop mode. */
 //#define FAST_WAKEUP_FROM_STOP
 
 // Pin Configuration
-#define STM32F4_ADC 3
-#define STM32F4_AD_CHANNELS {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
+#define USER_ADC 3
+#define AD_CHANNELS {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
+#define ADC_CHANNELS {ADC_CHANNEL_0,ADC_CHANNEL_1,ADC_CHANNEL_2,ADC_CHANNEL_3,ADC_CHANNEL_4,ADC_CHANNEL_5,ADC_CHANNEL_6,ADC_CHANNEL_7,ADC_CHANNEL_8,ADC_CHANNEL_9,ADC_CHANNEL_10,ADC_CHANNEL_11,ADC_CHANNEL_12,ADC_CHANNEL_13,ADC_CHANNEL_14,ADC_CHANNEL_15}
 
-#define STM32F4_PWM_TIMER {4,4,4,4}
-#define STM32F4_PWM_CHNL  {0,1,2,3}
-#define STM32F4_PWM_PINS  {60,61,62,63} // PD12-PD15
+#define PWM_TIMER {4,4,4,4}
+#define PWM_CHNL  {0,1,2,3}
+#define PWM_PINS  {60,61,62,63} // PD12-PD15
 
 // add to SPI_PORTS array the SPI ports that are available in the solution 
 // please check which SPI ports are available in the device datasheet
 // uncomment the following define and leave the SPI ports that are available in your hardware
-//#define SPI_PORTS   {SPI1, SPI2, SPI3, SPI4, SPI5, SPI6}
+#define SPI_PORTS   {SPI1, SPI2, SPI3}
 
 // add to USART_PORTS array the USART ports that are available in the solution 
 // please check which USART ports are available in the device datasheet
 // uncomment the following define and leave the USART ports that are available in your hardware and you intend to use
 // NOTE: UART5 is not supported because TX and RX are handled in different ports
 #define USART_PORTS                 {USART1, USART2, USART6}
-#define USART_PORTS_TX_RX           {GPIOA, GPIOD, GPIOC, GPIOC, GPIOG}
+#define USART_PORTS_TX_RX           {GPIOA, GPIOD, GPIOC}
 // to use flow control, uncomment below define and leave the USART ports that are available in your hardware and you intend to use
 #define GPIO_NO_PORT                0
-#define USART_PORTS_FLOW_CONTROL    {GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT}
+#define USART_PORTS_FLOW_CONTROL    {GPIO_NO_PORT, GPIO_NO_PORT, GPIO_NO_PORT}
 
 #define STM32F4_UART_RXD_PINS {23, 54, 43} // PB7, D6, C11
 #define STM32F4_UART_TXD_PINS {22, 53, 42} // PB6, D5, C10
