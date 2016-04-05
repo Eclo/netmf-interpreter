@@ -126,21 +126,21 @@
         <Message Condition="'$(FEATURE_ANALOG)' == 'True'" Text="HAL Analog (ADC): included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_ANALOG)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_ANALOG" />
-            <RequiredProjects Include="$(FEATURE_ANALOG)\DeviceCode\Targets\CMSIS\Analog\dotNetMF.proj" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Analog\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- PWM -->
         <Message Condition="'$(FEATURE_PWM)' == 'True'" Text="HAL PWM: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_PWM)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_PWM" />
-            <RequiredProjects Include="$(FEATURE_PWM)\DeviceCode\Targets\CMSIS\PWM\dotNetMF.proj" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\PWM\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- DA -->
-        <Message Condition="'$(FEATURE_DA)' == 'True'" Text="HAL PWM: included" Importance="High"/>
+        <Message Condition="'$(FEATURE_DA)' == 'True'" Text="HAL DA: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_DA)' == 'True'">
             <CC_CPP_Defines Include="FEATURE_DA" />
-            <RequiredProjects Include="$(FEATURE_DA)\DeviceCode\Targets\CMSIS\DA\dotNetMF.proj" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\DA\dotNetMF.proj" />
         </ItemGroup>        
                       
         <!-- Cortex-M internal FLASH -->
