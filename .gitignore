@@ -58,6 +58,7 @@ STM32Cube/*
 !STM32Cube/ReadMe.m
 
 # CMSIS PAL and HAL folders
-DeviceCode/Targets/Native/STM32F4XX/HAL_Driver
+DeviceCode/Targets/Native/*/HAL_Driver
+DeviceCode/Targets/Native/*/USB/STM32_USB_Device_Library
 !DeviceCode/Targets/Native/*.proj
 !DeviceCode/Targets/Native/*.settings
