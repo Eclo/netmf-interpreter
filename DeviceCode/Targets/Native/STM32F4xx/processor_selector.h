@@ -23,7 +23,6 @@
 // #define STM32F4XX
 // #else
 // ERROR - WE SHOULD NOT INCLUDE THIS HEADER IF NOT BUILDING AN STM32F2/F4 PLATFORM
-#endif
 
 /////////////////////////////////////////////////////////
 //
@@ -92,3 +91,20 @@
 //
 // communicaiton facilities
 /////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
+// NVIC priorities 
+
+#define USB_PRIORITY        10
+
+#define USART1_PRIORITY     12
+#define USART2_PRIORITY     13
+#define USART3_PRIORITY     14
+#define USART4_PRIORITY     15
+#define USART6_PRIORITY     16
+#define USART7_PRIORITY     17
+#define USART8_PRIORITY     18
+
+/////////////////////////////////////////////////////////
+
+#endif
