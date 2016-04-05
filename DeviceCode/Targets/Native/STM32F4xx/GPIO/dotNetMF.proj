@@ -1,14 +1,14 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <AssemblyName>CMSIS_USART</AssemblyName>
+    <AssemblyName>CMSIS_GPIO</AssemblyName>
     <Size>
     </Size>
-    <ProjectGuid>{54531FA9-DF5E-4FA5-A0D7-0D5129EEC321}</ProjectGuid>
-    <Description>CMSIS USART driver</Description>
+    <ProjectGuid>{463E3E9A-9C28-444A-B3C7-5EC97A9F9B59}</ProjectGuid>
+    <Description>CMSIS GPIO driver</Description>
     <Level>HAL</Level>
-    <LibraryFile>CMSIS_USART.$(LIB_EXT)</LibraryFile>
-    <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USART\dotNetMF.proj</ProjectPath>
-    <ManifestFile>CMSIS_USART.$(LIB_EXT).manifest</ManifestFile>
+    <LibraryFile>CMSIS_GPIO.$(LIB_EXT)</LibraryFile>
+    <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\GPIO\dotNetMF.proj</ProjectPath>
+    <ManifestFile>CMSIS_GPIO.$(LIB_EXT).manifest</ManifestFile>
     <Groups></Groups>
     <Documentation>
     </Documentation>
@@ -18,7 +18,7 @@
     <Required>False</Required>
     <IgnoreDefaultLibPath>False</IgnoreDefaultLibPath>
     <IsStub>False</IsStub>
-    <Directory>DeviceCode\Targets\CMSIS\USART</Directory>
+    <Directory>DeviceCode\Targets\Native\STM32F4xx\GPIO</Directory>
     <OutputType>Library</OutputType>
     <PlatformIndependentBuild>false</PlatformIndependentBuild>
     <Version>4.0.0.0</Version>
@@ -26,7 +26,7 @@
   <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Settings" />
   <PropertyGroup />
   <ItemGroup>
-    <Compile Include="USART_functions.cpp" />
+    <Compile Include="GPIO_functions.cpp" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Targets" />

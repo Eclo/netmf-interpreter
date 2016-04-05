@@ -45,7 +45,7 @@ HRESULT CPU_USB_Initialize(int Controller)
     usbControlerState.EndpointStatus = endpointStatus;
     
     // FIXME
-    usbControlerState.EndpointCount = 2;
+    usbControlerState.EndpointCount = 4;
     
     // FIXME
     // get max ep0 packet size from actual configuration
@@ -56,18 +56,7 @@ HRESULT CPU_USB_Initialize(int Controller)
     // config endpoints
     // EP1
     // IN direction 
-    usbControlerState.IsTxQueue[0] = TRUE;
-    // max packet size
-    usbControlerState.MaxPacketSize[0] = WINUSB_MAX_FS_PACKET;
-    // assign queues
-    // clear queue before use
-    QueueBuffers[0].Initialize();
-    // Attach queue to endpoint
-    usbControlerState.Queues[0] = &QueueBuffers[0];  
-    
-    // EP2
-    // OUT direction
-    usbControlerState.IsTxQueue[1] = FALSE;
+    usbControlerState.IsTxQueue[1] = TRUE;
     // max packet size
     usbControlerState.MaxPacketSize[1] = WINUSB_MAX_FS_PACKET;
     // assign queues
@@ -75,6 +64,17 @@ HRESULT CPU_USB_Initialize(int Controller)
     QueueBuffers[1].Initialize();
     // Attach queue to endpoint
     usbControlerState.Queues[1] = &QueueBuffers[1];  
+    
+    // EP2
+    // OUT direction
+    usbControlerState.IsTxQueue[2] = FALSE;
+    // max packet size
+    usbControlerState.MaxPacketSize[2] = WINUSB_MAX_FS_PACKET;
+    // assign queues
+    // clear queue before use
+    QueueBuffers[2].Initialize();
+    // Attach queue to endpoint
+    usbControlerState.Queues[2] = &QueueBuffers[2];  
     
     // ?????????????
     EP_Type = 0xE0;
@@ -93,6 +93,11 @@ HRESULT CPU_USB_Initialize(int Controller)
     // Start Device Process
     USBD_Start(&USBD_Device);
 
+    // controller is now initialized
+    usbControlerState.Initialized = TRUE;
+    
+    usbControlerState.DeviceState = USB_DEVICE_STATE_CONFIGURED;
+    
     return S_OK;
 }
 
@@ -115,7 +120,7 @@ BOOL CPU_USB_StartOutput(USB_CONTROLLER_STATE* state, int endpoint)
 
     //USB_Debug( 't' );
 
-    GLOBAL_LOCK(irq);
+    //GLOBAL_LOCK(irq);
 
     // If endpoint is not an output
     if(state->Queues[endpoint] == NULL || !state->IsTxQueue[endpoint])
@@ -124,24 +129,46 @@ BOOL CPU_USB_StartOutput(USB_CONTROLLER_STATE* state, int endpoint)
     }
 
     /* if the halt feature for this endpoint is set, then just clear all the characters */
-    if(state->EndpointStatus[endpoint] & USB_STATUS_ENDPOINT_HALT)
-    {
-        while(USB_TxDequeue(state, endpoint, TRUE) != NULL)
-        {
-        } // clear TX queue
+    // if(state->EndpointStatus[endpoint] & USB_STATUS_ENDPOINT_HALT)
+    // {
+    //     while(USB_TxDequeue(state, endpoint, TRUE) != NULL)
+    //     {
+    //     } // clear TX queue
 
-        return TRUE;
-    }
+    //     return TRUE;
+    // }
 
-    if(irq.WasDisabled())
-    { 
-        // check all endpoints for pending actions
-        //STM32F4_USB_Driver_Interrupt( OTG, state );
-    }
+    //if(irq.WasDisabled())
+    //{ 
+     //   // check all endpoints for pending actions
+     //   //STM32F4_USB_Driver_Interrupt( OTG, state );
+   // }
     
-    // FIXME
+   // USBD_WINUSB_CLASS winUSBclass = (USBD_WINUSB_CLASS)USBD_Device.pClass;
+    
+    //winUSBclass->DataIn(&USBD_Device, endpoint);
+    
     // write first packet if not done yet
+    //USBD_WINUSB_DataIn
     //USBD_WINUSB_DataIn(&USBD_Device, endpoint);
+    USBD_LL_DataInStage(&USBD_Device, endpoint, NULL);
+    
+    
+    //USBD_WINUSB_CLASS.DataIn(&USBD_Device, endpoint);
+    
+    // // Tx data endpoint
+    // USB_PACKET64* usbPacket = USB_TxDequeue(state, ep, TRUE);
+    
+    // if(usbPacket)
+    // {  
+    //     // data to send
+    //     // Transmit next packet
+    //     USBD_LL_Transmit(&USBD_Device->pdev,
+    //                     1,
+    //                     usbPacket->Buffer,
+    //                     usbPacket->Size);
+    //     // USB_Debug( 's' );
+    // }
 
     return TRUE;
 }
@@ -158,7 +185,7 @@ BOOL CPU_USB_RxEnable(USB_CONTROLLER_STATE* state, int endpoint)
 
     //USB_Debug( 'e' );
 
-    GLOBAL_LOCK(irq);
+    //GLOBAL_LOCK(irq);
 
     // enable Rx
     // if( !( OTG->DOEP[ endpoint ].CTL & OTG_DOEPCTL_EPENA ) )

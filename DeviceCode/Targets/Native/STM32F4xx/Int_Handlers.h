@@ -53,17 +53,15 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-void SVC_Handler(void);
-void DebugMon_Handler(void);
-void PendSV_Handler(void);
-void SysTick_Handler(void);
-void EXTI0_IRQHandler(void);
-void OTG_FS_IRQHandler(void);
+// __weak void NMI_Handler(void);
+// __weak void HardFault_Handler(void);
+// __weak void MemManage_Handler(void);
+// __weak void BusFault_Handler(void);
+// __weak void UsageFault_Handler(void);
+// __weak void SVC_Handler(void);
+// __weak void DebugMon_Handler(void);
+// __weak __weak __weak void PendSV_Handler(void);
+// __weak void SysTick_Handler(void);
 #ifdef __cplusplus
 }
 #endif

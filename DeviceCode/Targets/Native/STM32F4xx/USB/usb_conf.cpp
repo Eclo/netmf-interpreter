@@ -27,6 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <tinyhal.h>
+#include <pal\com\usb\USB.h>
 
 #include "usbd_conf.h"
 #include "usbd_core.h"
@@ -91,7 +92,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
     __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
 
      /* Set USBFS Interrupt to the lowest priority */
-    HAL_NVIC_SetPriority(OTG_FS_IRQn, 4, 0);
+    HAL_NVIC_SetPriority(OTG_FS_IRQn, USB_PRIORITY, 0);
     
     /* Enable USBFS Interrupt */
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
@@ -147,25 +148,120 @@ void HAL_PCD_SetupStageCallback(PCD_HandleTypeDef *hpcd)
 }
 
 /**
-  * @brief  SOF callback.
+  * @brief  Data out callback.
   * @param  hpcd: PCD handle
   * @param  epnum: Endpoint Number
   * @retval None
   */
 void HAL_PCD_DataOutStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 {
-  USBD_LL_DataOutStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->OUT_ep[epnum].xfer_buff);
+    USBD_LL_DataOutStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->OUT_ep[epnum].xfer_buff);
+
+    // moving this to USBD_WINUSB_DataOut   
+    // USB_CONTROLLER_STATE* state;
+    // USBD_HandleTypeDef *pdev = (USBD_HandleTypeDef*)hpcd->pData;
+    // state = (USB_CONTROLLER_STATE*)pdev->pUserData;
+
+    // if(epnum == 1)
+    // {
+    //     // this is a control endpoint
+
+    //     state->Data = hpcd->OUT_ep[epnum].xfer_buff;
+    //     state->DataSize = hpcd->OUT_ep[epnum].xfer_count;
+
+    // }
+    // else if(epnum == 2)
+    // {
+    //     // this is a data endpoint
+        
+    //     BOOL bufferIsFull;
+    //     USB_PACKET64* usbPacket = USB_RxEnqueue(state, epnum, bufferIsFull);
+        
+    //     if(usbPacket == NULL)
+    //     {  
+    //         // should not happen
+    //         //USB_Debug( '?' );
+    //         //_ASSERT( 0 );
+    //     }
+        
+    //     // copy data from endpoint buffer to USB packet buffer
+    //     memcpy(usbPacket->Buffer, hpcd->OUT_ep[epnum].xfer_buff, hpcd->OUT_ep[epnum].xfer_count);
+    //     // set USB packet size 
+    //     usbPacket->Size = hpcd->OUT_ep[epnum].xfer_count;         
+    // }  
 }
 
 /**
-  * @brief  SOF callback.
+  * @brief  Data in callback.
   * @param  hpcd: PCD handle
   * @param  epnum: Endpoint Number
   * @retval None
   */
 void HAL_PCD_DataInStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 {
-  USBD_LL_DataInStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->IN_ep[epnum].xfer_buff);
+    USBD_LL_DataInStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->IN_ep[epnum].xfer_buff);
+
+    // UINT32* ps = NULL;
+    // UINT32 count;
+
+    // USB_CONTROLLER_STATE* state;
+    // USBD_HandleTypeDef *pdev = (USBD_HandleTypeDef*)hpcd->pData;
+    // state = (USB_CONTROLLER_STATE*)pdev->pUserData;
+
+    // if(epnum == 1 )
+    // { 
+    //     // this is a control endpoint
+        
+    //     if(state->DataCallback)
+    //     { 
+    //         // data to send
+    //         state->DataCallback(state);  // this call can't fail
+    //         ps = (UINT32*)state->Data;
+    //         count = state->DataSize;
+
+    //         //USB_Debug( count ? 'x' : 'n' );
+    //     }
+    // }
+    // else if(state->Queues[epnum] != NULL && state->IsTxQueue[epnum])
+    // { 
+    //     // this is a TX data endpoint
+        
+    //     USB_PACKET64* usbPacket = USB_TxDequeue(state, epnum, TRUE);
+    //     if(usbPacket)
+    //     {  
+    //         // data to send
+            
+    //         ps = (UINT32*)usbPacket->Buffer;
+
+    //         //USB_Debug( 's' );
+            
+    //         // copy data from USB packet buffer to endpoint buffer 
+    //         memcpy(hpcd->IN_ep[epnum].xfer_buff, usbPacket->Buffer, usbPacket->Size);
+    //     }
+    // }
+
+    // if(ps)
+    // {
+    //     // data to send
+    //     // enable endpoint
+    //     //OTG->DIEP[ ep ].TSIZ = OTG_DIEPTSIZ_PKTCNT_1 | count;
+    //     //OTG->DIEP[ ep ].CTL |= OTG_DIEPCTL_EPENA | OTG_DIEPCTL_CNAK;
+
+    //     // write data
+    //     uint32_t volatile* pd = OTG->DFIFO[ep];
+    //     for( int c = count; c > 0; c -= 4 )
+    //     {
+    //         *pd = *ps++;
+    //     }
+    // }
+    // else
+    // { 
+    //     // no data
+        
+    //     // disable endpoint
+    //     OTG->DIEP[ ep ].CTL |= OTG_DIEPCTL_SNAK;
+    // }
+  
 }
 
 /**
@@ -179,7 +275,7 @@ void HAL_PCD_SOFCallback(PCD_HandleTypeDef *hpcd)
 }
 
 /**
-  * @brief  SOF callback.
+  * @brief  Reset callback.
   * @param  hpcd: PCD handle
   * @retval None
   */

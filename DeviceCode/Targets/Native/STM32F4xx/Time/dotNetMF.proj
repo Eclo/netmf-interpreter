@@ -8,7 +8,7 @@
         <Description>CMSIS time driver</Description>
         <Level>HAL</Level>
         <LibraryFile>CMSIS_time.$(LIB_EXT)</LibraryFile>
-        <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Time\dotNetMF.proj</ProjectPath>
+        <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\Time\dotNetMF.proj</ProjectPath>
         <ManifestFile>CMSIS_time.$(LIB_EXT).manifest</ManifestFile>
         <Groups></Groups>
         <Documentation>
@@ -19,7 +19,7 @@
         <Required>False</Required>
         <IgnoreDefaultLibPath>False</IgnoreDefaultLibPath>
         <IsStub>False</IsStub>
-        <Directory>DeviceCode\CMSIS\Time</Directory>
+        <Directory>DeviceCode\Targets\Native\STM32F4xx\Time</Directory>
         <OutputType>Library</OutputType>
         <PlatformIndependentBuild>false</PlatformIndependentBuild>
         <Version>4.0.0.0</Version>

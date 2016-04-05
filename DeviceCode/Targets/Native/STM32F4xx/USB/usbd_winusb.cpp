@@ -47,6 +47,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <tinyhal.h>
+#include <pal\com\usb\USB.h>
 
 #include "usbd_winusb.h"
 #include "usbd_desc.h"
@@ -87,8 +88,8 @@
 /**
   * @}
   */ 
-
-
+static uint8_t buffer[80];
+static uint8_t outBuffer[80];
 
 
 /** @defgroup USBD_WINUSB_Private_FunctionPrototypes
@@ -304,17 +305,19 @@ static uint8_t  USBD_WINUSB_Init (USBD_HandleTypeDef *pdev,
                    USBD_EP_TYPE_BULK,
                    WINUSB_MAX_FS_PACKET);
 
-
-    state = (USB_CONTROLLER_STATE*)pdev->pUserData;
+    USBD_LL_FlushEP(pdev, WINUSB_EPOUT_ADDR);
+    USBD_LL_FlushEP(pdev, WINUSB_EPIN_ADDR);
+    
+    // state = (USB_CONTROLLER_STATE*)pdev->pUserData;
     
     /* Prepare Out endpoint to receive next packet */
     USBD_LL_PrepareReceive(pdev,
                             WINUSB_EPOUT_ADDR,
-                            state->Data,
+                            &buffer[0],
                             WINUSB_MAX_FS_PACKET);    
      
     
-  return ret;
+    return ret;
 }
 
 /**
@@ -454,7 +457,24 @@ static uint8_t  USBD_WINUSB_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
     
     if(epnum == 1)
     {
+        // Tx data endpoint
+        USB_PACKET64* usbPacket = USB_TxDequeue(state, epnum, TRUE);
         
+        if(usbPacket)
+        {  
+            // data to send
+            // Transmit next packet
+            
+            // copy packet data to out buffer  
+            memcpy(usbPacket->Buffer, &outBuffer[0], usbPacket->Size);
+            
+            USBD_LL_Transmit(pdev,
+                            epnum,
+                            outBuffer,
+                            usbPacket->Size);
+            // USB_Debug( 's' );
+        }
+
     }    
 
     //     if( ps )
@@ -632,11 +652,49 @@ static uint8_t  USBD_WINUSB_IsoOutIncomplete (USBD_HandleTypeDef *pdev, uint8_t 
   * @param  epnum: endpoint index
   * @retval status
   */
-static uint8_t  USBD_WINUSB_DataOut (USBD_HandleTypeDef *pdev, 
-                              uint8_t epnum)
+static uint8_t  USBD_WINUSB_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-    // FIXME
-  return USBD_OK;
+    USB_PACKET64* usbPacket;
+    USB_CONTROLLER_STATE* state;
+    state = (USB_CONTROLLER_STATE*)pdev->pUserData;
+
+    if(epnum == WINUSB_EPOUT_ADDR)
+    {
+        // EP2
+        
+        BOOL bufferIsFull;
+        usbPacket = USB_RxEnqueue(state, epnum, bufferIsFull);
+
+        if(usbPacket == NULL)
+        {  
+            // should not happen
+            //USB_Debug( '?' );
+            //_ASSERT( 0 );
+        }
+
+        // get how many bytes are available in the buffer...
+        // ... and set USB packet size
+        usbPacket->Size = USBD_LL_GetRxDataSize (pdev , epnum);
+
+        // copy received data to USB packet struct  
+        memcpy(usbPacket->Buffer, &buffer[0], usbPacket->Size);
+
+        // prepare WINUSB_EPOUT_ADDR endpoint to receive next packet
+        USBD_LL_PrepareReceive(pdev, epnum, &buffer[0], WINUSB_MAX_FS_PACKET);
+
+        if(usbPacket->Buffer[0] == 'x')
+        {
+            // xx start of packet
+            debug_printf("dummy packet");
+        }
+        else if(usbPacket->Buffer[0] == 'M')
+        {
+            // start of Msft debug  packet
+            debug_printf("debug packet");
+        } 
+    }  
+
+    return USBD_OK;
 }
 
 /**

@@ -151,7 +151,7 @@
    
     <ItemGroup>
         <DriverLibs Include="CMSIS_USB.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\CMSIS\USB\dotNetMF.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\USB\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="usb_cmsis_pal.$(LIB_EXT)" />

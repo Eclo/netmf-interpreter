@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <AssemblyName>CMSIS_power</AssemblyName>
-        <ProjectGuid>{1FC7E0E0-C703-4571-8BF8-1398DD8B8821}</ProjectGuid>
+        <AssemblyName>CMSIS_CRC</AssemblyName>
+        <ProjectGuid>{157C5580-48A2-4F69-8EFB-C5CEB7123177}</ProjectGuid>
         <Size>
         </Size>
-        <Description>CMSIS CPU power library</Description>
+        <Description>CMSIS CRC library</Description>
         <Level>HAL</Level>
-        <LibraryFile>CMSIS_power.$(LIB_EXT)</LibraryFile>
-        <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\CMSIS\Power\dotNetMF.proj</ProjectPath>
-        <ManifestFile>CMSIS_power.$(LIB_EXT).manifest</ManifestFile>
+        <LibraryFile>CMSIS_CRC.$(LIB_EXT)</LibraryFile>
+        <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\CRC\dotNetMF.proj</ProjectPath>
+        <ManifestFile>CMSIS_CRC.$(LIB_EXT).manifest</ManifestFile>
         <Groups></Groups>
         <Documentation>
         </Documentation>
@@ -19,7 +19,7 @@
         <Required>False</Required>
         <IgnoreDefaultLibPath>False</IgnoreDefaultLibPath>
         <IsStub>True</IsStub>
-        <Directory>DeviceCode\Targets\CMSIS\Power</Directory>
+        <Directory>DeviceCode\Targers\Native\STM32F4xx\CRC</Directory>
         <OutputType>Library</OutputType>
         <PlatformIndependentBuild>false</PlatformIndependentBuild>
         <Version>4.0.0.0</Version>
@@ -30,7 +30,7 @@
     <PropertyGroup />
 
     <ItemGroup>
-        <Compile Include="Power_functions.cpp" />
+        <Compile Include="CRC_functions.cpp" />
     </ItemGroup>
 
     <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Targets" />
