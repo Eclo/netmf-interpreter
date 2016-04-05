@@ -58,15 +58,7 @@
 #define SYSTEM_APB1_CLOCK_HZ             42000000   //  42 MHz
 #define SYSTEM_APB2_CLOCK_HZ             84000000   //  84 MHz
 
-//#define SYSTEM_CRYSTAL_CLOCK_HZ           8000000   // 8 MHz external clock
-
-//#define SUPPLY_VOLTAGE_MV                    3300   // 3.3V supply
-
-//#define CLOCK_COMMON_FACTOR               1000000   // GCD(SYSTEM_CLOCK_HZ, 1M)
-
 #define SLOW_CLOCKS_PER_SECOND            1000000   // 1 MHz
-// #define SLOW_CLOCKS_TEN_MHZ_GCD           1000000   // GCD(SLOW_CLOCKS_PER_SECOND, 10M)
-// #define SLOW_CLOCKS_MILLISECOND_GCD          1000   // GCD(SLOW_CLOCKS_PER_SECOND, 1k)
 
 #define FLASH_MEMORY_Base               0x08000000
 #define FLASH_MEMORY_Size               0x00100000
