@@ -52,6 +52,11 @@ ReleaseNotesCrypto.txt
 /Solutions/Windows/TinyCLR/FLASH_MEMORY.bin
 *.opendb
 *.dbgconf
+!STM32Cube/ReadMe.m
+/tools/DisAsmPE/Debug
+/tools/DisAsmPE/DisAsmPE/Debug
+/tools/DisAsmPE/NETMF.PE.Metadata/Debug
+/tools/DisAsmPE/DisAsmPE/*.txt
 
 # STM32 Cube
 STM32Cube/*
