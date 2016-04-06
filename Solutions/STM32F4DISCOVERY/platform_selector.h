@@ -52,6 +52,8 @@
 
 #define PORT_PIN(port,pin) ( ( (int)port) * 16 + ( pin ) )
 
+#define GPIO_PINS {GPIO_PIN_0,GPIO_PIN_1,GPIO_PIN_2,GPIO_PIN_3,GPIO_PIN_4,GPIO_PIN_5,GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8,GPIO_PIN_9,GPIO_PIN_10,GPIO_PIN_11,GPIO_PIN_12,GPIO_PIN_13,GPIO_PIN_14,GPIO_PIN_15}
+
 // System clock
 #define SYSTEM_CLOCK_HZ                 168000000   // 168 MHz
 #define SYSTEM_CYCLE_CLOCK_HZ           168000000   // 168 MHz
@@ -105,13 +107,14 @@ startup delay is incurred when waking up from Stop mode. */
 
 // Pin Configuration
 #define USER_ADC 3
-#define AD_CHANNELS {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
-#define ADC_CHANNELS {ADC_CHANNEL_0,ADC_CHANNEL_1,ADC_CHANNEL_2,ADC_CHANNEL_3,ADC_CHANNEL_4,ADC_CHANNEL_5,ADC_CHANNEL_6,ADC_CHANNEL_7,ADC_CHANNEL_8,ADC_CHANNEL_9,ADC_CHANNEL_10,ADC_CHANNEL_11,ADC_CHANNEL_12,ADC_CHANNEL_13,ADC_CHANNEL_14,ADC_CHANNEL_15}
+// choose a maximum of 8 channels and a minimum of one
+// ** IMPORTANT ** internal channels 16 and 17 are not available in ADC3
+#define AD_CHANNELS {0,1,2,3,4,5,6,7}//,8,9,10,11,12,13,14,15,16,17}
 
 // Uncomment only one of the following defines for DAC
-#define USE_DAC_CHANNEL_1
+//#define USE_DAC_CHANNEL_1
 //#define USE_DAC_CHANNEL_2
-//#define USE_BOTH_DAC_CHANNEL
+#define USE_BOTH_DAC_CHANNEL
 
 #define PWM_TIMER {4,4,4,4}
 #define PWM_CHNL  {0,1,2,3}
