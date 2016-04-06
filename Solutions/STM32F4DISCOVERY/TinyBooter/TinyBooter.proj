@@ -46,6 +46,7 @@
         <DriverLibs Condition="'$(FEATURE_SPI)' == 'True'" Include="CMSIS_SPI.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_SPI)' != 'True'" Include="cpu_spi_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="CMSIS_I2C.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="i2c_pal.$(LIB_EXT)" />
         <PlatformIndependentLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="I2C.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="cpu_i2c_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="CMSIS_USART.$(LIB_EXT)" />
