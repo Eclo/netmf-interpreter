@@ -15,6 +15,8 @@
 
 //--//
 
+extern "C" void SystemClock_Config(void);
+
 void HAL_AssertEx()
 {
     __BKPT(0);
