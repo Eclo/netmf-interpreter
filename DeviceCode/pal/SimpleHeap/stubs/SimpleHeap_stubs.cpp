@@ -6,20 +6,20 @@
 
 //--//
 
-__weak void SimpleHeap_Initialize( void* buffer, UINT32 length )
+void SimpleHeap_Initialize( void* buffer, UINT32 length )
 {
 }
 
-__weak void* SimpleHeap_Allocate( size_t len )
+void* SimpleHeap_Allocate( size_t len )
 {
     return NULL;
 }
 
-__weak void SimpleHeap_Release( void* ptr )
+void SimpleHeap_Release( void* ptr )
 {
 }
 
-__weak void* SimpleHeap_ReAllocate( void*  ptr, size_t len )
+void* SimpleHeap_ReAllocate( void*  ptr, size_t len )
 {
     return NULL;
 }
