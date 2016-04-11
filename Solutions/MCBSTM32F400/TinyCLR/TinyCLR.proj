@@ -158,7 +158,6 @@
     <ItemGroup>
         <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
-        <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />        
     </ItemGroup>
 
     <!-- PAL features here -->
