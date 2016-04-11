@@ -49,6 +49,8 @@
         <DriverLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="i2c_pal.$(LIB_EXT)" />
         <PlatformIndependentLibs Condition="'$(FEATURE_I2C)' == 'True'" Include="I2C.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="cpu_i2c_stubs.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="i2c_pal_stubs.$(LIB_EXT)" />
+        <PlatformIndependentLibs Condition="'$(FEATURE_I2C)' != 'True'" Include="I2C_stub.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="CMSIS_USART.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' == 'True'" Include="usart_pal.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USART)' != 'True'" Include="cpu_usart_stubs.$(LIB_EXT)" />
@@ -122,7 +124,6 @@
     <ItemGroup>
         <RequiredProjects Condition="'$(FEATURE_I2C)' == 'True'" Include="$(SPOCLIENT)\CLR\core\I2C\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\Support\WireProtocol\dotNetMF.proj" />
-        <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />        
     </ItemGroup>
 
     <!-- PAL features projects here -->
