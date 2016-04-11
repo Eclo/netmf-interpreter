@@ -1,54 +1,97 @@
-﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <AssemblyName>TinyHal_STM32F4xx</AssemblyName>
-    <ProjectGuid>{49A36823-B4BC-439C-9223-E5395314A422}</ProjectGuid>
-    <Size>
-    </Size>
-    <Description>STM32F4xx HAL library</Description>
-    <Level>HAL</Level>
-    <LibraryFile>TinyHal_STM32F4xx.$(LIB_EXT)</LibraryFile>
-    <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\dotNetMF.proj</ProjectPath>
-    <ManifestFile>TinyHal_STM32F4xx.$(LIB_EXT).manifest</ManifestFile>
-    <Groups>HAL</Groups>
-    <Documentation>
-    </Documentation>
-    <PlatformIndependent>False</PlatformIndependent>
-    <CustomFilter>
-    </CustomFilter>
-    <Required>False</Required>
-    <IgnoreDefaultLibPath>False</IgnoreDefaultLibPath>
-    <IsStub>False</IsStub>
-    <Directory>DeviceCode\Targets\Native\STM32F4xx</Directory>
-    <PlatformIndependentBuild>false</PlatformIndependentBuild>
-    <Version>4.0.0.0</Version>
-  </PropertyGroup>
-  <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Settings" />
-  <Import Project="$(SPOCLIENT)\Framework\Features\PreStackInit_HAL.libcatproj" />
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="BeforeBuild">
+    <PropertyGroup>
+        <AssemblyName>TinyHAL_STM32F4xx</AssemblyName>
+        <ProjectGuid>{49A36823-B4BC-439C-9223-E5395314A422}</ProjectGuid>
+        <Size>
+        </Size>
+        <Description>STM32F4xx HAL library</Description>
+        <Level>HAL</Level>
+        <LibraryFile>TinyHAL_STM32F4xx.$(LIB_EXT)</LibraryFile>
+        <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\dotNetMF.proj</ProjectPath>
+        <ManifestFile>TinyHAL_STM32F4xx.$(LIB_EXT).manifest</ManifestFile>
+        <Groups>HAL</Groups>
+        <Documentation>
+        </Documentation>
+        <PlatformIndependent>False</PlatformIndependent>
+        <CustomFilter>
+        </CustomFilter>
+        <Required>False</Required>
+        <IgnoreDefaultLibPath>False</IgnoreDefaultLibPath>
+        <IsStub>False</IsStub>
+        <Directory>DeviceCode\Targets\Native\STM32F4xx</Directory>
+        <PlatformIndependentBuild>false</PlatformIndependentBuild>
+        <Version>4.0.0.0</Version>
+    </PropertyGroup>
+    
+    <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Settings" />
+    <Import Project="$(SPOCLIENT)\Framework\Features\PreStackInit_HAL.libcatproj" />
+    
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\Aborts.cpp" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\tinyhal.cpp" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\SystemState.cpp" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\OEM_Model_SKU_NetworkID.cpp" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\ItmPort\ItmPort.cpp" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\GlobalLock\SmartPtr_cortex.cpp" />
+    </ItemGroup>
+  
+    <ItemGroup>
+        <Compile Include="stm32f4xx_hal_msp.c" />
+        <Compile Include="system_stm32f4xx.c" />
+        <Compile Include="Int_Handlers.c" />
+        <Compile Include="SystemClock_Config.c" />
+    </ItemGroup>  
+  
+    <ItemGroup>  
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_adc.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_can.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_cortex.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_crc.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_cryp.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_dac.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_dcmi.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_dma.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_eth.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_flash.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_flash_ex.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_gpio.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_hash.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_hcd.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_i2c.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_i2s.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_irda.c" />
+        <!--<Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_iwdg.c" />-->
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_nand.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_nor.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pccard.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pcd.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pcd_ex.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pwr.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rng.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rtc.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_sd.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_smartcard.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_spi.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_sram.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_tim.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_tim_ex.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_uart.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_usart.c" />
+        <!--<Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_wwdg.c" />-->
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_ll_fsmc.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_ll_sdmmc.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_ll_usb.c" />  
+    </ItemGroup>
 
   <ItemGroup>
-      <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\Aborts.cpp" />
-      <!--<Compile Include="$(AS_SUBDIR)\AppEntry.s" />-->
-      <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\$(AS_SUBDIR)\startup_tinyCLR.s" />
-      <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\IDelayLoop.s" />
-      <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\Interlocked.s" />
-      <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\OtherHandlers.s" />  
-      <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\tinyhal.cpp" />
-    <Compile Include="$(SPOCLIENT)\DeviceCode\Initialization\SystemState.cpp" />
-    <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\stm32f4xx_hal_msp.c" />
- </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Include="stm32f4xx_hal_msp.c" />
-    <Compile Include="system_stm32f4xx.c" />
-    <Compile Include="Int_Handlers.cpp" />
-    <Compile Include="SystemClock_Config.c" />
-  </ItemGroup>  
-  
-  <ItemGroup>
-    <HFiles Include="$(SPOCLIENT)\DeviceCode\Initialization\MasterConfig.h" />
     <!-- FIXME replace with correct file first entry is not anymore -->
     <LIB_FIRSTENTRY_OBJ Include="$(OBJ_DIR)\AppEntry.$(OBJ_EXT)" />
   </ItemGroup>
@@ -152,9 +195,10 @@
         <Message Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'" Text="Software CRC: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'">
             <CC_CPP_Defines Include="FEATURE_CRC" />
+            <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />
         </ItemGroup>
 
-        <Error Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' == 'True'" Text="Can't have both Cortex-M CRC Unit and Software CRC selected. Check 'features.setting' file for TinyCLR."/>
+        <Error Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' == 'True'" Text="Can't have both Cortex-M CRC Unit and Software CRC selected. Check 'features.setting' file for TinyBooter."/>
 
     </Target>
 
@@ -182,8 +226,17 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />
     </ItemGroup>
     
+    <!-- All PAL and Core stubs go here -->
     <ItemGroup>
-        <ExtraProjects Include="dotNetMF_loader.proj" Condition="'$(PLATFORM_FAMILY)'=='arm'" />
+        <RequiredProjects Include="$(SPOCLIENT)\CLR\Core\I2C\dotNetMF_stub.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\stubs\dotNetMF.proj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\$(AS_SUBDIR)\startup_tinyCLR.s" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\IDelayLoop.s" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\Interlocked.s" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\OtherHandlers.s" />
     </ItemGroup>
 
   <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Targets" />

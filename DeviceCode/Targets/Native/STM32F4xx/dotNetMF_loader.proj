@@ -71,6 +71,7 @@
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pcd.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pcd_ex.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pwr.c" />
+        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c" />        
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rng.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rtc.c" />
@@ -191,6 +192,7 @@
         <Message Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'" Text="Software CRC: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'">
             <CC_CPP_Defines Include="FEATURE_CRC" />
+            <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />            
         </ItemGroup>
 
         <Error Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' == 'True'" Text="Can't have both Cortex-M CRC Unit and Software CRC selected. Check 'features.setting' file for TinyBooter."/>
@@ -220,7 +222,13 @@
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\BatteryMeasurement\stubs\dotNetMF.proj" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Drivers\stubs\Processor\stubs_watchdog\dotNetMF.proj" />
     </ItemGroup>
-
+    
+    <!-- All PAL and Core stubs go here -->
+    <ItemGroup>
+        <RequiredProjects Include="$(SPOCLIENT)\CLR\Core\I2C\dotNetMF_stub.proj" />
+        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\I2C\stubs\dotNetMF.proj" />
+    </ItemGroup>
+    
     <ItemGroup>
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\$(AS_SUBDIR)\startup_tinyBooter.s" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\IDelayLoop.s" />
