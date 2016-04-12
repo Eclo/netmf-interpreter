@@ -105,12 +105,21 @@ When the voltage regulator operates in low power mode, an additional
 startup delay is incurred when waking up from Stop mode. */
 //#define FAST_WAKEUP_FROM_STOP
 
+/* GPIOs */
+#define GPIO_PORT_PINS \
+{\
+    {GPIOA, GPIO_PIN_3},\
+    {GPIOB, GPIO_PIN_13}\
+}
+
+/* ADC */
 // Pin Configuration
 #define USER_ADC 3
 // choose a maximum of 8 channels and a minimum of one
 // ** IMPORTANT ** internal channels 16 and 17 are not available in ADC3
 #define AD_CHANNELS {0,1,2,3,4,5,6,7}//,8,9,10,11,12,13,14,15,16,17}
 
+/* DAC */
 // Uncomment only one of the following defines for DAC
 //#define USE_DAC_CHANNEL_1
 //#define USE_DAC_CHANNEL_2
@@ -120,11 +129,13 @@ startup delay is incurred when waking up from Stop mode. */
 #define PWM_CHNL  {0,1,2,3}
 #define PWM_PINS  {60,61,62,63} // PD12-PD15
 
+/* SPI */
 // add to SPI_PORTS array the SPI ports that are available in the solution 
 // please check which SPI ports are available in the device datasheet
 // uncomment the following define and leave the SPI ports that are available in your hardware
 #define SPI_PORTS   {SPI1, SPI2, SPI3}
 
+/* USART/UART */
 // add to USART_PORTS array the USART ports that are available in the solution 
 // please check which USART ports are available in the device datasheet
 // uncomment the following define and leave the USART ports that are available in your hardware and you intend to use
