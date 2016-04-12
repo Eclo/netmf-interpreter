@@ -55,7 +55,6 @@
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_crc.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_cryp.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_dac.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_dcmi.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_dma.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_eth.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_flash.c" />
@@ -64,12 +63,6 @@
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_hash.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_hcd.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_i2c.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_i2s.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_irda.c" />
-        <!--<Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_iwdg.c" />-->
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_nand.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_nor.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pccard.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pcd.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pcd_ex.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_pwr.c" />
@@ -77,17 +70,11 @@
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rcc.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rng.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_rtc.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_sd.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_smartcard.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_spi.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_sram.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_tim.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_tim_ex.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_uart.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_usart.c" />
-        <!--<Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_hal_wwdg.c" />-->
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_ll_fsmc.c" />
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_ll_sdmmc.c" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\HAL_Driver\Src\stm32f4xx_ll_usb.c" />  
     </ItemGroup>
 
