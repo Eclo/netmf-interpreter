@@ -42,16 +42,6 @@
 // constants
 //
 
-#define GPIO_PORTA 0
-#define GPIO_PORTB 1
-#define GPIO_PORTC 2
-#define GPIO_PORTD 3
-#define GPIO_PORTE 4
-// The remaining ports are not broken out - except PH0 and PH1,
-// which are deliberately omitted to keep the range continuous.
-
-#define PORT_PIN(port,pin) ( ( (int)port) * 16 + ( pin ) )
-
 #define GPIO_PINS {GPIO_PIN_0,GPIO_PIN_1,GPIO_PIN_2,GPIO_PIN_3,GPIO_PIN_4,GPIO_PIN_5,GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8,GPIO_PIN_9,GPIO_PIN_10,GPIO_PIN_11,GPIO_PIN_12,GPIO_PIN_13,GPIO_PIN_14,GPIO_PIN_15}
 
 // System clock
@@ -106,10 +96,19 @@ startup delay is incurred when waking up from Stop mode. */
 //#define FAST_WAKEUP_FROM_STOP
 
 /* GPIOs */
+// PA.0  'User' button
+// PD.13 LED3 (orange)
+// PD.12 LED4 (green)
+// PD.14 LED5 (red)
+// PD.15 LED6 (blue)
+    
 #define GPIO_PORT_PINS \
 {\
-    {GPIOA, GPIO_PIN_3},\
-    {GPIOB, GPIO_PIN_13}\
+    {GPIOA, GPIO_PIN_0},\
+    {GPIOD, GPIO_PIN_13},\
+    {GPIOD, GPIO_PIN_12},\
+    {GPIOD, GPIO_PIN_14},\
+    {GPIOD, GPIO_PIN_15},\
 }
 
 /* ADC */
@@ -151,14 +150,14 @@ startup delay is incurred when waking up from Stop mode. */
 #define STM32F4_UART_CTS_PINS {(BYTE)GPIO_PIN_NONE, 51, 59} // GPIO_PIN_NONE, D3, D11
 #define STM32F4_UART_RTS_PINS {(BYTE)GPIO_PIN_NONE, 52, 60} // GPIO_PIN_NONE, D4, D12
 
-// User LEDs
-#define LED3 PORT_PIN(GPIO_PORTD, 13) // PD.13 (orange)
-#define LED4 PORT_PIN(GPIO_PORTD, 12) // PD.12 (green)
-#define LED5 PORT_PIN(GPIO_PORTD, 14) // PD.14 (red)
-#define LED6 PORT_PIN(GPIO_PORTD, 15) // PD.15 (blue)
+// User LEDs are defined as GPIO ports above in GPIO_PORT_PINS @ the following indexes
+#define LED3 1  // (orange)
+#define LED4 2  // (green)
+#define LED5 3  // (red)
+#define LED6 4  // (blue)
 
 // TinyBooter entry using GPIO
-#define TINYBOOTER_ENTRY_GPIO_PIN       PORT_PIN(GPIO_PORTA, 0) // 'User' button
+#define TINYBOOTER_ENTRY_GPIO_PIN       0                       // 'User' button being GPIO port @ index 0 above in GPIO_PORT_PINS
 #define TINYBOOTER_ENTRY_GPIO_STATE     TRUE                    // Active high
 #define TINYBOOTER_ENTRY_GPIO_RESISTOR  RESISTOR_DISABLED       // No internal resistor, there is external pull-down (R39)
 

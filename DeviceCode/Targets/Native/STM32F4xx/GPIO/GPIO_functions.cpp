@@ -269,7 +269,6 @@ void GPIO_Pin_Config(GPIO_PIN pin
     {
         GPIO_InitStructure.Pull = GPIO_PUPDR_PUPDR0_1;
     }
-   
 
     // Init GPIO 
     HAL_GPIO_Init(gpioPortPin[pin].port, &GPIO_InitStructure);
@@ -521,9 +520,10 @@ void CPU_GPIO_EnableOutputPin(GPIO_PIN pin, BOOL initialState)
 
     if(pin < GPIO_PIN_COUNT)
     {
-        CPU_GPIO_SetPinState(gpioPortPin[pin].pin, initialState);
         // general purpose output, any edge, does matter
-        GPIO_Pin_Config(gpioPortPin[pin].pin, GPIO_MODE_OUTPUT_PP, RESISTOR_DISABLED, GPIO_INT_EDGE_BOTH, NULL);
+        GPIO_Pin_Config(pin, GPIO_MODE_OUTPUT_PP, RESISTOR_DISABLED, GPIO_INT_EDGE_BOTH, NULL);
+
+        CPU_GPIO_SetPinState(pin, initialState);
         
         // disable INT state for this pin
         Int_State* state = &g_int_state[pin];
@@ -542,7 +542,7 @@ BOOL CPU_GPIO_EnableInputPin(GPIO_PIN pin
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
 
-    return CPU_GPIO_EnableInputPin2(gpioPortPin[pin].pin, GlitchFilterEnable, ISR, 0, edge, resistor);
+    return CPU_GPIO_EnableInputPin2(pin, GlitchFilterEnable, ISR, 0, edge, resistor);
 }
 
 BOOL CPU_GPIO_EnableInputPin2(GPIO_PIN pin
@@ -558,7 +558,7 @@ BOOL CPU_GPIO_EnableInputPin2(GPIO_PIN pin
     if(pin >= GPIO_PIN_COUNT)
         return FALSE;
 
-    GPIO_Pin_Config(gpioPortPin[pin].pin, GPIO_MODE_INPUT, resistor, edge, ISR); // input
+    GPIO_Pin_Config(pin, GPIO_MODE_INPUT, resistor, edge, ISR); // input
     
     Int_State* state = &g_int_state[pin];
 
@@ -612,6 +612,8 @@ BOOL CPU_GPIO_EnableInputPin2(GPIO_PIN pin
         state->ISR = NULL;
         state->completion.Abort();        
     }
+    
+    return TRUE;
 }
 
 BOOL CPU_GPIO_GetPinState(GPIO_PIN pin)
@@ -621,7 +623,7 @@ BOOL CPU_GPIO_GetPinState(GPIO_PIN pin)
     if(pin >= GPIO_PIN_COUNT)
         return FALSE;
 
-    return (gpioPortPin[pin].port->IDR >> gpioPortPin[pin].pin) & 1;
+    return (BOOL)HAL_GPIO_ReadPin(gpioPortPin[pin].port, gpioPortPin[pin].pin);
 }
 
 void CPU_GPIO_SetPinState(GPIO_PIN pin, BOOL pinState)
@@ -630,10 +632,7 @@ void CPU_GPIO_SetPinState(GPIO_PIN pin, BOOL pinState)
 
     if(pin < GPIO_PIN_COUNT)
     {
-        if(pinState)
-            gpioPortPin[pin].port->BSRR = gpioPortPin[pin].pin;//bit; // set bit
-        else
-            gpioPortPin[pin].port->BSRR = (uint32_t)gpioPortPin[pin].pin << 16U; // reset bit
+        HAL_GPIO_WritePin(gpioPortPin[pin].port, gpioPortPin[pin].pin, (GPIO_PinState)pinState);
     }
 }
 
