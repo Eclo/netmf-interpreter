@@ -13,16 +13,20 @@
 
 #include <tinyhal.h>
 
-#define Gpio_MaxPins (TOTAL_GPIO_PORT * 16)
-#define Gpio_MaxInt 16
+// struct for pair GPIO and PIN
+struct GPIOPortPin
+{
+    GPIO_TypeDef* port;
+    uint16_t pin;
+} ;
 
-// indexed port configuration access
-#define Port(port) ((GPIO_TypeDef *) (GPIOA_BASE + (port << 10)))
+const GPIOPortPin gpioPortPin[] = GPIO_PORT_PINS;
+#define GPIO_PIN_COUNT ARRAYSIZE_CONST_EXPR(gpioPortPin)
 
 struct Int_State
 {
     HAL_COMPLETION completion; // debounce completion
-    BYTE packed_port_pin;      // encoded number with port and pin number
+    BYTE pin;      // gpio port pin index
     BYTE mode;     // edge mode
     BYTE debounce; // debounce flag
     BYTE expected; // expected pin state
@@ -31,10 +35,10 @@ struct Int_State
     UINT32 debounceTicks;
 };
 
-static Int_State g_int_state[Gpio_MaxInt]; // interrupt state
+static Int_State g_int_state[GPIO_PIN_COUNT]; // interrupt state
 
 static UINT32 g_debounceTicks;
-static UINT16 g_pinReserved[TOTAL_GPIO_PORT]; //  1 bit per pin
+static UINT16 g_pinReserved[GPIO_PIN_COUNT]; //  1 bit per pin
 
 /*
  * Debounce Completion Handler
@@ -44,10 +48,10 @@ void GPIO_DebounceHandler(void* arg)
     Int_State* state = (Int_State*)arg;
     if(state->ISR)
     {
-        UINT32 actual = CPU_GPIO_GetPinState(state->packed_port_pin); // get actual pin state
+        UINT32 actual = CPU_GPIO_GetPinState(state->pin); // get actual pin state
         if(actual == state->expected)
         {
-            state->ISR(state->packed_port_pin, actual, state->param);
+            state->ISR(state->pin, actual, state->param);
             if(state->mode == GPIO_INT_EDGE_BOTH)
             { // both edges
                 state->expected ^= 1; // update expected state
@@ -59,33 +63,34 @@ void GPIO_DebounceHandler(void* arg)
 /*
  * Interrupt Handler
  */
-void GlobalGPIOHandler(int num)  // 0 <= num <= 15
+void GlobalGPIOHandler(int pin)  // 0 <= num <= 15
 {
-    Int_State* state = &g_int_state[num];
+    Int_State* state = &g_int_state[pin];
     state->completion.Abort();
-    UINT32 gpio_pin = 1 << num;
     UINT32 actual;
     
-    HAL_GPIO_EXTI_IRQHandler(gpio_pin);
+    HAL_GPIO_EXTI_IRQHandler(gpioPortPin[pin].pin);
     
-    actual = CPU_GPIO_GetPinState(state->packed_port_pin); // get actual pin state
+    actual = CPU_GPIO_GetPinState(state->pin); // get actual pin state
 
     if(state->ISR)
     {
         if(state->debounce)
-        {   // debounce enabled
+        {   
+            // debounce enabled
             // for back compat treat state.debounceTicks == 0 as indication to use global debounce setting
             UINT32 debounceDeltaTicks = state->debounceTicks == 0 ? g_debounceTicks : state->debounceTicks;
             state->completion.EnqueueTicks(HAL_Time_CurrentTicks() + debounceDeltaTicks);
         }
         else
         {
-            state->ISR(state->packed_port_pin, state->expected, state->param);
+            state->ISR(state->pin, state->expected, state->param);
             if(state->mode == GPIO_INT_EDGE_BOTH)
-            { // both edges
+            { 
+                // both edges
                 if(actual != state->expected)
                 { // fire another isr to keep in synch
-                    state->ISR(state->packed_port_pin, actual, state->param);
+                    state->ISR(state->pin, actual, state->param);
                 }
                 else
                 {
@@ -96,8 +101,6 @@ void GlobalGPIOHandler(int num)  // 0 <= num <= 15
     }
 
 }
-
-
 
 void EXTI0_IRQHandler(void) // EXTI0
 {
@@ -156,86 +159,6 @@ void EXTI10_IRQHandler(void) // EXTI10 - EXTI15
         pending >>= 1;
     } 
     while(pending);
-}
-
-BOOL GPIO_Set_Interrupt(UINT32 pin
-                               , GPIO_INTERRUPT_SERVICE_ROUTINE ISR
-                               , void* ISR_Param
-                               , GPIO_INT_EDGE mode
-                               , BOOL GlitchFilterEnable
-                              )
-{
-    UINT32 num = pin & 0x0F;
-    UINT32 bit = 1 << num;
-    UINT32 shift = (num & 0x3) << 2; // 4 bit fields
-    UINT32 idx = num >> 2;
-    UINT32 mask = 0xF << shift;
-    UINT32 config = (pin >> 4) << shift; // port number configuration
-
-    Int_State* state = &g_int_state[num];
-
-    GLOBAL_LOCK(irq);
-
-    if(ISR)
-    {
-        if((SYSCFG->EXTICR[idx] & mask) != config)
-        {
-            if(EXTI->IMR & bit)
-                return FALSE; // interrupt in use
-
-            SYSCFG->EXTICR[idx] = SYSCFG->EXTICR[idx] & ~mask | config;
-        }
-        state->packed_port_pin = (BYTE)pin;
-        state->mode = (BYTE)mode;
-        state->debounce = (BYTE)GlitchFilterEnable;
-        state->param = ISR_Param;
-        state->ISR = ISR;
-        state->completion.Abort();
-        state->completion.SetArgument(state);
-
-        EXTI->RTSR &= ~bit;
-        EXTI->FTSR &= ~bit;
-        switch(mode)
-        {
-        case GPIO_INT_EDGE_LOW:
-        case GPIO_INT_LEVEL_LOW:
-            EXTI->FTSR |= bit;
-            state->expected = FALSE;
-            break;
-
-        case GPIO_INT_EDGE_HIGH:
-        case GPIO_INT_LEVEL_HIGH:
-            EXTI->RTSR |= bit;
-            state->expected = TRUE;
-            break;
-
-        case GPIO_INT_EDGE_BOTH:
-            EXTI->FTSR |= bit;
-            EXTI->RTSR |= bit;
-            UINT32 actual;
-            do
-            {
-                EXTI->PR = bit; // remove pending interrupt
-                actual = CPU_GPIO_GetPinState(pin); // get actual pin state
-            } while(EXTI->PR & bit); // repeat if pending again
-            state->expected = (BYTE)(actual ^ 1);
-        }
-
-        EXTI->IMR |= bit; // enable interrupt
-        // check for level interrupts
-        if(mode == GPIO_INT_LEVEL_HIGH && CPU_GPIO_GetPinState(pin)
-            || mode == GPIO_INT_LEVEL_LOW && !CPU_GPIO_GetPinState(pin))
-        {
-            EXTI->SWIER = bit; // force interrupt
-        }
-    }
-    else if((SYSCFG->EXTICR[idx] & mask) == config)
-    {
-        EXTI->IMR &= ~bit; // disable interrupt
-        state->ISR = NULL;
-        state->completion.Abort();
-    }
-    return TRUE;
 }
 
 void EnableIRQ(uint16_t gpio_pin)
@@ -306,115 +229,50 @@ void EnableIRQ(uint16_t gpio_pin)
     }
 }
 
-// mode:  0: input,  1: output,  2: alternate, 3: analog
-// alternate: od | AF << 4 | speed << 8
-void GPIO_Pin_Config(GPIO_PIN packed_port_pin, UINT32 mode, GPIO_RESISTOR resistor, UINT32 alternate)
+void GPIO_Pin_Config(GPIO_PIN pin
+                    , UINT32 mode
+                    , GPIO_RESISTOR resistor 
+                    , GPIO_INT_EDGE edge
+                    , GPIO_INTERRUPT_SERVICE_ROUTINE ISR)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    GPIO_TypeDef* port = Port(packed_port_pin >> 4); // pointer to the actual port registers
-    packed_port_pin &= 0x0F; // bit number
-    UINT32 gpio_pin = 1 << packed_port_pin;
+    GPIO_InitStructure.Pin = gpioPortPin[pin].pin;
 
-    // Configure PA0 pin as input floating
+    // Configure pin mode
     GPIO_InitStructure.Mode = mode;
-    if(resistor == RESISTOR_PULLUP)
-        GPIO_InitStructure.Pull = GPIO_PUPDR_PUPDR0_0;
-    if(resistor == RESISTOR_PULLDOWN)
-        GPIO_InitStructure.Pull = GPIO_PUPDR_PUPDR0_1;
-    GPIO_InitStructure.Pin = gpio_pin;
     
-    // Enable GPIO clock
-    #if defined (RCC_AHB1ENR_GPIOAEN)
-    if(port == GPIOA)
+    // interrupt is defined?
+    if(ISR != NULL)
     {
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
+        if(edge == GPIO_INT_EDGE_BOTH)
+        {
+            GPIO_InitStructure.Mode |= GPIO_MODE_IT_RISING_FALLING;
+        }
+        // falling edge or both
+        else if(edge == GPIO_INT_EDGE_LOW || edge == GPIO_INT_LEVEL_LOW)
+        {
+            GPIO_InitStructure.Mode |= GPIO_MODE_IT_FALLING;            
+        }
+        // rising or both 
+        else if(edge == GPIO_INT_EDGE_HIGH || edge == GPIO_INT_LEVEL_HIGH)
+        {
+            GPIO_InitStructure.Mode |= GPIO_MODE_IT_RISING;            
+        }
     }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOBEN)
-    if(port == GPIOB)
+
+    if(resistor == RESISTOR_PULLUP)
     {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
+        GPIO_InitStructure.Pull = GPIO_PUPDR_PUPDR0_0;
     }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOCEN)
-    if(port == GPIOC)
+    else if(resistor == RESISTOR_PULLDOWN)
     {
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOC, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
+        GPIO_InitStructure.Pull = GPIO_PUPDR_PUPDR0_1;
     }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIODEN)
-    if(port == GPIOD)
-    {
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOEEN)
-    if(port == GPIOE)
-    {
-        __HAL_RCC_GPIOE_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOE, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOFEN)
-    if(port == GPIOF)
-    {
-        __HAL_RCC_GPIOF_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOGEN)
-    if(port == GPIOG)
-    {
-        __HAL_RCC_GPIOG_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOG, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOHEN)
-    if(port == GPIOH)
-    {
-        __HAL_RCC_GPIOH_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOH, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOIEN)
-    if(port == GPIOI)
-    {
-        __HAL_RCC_GPIOI_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOI, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
-    #if defined (RCC_AHB1ENR_GPIOJEN)
-    if(port == GPIOJ)
-    {
-        __HAL_RCC_GPIOJ_CLK_ENABLE();
-        HAL_GPIO_Init(GPIOJ, &GPIO_InitStructure);
-        // Enable and set EXTI Line Interrupt
-        EnableIRQ(gpio_pin);
-    }
-    #endif
+   
+
+    // Init GPIO 
+    HAL_GPIO_Init(gpioPortPin[pin].port, &GPIO_InitStructure);
 }
 
 BOOL CPU_GPIO_Initialize()
@@ -424,16 +282,6 @@ BOOL CPU_GPIO_Initialize()
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
 
     CPU_GPIO_SetDebounce(20); // ???
-
-    for(int i = 0; i < TOTAL_GPIO_PORT; i++)
-    {
-        g_pinReserved[i] = 0;
-    }
-
-    for(int i = 0; i < Gpio_MaxInt; i++)
-    {
-        g_int_state[i].completion.InitializeForISR(&GPIO_DebounceHandler);
-    }
 
     // Configure all GPIO as analog to reduce current consumption on non used IOs
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
@@ -498,6 +346,72 @@ BOOL CPU_GPIO_Initialize()
     __HAL_RCC_GPIOJ_CLK_DISABLE();
     #endif
 
+    for(int i = 0; i < GPIO_PIN_COUNT; i++)
+    {
+        g_pinReserved[i] = FALSE;
+        g_int_state[i].completion.InitializeForISR(&GPIO_DebounceHandler);
+          
+        // Enable GPIO clock
+        if(gpioPortPin[i].port == GPIOA)
+        {
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+        }
+        #if defined (RCC_AHB1ENR_GPIOBEN)
+        else if(gpioPortPin[i].port == GPIOB)
+        {
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOCEN)
+        else if(gpioPortPin[i].port == GPIOC)
+        {
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIODEN)
+        else if(gpioPortPin[i].port == GPIOD)
+        {
+            __HAL_RCC_GPIOD_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOEEN)
+        else if(gpioPortPin[i].port == GPIOE)
+        {
+            __HAL_RCC_GPIOE_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOFEN)
+        else if(gpioPortPin[i].port == GPIOF)
+        {
+            __HAL_RCC_GPIOF_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOGEN)
+        else if(gpioPortPin[i].port == GPIOG)
+        {
+            __HAL_RCC_GPIOG_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOHEN)
+        else if(gpioPortPin[i].port == GPIOH)
+        {
+            __HAL_RCC_GPIOH_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOIEN)
+        else if(gpioPortPin[i].port == GPIOI)
+        {
+            __HAL_RCC_GPIOI_CLK_ENABLE();
+        }
+        #endif
+        #if defined (RCC_AHB1ENR_GPIOJEN)
+        else if(gpioPortPin[i].port == GPIOJ)
+        {
+            __HAL_RCC_GPIOJ_CLK_ENABLE();
+        }
+        #endif
+    }
+
     return TRUE;
 }
 
@@ -505,7 +419,7 @@ BOOL CPU_GPIO_Uninitialize()
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
 
-    for(int i = 0; i < Gpio_MaxInt; i++)
+    for(int i = 0; i < GPIO_PIN_COUNT; i++)
     {
         g_int_state[i].completion.Abort();
     }
@@ -558,7 +472,8 @@ BOOL CPU_GPIO_Uninitialize()
 UINT32 CPU_GPIO_Attributes(GPIO_PIN pin)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin < Gpio_MaxPins)
+
+    if(pin < GPIO_PIN_COUNT)
     {
         return GPIO_ATTRIBUTE_INPUT | GPIO_ATTRIBUTE_OUTPUT;
     }
@@ -576,29 +491,45 @@ UINT32 CPU_GPIO_Attributes(GPIO_PIN pin)
 void CPU_GPIO_DisablePin(GPIO_PIN pin, GPIO_RESISTOR resistor, UINT32 output, GPIO_ALT_MODE alternate)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin < Gpio_MaxPins)
-    {
-        UINT32 mode = output;
-        UINT32 altMode = (UINT32)alternate & 0x0F;
-        
-        if(altMode == 1)
-            mode = 3; // analog
-        else if(altMode)
-            mode = 2; // alternate pin function
 
-        GPIO_Pin_Config(pin, mode, resistor, (UINT32)alternate);
-        GPIO_Set_Interrupt(pin, NULL, 0, GPIO_INT_NONE, FALSE); // disable interrupt
+    if(pin < GPIO_PIN_COUNT)
+    {
+        // disable INT state for this pin
+        Int_State* state = &g_int_state[pin];
+       
+        state->ISR = NULL;
+        state->completion.Abort();
+        
+        // release pin
+        g_pinReserved[pin] = FALSE;
+        
+        // de-init this pin and configure GPIOit as analog to reduce current consumption on non used IOs 
+        GPIO_InitTypeDef GPIO_InitStruct;
+
+        GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Pin = gpioPortPin[pin].pin;
+
+        HAL_GPIO_Init(gpioPortPin[pin].port, &GPIO_InitStruct);
     }
 }
 
 void CPU_GPIO_EnableOutputPin(GPIO_PIN pin, BOOL initialState)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin < Gpio_MaxPins)
+
+    if(pin < GPIO_PIN_COUNT)
     {
-        CPU_GPIO_SetPinState(pin, initialState);
-        GPIO_Pin_Config(pin, 1, RESISTOR_DISABLED, 0); // general purpose output
-        GPIO_Set_Interrupt(pin, NULL, 0, GPIO_INT_NONE, FALSE); // disable interrupt
+        CPU_GPIO_SetPinState(gpioPortPin[pin].pin, initialState);
+        // general purpose output, any edge, does matter
+        GPIO_Pin_Config(gpioPortPin[pin].pin, GPIO_MODE_OUTPUT_PP, RESISTOR_DISABLED, GPIO_INT_EDGE_BOTH, NULL);
+        
+        // disable INT state for this pin
+        Int_State* state = &g_int_state[pin];
+       
+        state->ISR = NULL;
+        state->completion.Abort();
     }
 }
 
@@ -610,7 +541,8 @@ BOOL CPU_GPIO_EnableInputPin(GPIO_PIN pin
                            )
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    return CPU_GPIO_EnableInputPin2(pin, GlitchFilterEnable, ISR, 0, edge, resistor);
+
+    return CPU_GPIO_EnableInputPin2(gpioPortPin[pin].pin, GlitchFilterEnable, ISR, 0, edge, resistor);
 }
 
 BOOL CPU_GPIO_EnableInputPin2(GPIO_PIN pin
@@ -622,78 +554,140 @@ BOOL CPU_GPIO_EnableInputPin2(GPIO_PIN pin
                             )
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin >= Gpio_MaxPins)
+
+    if(pin >= GPIO_PIN_COUNT)
         return FALSE;
 
-    GPIO_Pin_Config(pin, 0, resistor, 0); // input
-    return GPIO_Set_Interrupt(pin, ISR, ISR_Param, edge, GlitchFilterEnable);
+    GPIO_Pin_Config(gpioPortPin[pin].pin, GPIO_MODE_INPUT, resistor, edge, ISR); // input
+    
+    Int_State* state = &g_int_state[pin];
+
+    if(ISR)
+    {
+        state->pin = (BYTE)pin;
+        state->mode = (BYTE)edge;
+        state->debounce = (BYTE)GlitchFilterEnable;
+        state->param = ISR_Param;
+        state->ISR = ISR;
+        state->completion.Abort();
+        state->completion.SetArgument(state);
+
+        switch(edge)
+        {
+        case GPIO_INT_EDGE_LOW:
+        case GPIO_INT_LEVEL_LOW:
+            state->expected = FALSE;
+            break;
+
+        case GPIO_INT_EDGE_HIGH:
+        case GPIO_INT_LEVEL_HIGH:
+            state->expected = TRUE;
+            break;
+
+        case GPIO_INT_EDGE_BOTH:
+            UINT32 actual;
+            do
+            {
+                // clear pending interrupt
+                __HAL_GPIO_EXTI_CLEAR_FLAG(gpioPortPin[pin].pin);
+                actual = CPU_GPIO_GetPinState(pin); // get actual pin state
+            } while(__HAL_GPIO_EXTI_GET_IT(gpioPortPin[pin].pin)); // repeat if pending again
+            state->expected = (BYTE)(actual ^ 1);
+        }
+                    
+        // Enable and set EXTI Line Interrupt
+        EnableIRQ(gpioPortPin[pin].pin);
+        
+        // check for level interrupts
+        if(edge == GPIO_INT_LEVEL_HIGH && CPU_GPIO_GetPinState(pin)
+            || edge == GPIO_INT_LEVEL_LOW && !CPU_GPIO_GetPinState(pin))
+        {
+            // force interrupt
+            __HAL_GPIO_EXTI_GENERATE_SWIT(gpioPortPin[pin].pin);
+        }
+    }
+    else
+    {
+        // clear state, just in case
+        state->ISR = NULL;
+        state->completion.Abort();        
+    }
 }
 
 BOOL CPU_GPIO_GetPinState(GPIO_PIN pin)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin >= Gpio_MaxPins)
+
+    if(pin >= GPIO_PIN_COUNT)
         return FALSE;
 
-    GPIO_TypeDef* port = Port(pin >> 4); // pointer to the actual port registers 
-    return (port->IDR >> (pin & 0xF)) & 1;
+    return (gpioPortPin[pin].port->IDR >> gpioPortPin[pin].pin) & 1;
 }
 
 void CPU_GPIO_SetPinState(GPIO_PIN pin, BOOL pinState)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin < Gpio_MaxPins)
+
+    if(pin < GPIO_PIN_COUNT)
     {
-        GPIO_TypeDef* port = Port(pin >> 4); // pointer to the actual port registers 
-        UINT16 bit = 1 << (pin & 0x0F);
         if(pinState)
-            port->BSRR = bit; // set bit
+            gpioPortPin[pin].port->BSRR = gpioPortPin[pin].pin;//bit; // set bit
         else
-            port->BSRR = (uint32_t)bit << 16U; // reset bit
+            gpioPortPin[pin].port->BSRR = (uint32_t)gpioPortPin[pin].pin << 16U; // reset bit
     }
 }
 
 BOOL CPU_GPIO_PinIsBusy(GPIO_PIN pin)  // busy == reserved
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin >= Gpio_MaxPins)
+
+    if(pin >= GPIO_PIN_COUNT)
         return FALSE;
 
-    int port = pin >> 4, sh = pin & 0x0F;
-    return (g_pinReserved[port] >> sh) & 1;
+    return g_pinReserved[pin];
 }
 
 BOOL CPU_GPIO_ReservePin(GPIO_PIN pin, BOOL fReserve)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    if(pin >= Gpio_MaxPins)
+
+    if(pin >= GPIO_PIN_COUNT)
         return FALSE;
 
-    int port = pin >> 4, bit = 1 << (pin & 0x0F);
     GLOBAL_LOCK(irq);
     if(fReserve)
     {
-        if(g_pinReserved[port] & bit)
-            return FALSE; // already reserved
-
-        g_pinReserved[port] |= bit;
+        if(g_pinReserved[pin])
+        {
+            // already reserved
+            return FALSE; 
+        }
+        else
+        {
+            // OK to reserve pin
+            g_pinReserved[pin] = TRUE;
+        }
     }
     else
     {
-        g_pinReserved[port] &= ~bit;
+        // release pin
+        g_pinReserved[pin] = FALSE;
     }
+
     return TRUE;
 }
 
 UINT32 CPU_GPIO_GetDebounce()
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
+
     return g_debounceTicks / (SLOW_CLOCKS_PER_SECOND / 1000); // ticks -> ms
 }
 
 BOOL CPU_GPIO_SetDebounce(INT64 debounceTimeMilliseconds)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
+
     if(debounceTimeMilliseconds > 0 && debounceTimeMilliseconds < 10000)
     {
         g_debounceTicks = CPU_MillisecondsToTicks((UINT32)debounceTimeMilliseconds);
@@ -705,13 +699,15 @@ BOOL CPU_GPIO_SetDebounce(INT64 debounceTimeMilliseconds)
 INT32 CPU_GPIO_GetPinCount()
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    return Gpio_MaxPins;
+
+    return GPIO_PIN_COUNT;
 }
 
 void CPU_GPIO_GetPinsMap(UINT8* pins, size_t size)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    for(int i = 0; i < size && i < Gpio_MaxPins; i++)
+
+    for(int i = 0; i < size && i < GPIO_PIN_COUNT; i++)
     {
         pins[i] = GPIO_ATTRIBUTE_INPUT | GPIO_ATTRIBUTE_OUTPUT;
     }
@@ -733,8 +729,8 @@ UINT8 CPU_GPIO_GetSupportedInterruptModes(GPIO_PIN pin)
 UINT32 CPU_GPIO_GetPinDebounce(GPIO_PIN pin)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    UINT32 num = pin & 0x0F;
-    Int_State& state = g_int_state[num];
+
+    Int_State& state = g_int_state[gpioPortPin[pin].pin];
 
     return state.debounceTicks / (SLOW_CLOCKS_PER_SECOND / 1000); // ticks -> ms
 }
@@ -742,8 +738,8 @@ UINT32 CPU_GPIO_GetPinDebounce(GPIO_PIN pin)
 BOOL CPU_GPIO_SetPinDebounce(GPIO_PIN pin, INT64 debounceTimeMilliseconds)
 {
     NATIVE_PROFILE_HAL_PROCESSOR_GPIO();
-    UINT32 num = pin & 0x0F;
-    Int_State& state = g_int_state[num];
+
+    Int_State& state = g_int_state[gpioPortPin[pin].pin];
 
     if(debounceTimeMilliseconds > 0 && debounceTimeMilliseconds < 10000)
     {
