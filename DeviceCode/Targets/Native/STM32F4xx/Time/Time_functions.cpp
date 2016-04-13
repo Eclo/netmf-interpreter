@@ -90,9 +90,12 @@ BOOL HAL_Time_Initialize()
     masterTimerHandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     masterTimerHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
     
-    // Only counter overflow/underflow generates an update interrupt request
-    //masterTimerHandle.Instance->CR1 |= TIM_CR1_URS;
-    
+    if(HAL_TIM_Base_Init(&masterTimerHandle) != HAL_OK)
+    {
+        // something went wrong
+        return FALSE;
+    }
+        
     // master configration for the master timer
     sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
     sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_ENABLE;
@@ -102,12 +105,7 @@ BOOL HAL_Time_Initialize()
         // FIXME
         //Error_Handler();
     }
-    
-    if(HAL_TIM_Base_Init(&masterTimerHandle) != HAL_OK)
-    {
-        // something went wrong
-        return FALSE;
-    }
+
 
     // slave timer
     slaveTimerHandle.Init.Period = 0;
@@ -115,9 +113,12 @@ BOOL HAL_Time_Initialize()
     slaveTimerHandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     slaveTimerHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
     
-    // Only counter overflow/underflow generates an update interrupt request
-    //slaveTimerHandle.Instance->CR1 |= TIM_CR1_URS;
-    
+    if(HAL_TIM_Base_Init(&slaveTimerHandle) != HAL_OK)
+    {
+        // something went wrong
+        return FALSE;
+    }
+        
     // slave configuration for the slave timer
     sSlaveConfig.SlaveMode = TIM_SLAVEMODE_GATED;
     sSlaveConfig.InputTrigger = TIM_TS_ITR1;
@@ -138,12 +139,6 @@ BOOL HAL_Time_Initialize()
         //Error_Handler();
     }
     
-    if(HAL_TIM_Base_Init(&slaveTimerHandle) != HAL_OK)
-    {
-        // something went wrong
-        return FALSE;
-    }
- 
     // Starts the 32 bits timer Input Capture measurement in interrupt mode for channel 1
 
     if(HAL_TIM_Base_Start(&slaveTimerHandle) == HAL_OK)
