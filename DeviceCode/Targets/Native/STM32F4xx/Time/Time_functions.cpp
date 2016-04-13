@@ -30,7 +30,7 @@ The solution is to synchronize 2 timers:
 In previous NETMF HAL implementations the developer could choose which timers would be synchronized to implement the HAL timer.
 For the current HAL implementation (CMSIS based) we choose to go with a fixed configuration, for simplicity.
 
-TIM2 will be used as "master" timer synchronized with TIM1 "slave".  
+TIM2 will be used as "master" timer synchronized with TIM3 "slave".  
       
 */
 BOOL HAL_Time_Initialize()
@@ -46,7 +46,7 @@ BOOL HAL_Time_Initialize()
 
     // master (32 bit) timer is Timer 2
     masterTimerHandle.Instance = TIM2;
-    // slave (16 bit) timer is Timer 2
+    // slave (16 bit) timer is Timer 3
     slaveTimerHandle.Instance = TIM3;
     
     // enable master clock
