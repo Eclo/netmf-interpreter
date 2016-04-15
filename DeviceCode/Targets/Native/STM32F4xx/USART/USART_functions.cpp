@@ -1033,43 +1033,50 @@ void GlobalUsartHandler(USART_TypeDef* uart)
 }
 
 #ifdef USART1
-void USART1_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void USART1_IRQHandler(void)
 {
     GlobalUsartHandler(USART1);
 }
 #endif
 #ifdef USART2
-void USART2_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void USART2_IRQHandler(void)
 {
     GlobalUsartHandler(USART2);
 }
 #endif
 #ifdef USART3
-void USART3_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void USART3_IRQHandler(void)
 {
     GlobalUsartHandler(USART3);
 }
 #endif
 #ifdef UART4
-void UART4_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void UART4_IRQHandler(void)
 {
     GlobalUsartHandler(UART4);
 }
 #endif
 #ifdef USART6
-void USART6_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void USART6_IRQHandler(void)
 {
     GlobalUsartHandler(USART6);
 }
 #endif
 #ifdef UART7
-void UART7_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void UART7_IRQHandler(void)
 {
     GlobalUsartHandler(UART7);
 }
 #endif
 #ifdef UART8
-void UART8_IRQHandler(void)
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void UART8_IRQHandler(void)
 {
     GlobalUsartHandler(UART8);
 }

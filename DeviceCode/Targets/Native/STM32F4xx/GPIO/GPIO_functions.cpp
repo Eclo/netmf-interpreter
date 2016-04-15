@@ -102,32 +102,38 @@ void GlobalGPIOHandler(int pin)  // 0 <= num <= 15
 
 }
 
-void EXTI0_IRQHandler(void) // EXTI0
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI0_IRQHandler(void) // EXTI0
 {
     GlobalGPIOHandler(0);
 }
 
-void EXTI1_IRQHandler(void) // EXTI1
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI1_IRQHandler(void) // EXTI1
 {
     GlobalGPIOHandler(1);
 }
 
-void EXTI2_IRQHandler(void) // EXTI2
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI2_IRQHandler(void) // EXTI2
 {
     GlobalGPIOHandler(2);
 }
 
-void EXTI3_IRQHandler(void) // EXTI3
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI3_IRQHandler(void) // EXTI3
 {
     GlobalGPIOHandler(3);
 }
 
-void EXTI4_IRQHandler(void) // EXTI4
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI4_IRQHandler(void) // EXTI4
 {
     GlobalGPIOHandler(4);
 }
 
-void EXTI9_5_IRQHandler(void) // EXTI5 - EXTI9
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI9_5_IRQHandler(void) // EXTI5 - EXTI9
 {
     UINT32 pending = EXTI->PR & EXTI->IMR & 0x03E0; // pending bits 5..9
     int num = 5; 
@@ -144,7 +150,8 @@ void EXTI9_5_IRQHandler(void) // EXTI5 - EXTI9
     while(pending);
 }
 
-void EXTI15_10_IRQHandler(void) // EXTI10 - EXTI15
+// must declare this as extern C funtion otherwise it won't be recognized by the linker as a valid interrupt handler  
+extern "C" void EXTI15_10_IRQHandler(void) // EXTI10 - EXTI15
 {
     UINT32 pending = EXTI->PR & EXTI->IMR & 0xFC00; // pending bits 10..15
     int num = 10; 
