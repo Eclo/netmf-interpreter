@@ -25,7 +25,7 @@
     <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Settings" />
     
     <PropertyGroup>
-        <USB_DEFINES/>
+        <USB_DEFINES>True</USB_DEFINES>
     </PropertyGroup>
 
     <ItemGroup>
