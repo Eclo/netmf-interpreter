@@ -163,4 +163,72 @@ void OTG_FS_IRQHandler(void)
 }
 #endif
 
+
+#ifndef FEATURE_GPIO
+void EXTI0_IRQHandler(void) // EXTI0
+{}
+
+void EXTI1_IRQHandler(void) // EXTI1
+{}
+
+void EXTI2_IRQHandler(void) // EXTI2
+{}
+
+void EXTI3_IRQHandler(void) // EXTI3
+{}
+
+void EXTI4_IRQHandler(void) // EXTI4
+{}
+
+void EXTI9_5_IRQHandler(void) // EXTI5 - EXTI9
+{}
+
+void EXTI15_10_IRQHandler(void) // EXTI10 - EXTI15
+{}
+#endif
+
+#ifndef FEATURE_I2C
+/**
+  * @brief  This function handles I2C event interrupt request.  
+  * @param  None
+  * @retval None
+  * @Note   This function is redefined in "main.h" and related to I2C data transmission     
+  */
+void I2C1_EV_IRQHandler(void)
+{}
+
+/**
+  * @brief  This function handles I2C error interrupt request.
+  * @param  None
+  * @retval None
+  * @Note   This function is redefined in "main.h" and related to I2C error
+  */
+void I2C1_ER_IRQHandler(void)
+{}
+#endif
+
+#ifndef FEATURE_USART
+void USART1_IRQHandler(void)
+{}
+
+void USART2_IRQHandler(void)
+{}
+
+void USART3_IRQHandler(void)
+{}
+
+void UART4_IRQHandler(void)
+{}
+
+void USART6_IRQHandler(void)
+{}
+
+void UART7_IRQHandler(void)
+{}
+
+void UART8_IRQHandler(void)
+{}
+#endif
+
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

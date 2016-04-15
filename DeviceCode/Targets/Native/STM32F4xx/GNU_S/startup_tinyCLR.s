@@ -48,18 +48,10 @@
 
 .global  ARM_Vectors
 .global  Default_Handler
-
-    .global  EntryPoint
-
-    .global StackBottom
-    .global StackTop
-    .global HeapBegin
-    .global HeapEnd
-    .global CustomHeapBegin
-    .global CustomHeapEnd
-    .global __initial_sp
-
-.external FAULT_SubHandler
+.global HeapBegin
+.global HeapEnd
+.global _end
+.extern FAULT_SubHandler
 
 /* start address for the initialization values of the .data section. 
 defined in linker script */
@@ -74,30 +66,10 @@ defined in linker script */
 .word  _ebss
 /* stack used for SystemInit_ExtMemCtl; always internal RAM used */
 
-    .section SectionForStackBottom, "w", %nobits
-StackBottom:
-       .word 0
-
-    .section SectionForStackTop, "w", %nobits
-__initial_sp:
-StackTop:
-      .word 0
-
-    .section SectionForHeapBegin, "w", %nobits
-HeapBegin:
-     .word 0
-
-    .section SectionForHeapEnd, "w", %nobits
-HeapEnd:
-    .word 0
-
-    .section SectionForCustomHeapBegin, "w", %nobits
-CustomHeapBegin:
-    .word 0
-
-    .section SectionForCustomHeapEnd, "w", %nobits
-CustomHeapEnd:
-    .word 0
+/* start address of managed heap */
+.word HeapBegin
+/* end  address of managed heap */
+.word HeapEnd
 
 
 /**
@@ -348,22 +320,22 @@ ARM_Vectors:
                   
    .weak      RCC_IRQHandler      
    .thumb_set RCC_IRQHandler,Default_Handler
+
+   /*.weak      EXTI0_IRQHandler         
+   .thumb_set EXTI0_IRQHandler,Default_Handler*/
                   
-   .weak      EXTI0_IRQHandler         
-   .thumb_set EXTI0_IRQHandler,Default_Handler
-                  
-   .weak      EXTI1_IRQHandler         
-   .thumb_set EXTI1_IRQHandler,Default_Handler
+   /*.weak      EXTI1_IRQHandler         
+   .thumb_set EXTI1_IRQHandler,Default_Handler*/
                      
-   .weak      EXTI2_IRQHandler         
-   .thumb_set EXTI2_IRQHandler,Default_Handler 
+   /*.weak      EXTI2_IRQHandler         
+   .thumb_set EXTI2_IRQHandler,Default_Handler*/
                  
-   .weak      EXTI3_IRQHandler         
-   .thumb_set EXTI3_IRQHandler,Default_Handler
+   /*.weak      EXTI3_IRQHandler         
+   .thumb_set EXTI3_IRQHandler,Default_Handler*/
                         
-   .weak      EXTI4_IRQHandler         
-   .thumb_set EXTI4_IRQHandler,Default_Handler
-                  
+   /*.weak      EXTI4_IRQHandler         
+   .thumb_set EXTI4_IRQHandler,Default_Handler*/
+
    .weak      DMA1_Stream0_IRQHandler               
    .thumb_set DMA1_Stream0_IRQHandler,Default_Handler
          
@@ -400,8 +372,8 @@ ARM_Vectors:
    .weak      CAN1_SCE_IRQHandler                  
    .thumb_set CAN1_SCE_IRQHandler,Default_Handler
             
-   .weak      EXTI9_5_IRQHandler   
-   .thumb_set EXTI9_5_IRQHandler,Default_Handler
+   /*.weak      EXTI9_5_IRQHandler   
+   .thumb_set EXTI9_5_IRQHandler,Default_Handler*/
             
    .weak      TIM1_BRK_TIM9_IRQHandler            
    .thumb_set TIM1_BRK_TIM9_IRQHandler,Default_Handler
@@ -425,11 +397,11 @@ ARM_Vectors:
    .weak      TIM4_IRQHandler            
    .thumb_set TIM4_IRQHandler,Default_Handler
                   
-   .weak      I2C1_EV_IRQHandler   
-   .thumb_set I2C1_EV_IRQHandler,Default_Handler
+   /*.weak      I2C1_EV_IRQHandler   
+   .thumb_set I2C1_EV_IRQHandler,Default_Handler*/
                      
-   .weak      I2C1_ER_IRQHandler   
-   .thumb_set I2C1_ER_IRQHandler,Default_Handler
+   /*.weak      I2C1_ER_IRQHandler   
+   .thumb_set I2C1_ER_IRQHandler,Default_Handler*/
                      
    .weak      I2C2_EV_IRQHandler   
    .thumb_set I2C2_EV_IRQHandler,Default_Handler
@@ -443,17 +415,17 @@ ARM_Vectors:
    .weak      SPI2_IRQHandler            
    .thumb_set SPI2_IRQHandler,Default_Handler
                   
-   .weak      USART1_IRQHandler      
-   .thumb_set USART1_IRQHandler,Default_Handler
+   /*.weak      USART1_IRQHandler      
+   .thumb_set USART1_IRQHandler,Default_Handler*/
                      
-   .weak      USART2_IRQHandler      
-   .thumb_set USART2_IRQHandler,Default_Handler
+   /*.weak      USART2_IRQHandler      
+   .thumb_set USART2_IRQHandler,Default_Handler*/
                      
-   .weak      USART3_IRQHandler      
-   .thumb_set USART3_IRQHandler,Default_Handler
+   /*.weak      USART3_IRQHandler      
+   .thumb_set USART3_IRQHandler,Default_Handler*/
                   
-   .weak      EXTI15_10_IRQHandler               
-   .thumb_set EXTI15_10_IRQHandler,Default_Handler
+   /*.weak      EXTI15_10_IRQHandler               
+   .thumb_set EXTI15_10_IRQHandler,Default_Handler*/
                
    .weak      RTC_Alarm_IRQHandler               
    .thumb_set RTC_Alarm_IRQHandler,Default_Handler
@@ -488,11 +460,11 @@ ARM_Vectors:
    .weak      SPI3_IRQHandler            
    .thumb_set SPI3_IRQHandler,Default_Handler
                      
-   .weak      UART4_IRQHandler         
-   .thumb_set UART4_IRQHandler,Default_Handler
+   /*.weak      UART4_IRQHandler         
+   .thumb_set UART4_IRQHandler,Default_Handler*/
                   
-   .weak      UART5_IRQHandler         
-   .thumb_set UART5_IRQHandler,Default_Handler
+   /*.weak      UART5_IRQHandler         
+   .thumb_set UART5_IRQHandler,Default_Handler*/
                   
    .weak      TIM6_DAC_IRQHandler                  
    .thumb_set TIM6_DAC_IRQHandler,Default_Handler
@@ -515,8 +487,8 @@ ARM_Vectors:
    .weak      DMA2_Stream4_IRQHandler               
    .thumb_set DMA2_Stream4_IRQHandler,Default_Handler
             
-   .weak      ETH_IRQHandler      
-   .thumb_set ETH_IRQHandler,Default_Handler
+   /*.weak      ETH_IRQHandler      
+   .thumb_set ETH_IRQHandler,Default_Handler*/
                   
    .weak      ETH_WKUP_IRQHandler                  
    .thumb_set ETH_WKUP_IRQHandler,Default_Handler
@@ -545,8 +517,8 @@ ARM_Vectors:
    .weak      DMA2_Stream7_IRQHandler               
    .thumb_set DMA2_Stream7_IRQHandler,Default_Handler
                   
-   .weak      USART6_IRQHandler      
-   .thumb_set USART6_IRQHandler,Default_Handler
+   /*.weak      USART6_IRQHandler      
+   .thumb_set USART6_IRQHandler,Default_Handler*/
                         
    .weak      I2C3_EV_IRQHandler   
    .thumb_set I2C3_EV_IRQHandler,Default_Handler
