@@ -127,7 +127,7 @@ void EXTI4_IRQHandler(void) // EXTI4
     GlobalGPIOHandler(4);
 }
 
-void EXTI5_IRQHandler(void) // EXTI5 - EXTI9
+void EXTI9_5_IRQHandler(void) // EXTI5 - EXTI9
 {
     UINT32 pending = EXTI->PR & EXTI->IMR & 0x03E0; // pending bits 5..9
     int num = 5; 
@@ -144,7 +144,7 @@ void EXTI5_IRQHandler(void) // EXTI5 - EXTI9
     while(pending);
 }
 
-void EXTI10_IRQHandler(void) // EXTI10 - EXTI15
+void EXTI15_10_IRQHandler(void) // EXTI10 - EXTI15
 {
     UINT32 pending = EXTI->PR & EXTI->IMR & 0xFC00; // pending bits 10..15
     int num = 10; 
