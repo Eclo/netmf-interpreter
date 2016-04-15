@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="BeforeBuild">
     <PropertyGroup>
-        <AssemblyName>CMSIS_USB</AssemblyName>
+        <AssemblyName>CMSIS_USB_DEBUG</AssemblyName>
         <Size></Size>
         <ProjectGuid>{4BA06E07-3576-4A8F-8DE6-DB2CFD370967}</ProjectGuid>
-        <Description>CMSIS USB driver</Description>
+        <Description>CMSIS USB debug with WinUSB driver</Description>
         <Level>HAL</Level>
-        <LibraryFile>CMSIS_USB.$(LIB_EXT)</LibraryFile>
+        <LibraryFile>CMSIS_USB_DEBUG.$(LIB_EXT)</LibraryFile>
         <ProjectPath>$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\USB\dotNetMF.proj</ProjectPath>
-        <ManifestFile>CMSIS_USB.$(LIB_EXT).manifest</ManifestFile>
+        <ManifestFile>CMSIS_USB_DEBUG.$(LIB_EXT).manifest</ManifestFile>
         <Groups></Groups>
         <Documentation></Documentation>
         <PlatformIndependent>False</PlatformIndependent>
@@ -24,7 +24,9 @@
     
     <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Settings" />
     
-    <PropertyGroup />
+    <PropertyGroup>
+        <USB_DEFINES/>
+    </PropertyGroup>
 
     <ItemGroup>
         <!-- implementation of WinUSB and HAL driver -->
@@ -43,6 +45,14 @@
         
     </ItemGroup>
 
+    <Target Name="BeforeBuild">
+        <!-- Check if USB configurations are properly set in solution settings -->
+        <Error Condition="'$(USB_VID)' == '' " Text="Missing USB Vendor ID configuration (USB_VID). Check USB PropertyGroup in 'nnnnnnnnn.settings' file."/>
+        <Error Condition="'$(USB_PID)' == ''" Text="Missing USB Product ID configuration (USB_PID). Check USB PropertyGroup in 'nnnnnnnnn.settings' file."/>
+        <Error Condition="'$(USB_MANUFACTURER)' == ''" Text="Missing USB manufacturer name string (USB_MANUFACTURER). Check USB PropertyGroup in 'nnnnnnnnn.settings' file."/>
+        <Error Condition="'$(USB_PRODUCT)' == ''" Text="Missing USB product name string (USB_PRODUCT). Check USB PropertyGroup in 'nnnnnnnnn.settings' file."/>
+    </Target>
+    
     <Import Project="$(SPOCLIENT)\tools\targets\Microsoft.SPOT.System.Targets" />
 
 </Project>

@@ -22,7 +22,6 @@
 
 //--//
 USB_CONTROLLER_STATE usbControlerState;
-static UINT8 ep0Buffer[64];
 static UINT16 endpointStatus[USB_MAX_QUEUES];
 static UINT16 EP_Type;
 UINT8 previousDeviceState;
@@ -32,10 +31,10 @@ Hal_Queue_KnownSize<USB_PACKET64, USB_QUEUE_PACKET_COUNT> QueueBuffers[4];
 
 USBD_HandleTypeDef  USBD_Device;
 extern PCD_HandleTypeDef hpcd;
+extern uint8_t txBuffer[80];
 
 USB_CONTROLLER_STATE *CPU_USB_GetState(int Controller)
 {
-    //return NULL;
     return &usbControlerState;
 }
 
@@ -115,60 +114,29 @@ BOOL CPU_USB_StartOutput(USB_CONTROLLER_STATE* state, int endpoint)
     {
         return FALSE;
     }
-        
-    //OTG_TypeDef* OTG = STM32F4_USB_REGS( State->ControllerNum );
 
-    //USB_Debug( 't' );
-
-    //GLOBAL_LOCK(irq);
-
-    // If endpoint is not an output
+    // endpoint is not an output
     if(state->Queues[endpoint] == NULL || !state->IsTxQueue[endpoint])
     {
         return FALSE;        
     }
 
     /* if the halt feature for this endpoint is set, then just clear all the characters */
-    // if(state->EndpointStatus[endpoint] & USB_STATUS_ENDPOINT_HALT)
-    // {
-    //     while(USB_TxDequeue(state, endpoint, TRUE) != NULL)
-    //     {
-    //     } // clear TX queue
+    if(state->EndpointStatus[endpoint] & USB_STATUS_ENDPOINT_HALT)
+    {
+        while(USB_TxDequeue(state, endpoint, TRUE) != NULL)
+        {
+        } // clear TX queue
 
-    //     return TRUE;
-    // }
+        return TRUE;
+    }
 
-    //if(irq.WasDisabled())
-    //{ 
-     //   // check all endpoints for pending actions
-     //   //STM32F4_USB_Driver_Interrupt( OTG, state );
-   // }
+    // need to wait here for while to allow the USB IN operation to complete
+    // this seems to occurr only with MFDeploy
+    HAL_Time_Sleep_MicroSeconds_InterruptEnabled(250);
     
-   // USBD_WINUSB_CLASS winUSBclass = (USBD_WINUSB_CLASS)USBD_Device.pClass;
-    
-    //winUSBclass->DataIn(&USBD_Device, endpoint);
-    
-    // write first packet if not done yet
-    //USBD_WINUSB_DataIn
-    //USBD_WINUSB_DataIn(&USBD_Device, endpoint);
-    USBD_LL_DataInStage(&USBD_Device, endpoint, NULL);
-    
-    
-    //USBD_WINUSB_CLASS.DataIn(&USBD_Device, endpoint);
-    
-    // // Tx data endpoint
-    // USB_PACKET64* usbPacket = USB_TxDequeue(state, ep, TRUE);
-    
-    // if(usbPacket)
-    // {  
-    //     // data to send
-    //     // Transmit next packet
-    //     USBD_LL_Transmit(&USBD_Device->pdev,
-    //                     1,
-    //                     usbPacket->Buffer,
-    //                     usbPacket->Size);
-    //     // USB_Debug( 's' );
-    // }
+    // best way to start outputing data is to call the INT handler as if a DataIn interrupt occurred
+    USBD_Device.pClass->DataIn(&USBD_Device, endpoint);
 
     return TRUE;
 }
@@ -181,11 +149,7 @@ BOOL CPU_USB_RxEnable(USB_CONTROLLER_STATE* state, int endpoint)
         return FALSE;        
     }
 
-    //OTG_TypeDef* OTG = STM32F4_USB_REGS( State->ControllerNum );
-
-    //USB_Debug( 'e' );
-
-    //GLOBAL_LOCK(irq);
+    GLOBAL_LOCK(irq);
 
     // enable Rx
     // if( !( OTG->DOEP[ endpoint ].CTL & OTG_DOEPCTL_EPENA ) )

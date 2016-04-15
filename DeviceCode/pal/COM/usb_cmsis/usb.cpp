@@ -37,33 +37,6 @@ void USB_debug_printf( const char*format, ... ) {}
 
 //--//
 
-// This version of the USB code supports only one language - which
-// is not specified by USB configuration records - it is defined here.
-// This is the String 0 descriptor.This array includes the String descriptor
-// header and exactly one language.
-
-//#define USB_LANGUAGE_DESCRIPTOR_SIZE 4
-
-// UINT8 USB_LanguageDescriptor[USB_LANGUAGE_DESCRIPTOR_SIZE] =
-// {
-//     USB_LANGUAGE_DESCRIPTOR_SIZE,
-//     USB_STRING_DESCRIPTOR_TYPE,
-//     0x09, 0x04                      // U.S. English
-// };
-
-// // This provides storage for the "friendly name" (String 5) if it is specified
-// // by the Flash configuration sector
-// ADS_PACKED struct GNU_PACKED 
-// {
-//     UINT8 bLength;
-//     UINT8 bDescriptorType;
-//     UINT8 sFriendlyName[USB_FRIENDLY_NAME_LENGTH * sizeof(USB_STRING_CHAR)];
-//     static LPCSTR GetDriverName() { return "USB_NAME_CONFIG"; }
-// }FriendlyNameString;
-
-//USB_SETUP_PACKET RequestPacket = { 0, 0, 0, 0, 0 };
-
-//--//
 
 int USB_GetControllerCount()
 {
@@ -147,28 +120,35 @@ int USB_Driver::GetControllerCount()
     return TOTAL_USB_CONTROLLER;
 }
 
-BOOL USB_Driver::Initialize( int Controller )
+BOOL USB_Driver::Initialize(int controller)
 {
     NATIVE_PROFILE_PAL_COM();
 
-    //char szFriendlyName[USB_FRIENDLY_NAME_LENGTH];
-
-    USB_CONTROLLER_STATE *State = CPU_USB_GetState( Controller );
-
-    GLOBAL_LOCK(irq);
+    USB_CONTROLLER_STATE *state = CPU_USB_GetState(controller);
 
     USB_CONFIGURATION_DESCRIPTOR * Config;
 
-    if(State == NULL) return FALSE;
+    if(state == NULL) return FALSE;
 
+    // Set all streams to unused
+    for( int stream = 0; stream < USB_MAX_QUEUES; stream++ )
+    {
+        state->streams[stream].RxEP = USB_NULL_ENDPOINT;
+        state->streams[stream].TxEP = USB_NULL_ENDPOINT;
+    }
 
+    state->ControllerNum = controller;
+    state->CurrentState  = USB_DEVICE_STATE_UNINITIALIZED;
+    state->DeviceStatus |= USB_STATUS_DEVICE_SELF_POWERED;
+    state->DeviceStatus &= ~USB_STATUS_DEVICE_REMOTE_WAKEUP;
+    
 // #if defined(USB_ALLOW_CONFIGURATION_OVERRIDE)
 //     //
 //     // If initialized, uninitilize the current usb stack so that we can override it with a new configuration
 //     //
-//     if(State->Initialized && COM_IsUsb(HalSystemConfig.DebuggerPorts[0]) && Controller == ConvertCOM_UsbController(HalSystemConfig.DebuggerPorts[0]))
+//     if(State->Initialized && COM_IsUsb(HalSystemConfig.DebuggerPorts[0]) && controller == ConvertCOM_Usbcontroller(HalSystemConfig.DebuggerPorts[0]))
 //     {
-//         USB_Driver::Uninitialize( Controller );
+//         USB_Driver::Uninitialize( controller );
 //     }
 // #endif
 
@@ -254,24 +234,22 @@ BOOL USB_Driver::Initialize( int Controller )
 //         }
 //     #endif
 
-// FIXME
-// USB init is not working when called here... issue with bad timmer configuration?
-        // if( S_OK != CPU_USB_Initialize( Controller ) )
-        // {
-        //     return FALSE;       // If Hardware initialization fails
-        // }
+        if(CPU_USB_Initialize(controller) != S_OK)
+        {
+            return FALSE;
+        }
 
 #if defined(USB_ALLOW_CONFIGURATION_OVERRIDE)
         //
         // Re-initialize the Debugger stream
         //
-        if(COM_IsUsb(HalSystemConfig.DebuggerPorts[0]) && Controller == ConvertCOM_UsbController(HalSystemConfig.DebuggerPorts[0]))
+        if(COM_IsUsb(HalSystemConfig.DebuggerPorts[0]) && controller == ConvertCOM_UsbController(HalSystemConfig.DebuggerPorts[0]))
         {
             USB_OpenStream( ConvertCOM_UsbStream(HalSystemConfig.DebuggerPorts[0]), USB_DEBUG_EP_WRITE, USB_DEBUG_EP_READ );    
         }
 #endif
 
-         State->Initialized   = TRUE;
+         state->Initialized   = TRUE;
          return TRUE;
 //     }
     
@@ -422,8 +400,7 @@ BOOL USB_Driver::Uninitialize( int Controller )
     USB_CONTROLLER_STATE *State = CPU_USB_GetState( Controller );
     
     if(NULL == State) return FALSE;
-    
-    GLOBAL_LOCK(irq);
+
 
     if(State->Initialized == FALSE) return FALSE;
 
@@ -469,52 +446,66 @@ BOOL USB_Driver::Uninitialize( int Controller )
     return TRUE;
 }
 
-BOOL USB_Driver::OpenStream( int UsbStream, int writeEP, int readEP )
+BOOL USB_Driver::OpenStream(int UsbStream, int writeEP, int readEP)
 {
     NATIVE_PROFILE_PAL_COM();
 
-    int Controller  = ConvertCOM_UsbController ( UsbStream );
-    int StreamIndex = ConvertCOM_UsbStreamIndex( UsbStream );
+    int controller  = ConvertCOM_UsbController (UsbStream);
+    int streamIndex = ConvertCOM_UsbStreamIndex(UsbStream);
 
-    USB_CONTROLLER_STATE * State = CPU_USB_GetState( Controller );
+    USB_CONTROLLER_STATE * state = CPU_USB_GetState(controller);
 
-    if( NULL == State || !State->Initialized )     // If no such controller exists (or it is not initialized)
+    if( NULL == state || !state->Initialized )
+    {
+        // If no such controller exists (or it is not initialized)
         return FALSE;
+    }
 
     // Check the StreamIndex and the two endpoint numbers for validity (both endpoints cannot be zero)
-    if( StreamIndex >= USB_MAX_QUEUES
+    if(streamIndex >= USB_MAX_QUEUES
         || (readEP == USB_NULL_ENDPOINT && writeEP == USB_NULL_ENDPOINT)
         || (readEP != USB_NULL_ENDPOINT && (readEP < 1 || readEP >= USB_MAX_QUEUES))
-        || (writeEP != USB_NULL_ENDPOINT && (writeEP < 1 || writeEP >= USB_MAX_QUEUES)) )
+        || (writeEP != USB_NULL_ENDPOINT && (writeEP < 1 || writeEP >= USB_MAX_QUEUES)))
+    {
         return FALSE;
+    }
 
     // The Stream must be currently closed
-    if( State->streams[StreamIndex].RxEP != USB_NULL_ENDPOINT || State->streams[StreamIndex].TxEP != USB_NULL_ENDPOINT )
+    if(state->streams[streamIndex].RxEP != USB_NULL_ENDPOINT || state->streams[streamIndex].TxEP != USB_NULL_ENDPOINT)
+    {
         return FALSE;
-
+    }
+        
     // The requested endpoints must have been configured
-    if( (readEP != USB_NULL_ENDPOINT && State->Queues[readEP] == NULL) || (writeEP != USB_NULL_ENDPOINT && State->Queues[writeEP] == NULL) )
-        return FALSE;
+    if((readEP != USB_NULL_ENDPOINT && state->Queues[readEP] == NULL) || (writeEP != USB_NULL_ENDPOINT && state->Queues[writeEP] == NULL))
+    {
+        return FALSE;        
+    }
 
     // The requested endpoints can only be used in the direction specified by the configuration
-    if( (readEP != USB_NULL_ENDPOINT && State->IsTxQueue[readEP]) || (writeEP != USB_NULL_ENDPOINT && !State->IsTxQueue[writeEP]) )
+    if((readEP != USB_NULL_ENDPOINT && state->IsTxQueue[readEP]) || (writeEP != USB_NULL_ENDPOINT && !state->IsTxQueue[writeEP]))
+    {
         return FALSE;
+    }
 
     // The specified endpoints must not be in use by another stream
-    for( int stream = 0; stream < USB_MAX_QUEUES; stream++ )
+    for(int stream = 0; stream < USB_MAX_QUEUES; stream++)
     {
-        if( readEP != USB_NULL_ENDPOINT && (State->streams[stream].RxEP == readEP || State->streams[stream].TxEP == readEP) )
+        if(readEP != USB_NULL_ENDPOINT && (state->streams[stream].RxEP == readEP || state->streams[stream].TxEP == readEP))
+        {
             return FALSE;
-        if( writeEP != USB_NULL_ENDPOINT && (State->streams[stream].RxEP == writeEP || State->streams[stream].TxEP == writeEP) )
+        }
+        
+        if(writeEP != USB_NULL_ENDPOINT && (state->streams[stream].RxEP == writeEP || state->streams[stream].TxEP == writeEP))
+        {
             return FALSE;
+        }
     }
 
     // All tests pass, assign the endpoints to the stream
     {
-        GLOBAL_LOCK(irq);
-
-        State->streams[StreamIndex].RxEP = readEP;
-        State->streams[StreamIndex].TxEP = writeEP;
+        state->streams[streamIndex].RxEP = readEP;
+        state->streams[streamIndex].TxEP = writeEP;
     }
 
     return TRUE;
@@ -537,7 +528,6 @@ BOOL USB_Driver::CloseStream ( int UsbStream )
 
     {
         int endpoint;
-        GLOBAL_LOCK(irq);
 
         // Close the Rx stream
         endpoint = State->streams[StreamIndex].RxEP;
@@ -569,10 +559,10 @@ int USB_Driver::Write( int UsbStream, const char* Data, size_t size )
     int totWrite = 0;
     USB_CONTROLLER_STATE * State = CPU_USB_GetState( Controller );
 
-    if( NULL == State || StreamIndex >= USB_MAX_QUEUES )
-    {
-        return -1;
-    }
+    // if( NULL == State || StreamIndex >= USB_MAX_QUEUES )
+    // {
+    //     return -1;
+    // }
 
     if(size == 0   ) return 0;
     if(Data == NULL)
@@ -580,12 +570,12 @@ int USB_Driver::Write( int UsbStream, const char* Data, size_t size )
         return -1;
     }
 
-    // If the Controller is not yet initialized
-    if(State->DeviceState != USB_DEVICE_STATE_CONFIGURED)
-    {
-        // No data can be sent until the controller is initialized
-        return -1;
-    }
+    // // If the Controller is not yet initialized
+    // if(State->DeviceState != USB_DEVICE_STATE_CONFIGURED)
+    // {
+    //     // No data can be sent until the controller is initialized
+    //     return -1;
+    // }
     
     endpoint = State->streams[StreamIndex].TxEP;
     // If no Write side to stream (or if not yet open)
@@ -671,7 +661,7 @@ int USB_Driver::Write( int UsbStream, const char* Data, size_t size )
 
                 if(irq.WasDisabled()) // @todo - this really needs more checks to be totally valid
                 {
-                    return totWrite;
+                     return totWrite;
                 }
 
                 if(State->DeviceState != USB_DEVICE_STATE_CONFIGURED)
@@ -691,11 +681,11 @@ int USB_Driver::Write( int UsbStream, const char* Data, size_t size )
         }
 
         // here we have a post-condition that IRQs are disabled for all paths through conditional block above
-
-        if(State->DeviceState == USB_DEVICE_STATE_CONFIGURED)
-        {
+         
+        //if(State->DeviceState == USB_DEVICE_STATE_CONFIGURED)
+       // {
             CPU_USB_StartOutput( State, endpoint );
-        }
+        //}
 
         return totWrite;
     }
@@ -710,16 +700,16 @@ int USB_Driver::Read( int UsbStream, char* Data, size_t size )
     int endpoint;
     USB_CONTROLLER_STATE * State = CPU_USB_GetState( Controller );
 
-    if( NULL == State || StreamIndex >= USB_MAX_QUEUES )
-    {
-        return 0;
-    }
+    // if( NULL == State || StreamIndex >= USB_MAX_QUEUES )
+    // {
+    //     return 0;
+    // }
 
-    /* not configured, no data can go in or out */
-    if( State->DeviceState != USB_DEVICE_STATE_CONFIGURED )
-    {
-        return 0;
-    }
+    // /* not configured, no data can go in or out */
+    // if( State->DeviceState != USB_DEVICE_STATE_CONFIGURED )
+    // {
+    //     return 0;
+    // }
 
     endpoint = State->streams[StreamIndex].RxEP;
     // If no Read side to stream (or if not yet open)
@@ -785,23 +775,23 @@ BOOL USB_Driver::Flush( int UsbStream )
     int queueCnt;
     USB_CONTROLLER_STATE * State = CPU_USB_GetState( Controller );
 
-    if( NULL == State || StreamIndex >= USB_MAX_QUEUES )
-    {
-        return FALSE;
-    }
+    // if( NULL == State || StreamIndex >= USB_MAX_QUEUES )
+    // {
+    //     return FALSE;
+    // }
 
-    /* not configured, no data can go in or out */
-    if(State->DeviceState != USB_DEVICE_STATE_CONFIGURED)
-    {
-        return TRUE;
-    }
+    // /* not configured, no data can go in or out */
+    // if(State->DeviceState != USB_DEVICE_STATE_CONFIGURED)
+    // {
+    //     return TRUE;
+    // }
 
-    endpoint = State->streams[StreamIndex].TxEP;
-    // If no Write side to stream (or if not yet open)
-    if( endpoint == USB_NULL_ENDPOINT || State->Queues[endpoint] == NULL )
-    {
-        return FALSE;
-    }
+    // endpoint = State->streams[StreamIndex].TxEP;
+    // // If no Write side to stream (or if not yet open)
+    // if( endpoint == USB_NULL_ENDPOINT || State->Queues[endpoint] == NULL )
+    // {
+    //     return FALSE;
+    // }
 
     queueCnt = State->Queues[endpoint]->NumberOfElements();
     
@@ -1294,174 +1284,6 @@ UINT8 USB_HandleSetAddress( USB_CONTROLLER_STATE* State, USB_SETUP_PACKET* Setup
     return USB_STATE_ADDRESS;
 }
 
-// UINT8 USB_HandleConfigurationRequests( USB_CONTROLLER_STATE* State, USB_SETUP_PACKET* Setup )
-// {
-//     const USB_DESCRIPTOR_HEADER * header;
-//     UINT8       type;
-//     UINT8       DescriptorIndex;
-
-//     /* this request is valid regardless of device state */
-//     type            = ((Setup->wValue & 0xFF00) >> 8);
-//     DescriptorIndex =  (Setup->wValue & 0x00FF);
-//     State->Expected =   Setup->wLength;
-
-//     if(State->Expected == 0)
-//     {
-//         // just return an empty Status packet
-//          State->ResidualCount = 0;
-//          State->DataCallback = USB_DataCallback;
-//          return USB_STATE_DATA;
-//     }
-
-//     //
-//     // The very first GET_DESCRIPTOR command out of reset should always return at most PacketSize bytes.
-//     // After that, you can return as many as the host has asked.
-//     //
-//     if(State->DeviceState <= USB_DEVICE_STATE_DEFAULT)
-//     {
-//         if(State->FirstGetDescriptor)
-//         {
-//             State->FirstGetDescriptor = FALSE;
-
-//             State->Expected = __min(State->Expected, State->PacketSize);
-//         }
-//     }
-
-//     State->ResidualData = NULL;
-//     State->ResidualCount = 0;
-
-//     if( Setup->bRequest == USB_GET_DESCRIPTOR )
-//     {
-//         switch(type)
-//         {
-//         case USB_DEVICE_DESCRIPTOR_TYPE:
-//             header = USB_FindRecord( State, USB_DEVICE_DESCRIPTOR_MARKER, Setup );
-//             if( header )
-//             {
-//                 const USB_DEVICE_DESCRIPTOR * device = (USB_DEVICE_DESCRIPTOR *)header;
-//                 State->ResidualData = (UINT8 *)&device->bLength;      // Start of the device descriptor
-//                 State->ResidualCount = __min(State->Expected, device->bLength);
-//             }
-//             break;
-
-//         case USB_CONFIGURATION_DESCRIPTOR_TYPE:
-//             header = USB_FindRecord( State, USB_CONFIGURATION_DESCRIPTOR_MARKER, Setup );
-//             if( header )
-//             {
-//                 const USB_CONFIGURATION_DESCRIPTOR * Config = (USB_CONFIGURATION_DESCRIPTOR *)header;
-//                 State->ResidualData = (UINT8 *)&Config->bLength;
-//                 State->ResidualCount = __min(State->Expected, Config->wTotalLength);
-//             }
-//             break;
-
-//         case USB_STRING_DESCRIPTOR_TYPE:
-//             if(DescriptorIndex == 0)        // If host is requesting the language list
-//             {
-//                 State->ResidualData  = USB_LanguageDescriptor;
-//                 State->ResidualCount = __min(State->Expected, USB_LANGUAGE_DESCRIPTOR_SIZE);
-//             }
-//             else if( DescriptorIndex == USB_FRIENDLY_STRING_NUM && FriendlyNameString.bLength != 0 )      // If "friendly name" was changed by Flash Config sector
-//             {
-//                 State->ResidualData = (UINT8 *)&FriendlyNameString;
-//                 State->ResidualCount = __min(State->Expected, FriendlyNameString.bLength);
-//             }
-//             else if( NULL != (header = USB_FindRecord( State, USB_STRING_DESCRIPTOR_MARKER, Setup )) )
-//             {
-//                 const USB_STRING_DESCRIPTOR_HEADER * string = (USB_STRING_DESCRIPTOR_HEADER *)header;
-//                 State->ResidualData = (UINT8 *)&string->bLength;
-//                 State->ResidualCount = __min(State->Expected, string->bLength);
-//             }
-//             break;
-
-//         default:
-//             break;
-//         }
-//     }
-
-//     // If the request was not recognized, the generic types should be searched
-//     if( State->ResidualData == NULL )
-//     {
-//         if( NULL != (header = USB_FindRecord( State, USB_GENERIC_DESCRIPTOR_MARKER, Setup )) )
-//         {
-//             State->ResidualData = (UINT8 *)header;
-//             State->ResidualData += sizeof(USB_GENERIC_DESCRIPTOR_HEADER);       // Data is located right after the header
-//             State->ResidualCount = __min(State->Expected, header->size - sizeof(USB_GENERIC_DESCRIPTOR_HEADER));
-//         }
-//         else
-//             return USB_STATE_STALL;
-//     }
-
-//     State->DataCallback = USB_DataCallback;
-
-//     return USB_STATE_DATA;
-// }
-
-// UINT8 USB_HandleGetConfiguration( USB_CONTROLLER_STATE* State, USB_SETUP_PACKET* Setup )
-// {
-//     /* validate setup packet */
-//     if(Setup->wValue != 0 || Setup->wIndex != 0 || Setup->wLength != 1)
-//     {
-//         return USB_STATE_STALL;
-//     }
-
-//     /* validate based on device state */
-//     if(State->DeviceState == USB_DEVICE_STATE_DEFAULT)
-//     {
-//         return USB_STATE_STALL;
-//     }
-
-//     State->ResidualData  = &State->ConfigurationNum;
-//     State->ResidualCount = 1;
-//     State->Expected      = 1;
-//     State->DataCallback  = USB_DataCallback;
-
-//     return USB_STATE_DATA;
-// }
-
-// UINT8 USB_HandleSetConfiguration( USB_CONTROLLER_STATE* State, USB_SETUP_PACKET* Setup, BOOL DataPhase )
-// {
-//     /* validate setup packet */
-//     if(Setup->wIndex != 0 || Setup->wLength != 0)
-//     {
-//         return USB_STATE_STALL;
-//     }
-
-//     /* validate based on device state */
-//     if(State->DeviceState == USB_DEVICE_STATE_DEFAULT)
-//     {
-//         return USB_STATE_STALL;
-//     }
-
-//     /* we only support one configuration */
-//     if(Setup->wValue > 1)
-//     {
-//         return USB_STATE_STALL;
-//     }
-
-//     State->ConfigurationNum = Setup->wValue;
-
-//     /* catch state changes */
-//     if(State->ConfigurationNum == 0)
-//     {
-//         State->DeviceState = USB_DEVICE_STATE_ADDRESS;
-//     }
-//     else
-//     {
-//         State->DeviceState = USB_DEVICE_STATE_CONFIGURED;
-//     }
-
-//     USB_StateCallback( State );
-
-//     if (DataPhase)
-//     {
-//         /* send zero-length packet to tell host we're done */
-//         State->ResidualCount = 0;
-//         State->DataCallback  = USB_DataCallback;
-//     }
-
-//     return USB_STATE_CONFIGURATION;
-// }
-
 //--//
 
 // Searches through the USB Configuration records for the requested type
@@ -1515,38 +1337,6 @@ const USB_DESCRIPTOR_HEADER * USB_FindRecord( USB_CONTROLLER_STATE* State, UINT8
     return header;
 }
 
-// UINT8 USB_ControlCallback( USB_CONTROLLER_STATE* State )
-// {        
-//     USB_SETUP_PACKET* Setup;
-
-//     if(State->DataSize == 0)
-//     {
-//         return USB_STATE_DONE;
-//     }
-
-//     Setup = (USB_SETUP_PACKET*)State->Data;
-    
-//     switch(Setup->bRequest)
-//     {
-//     case USB_GET_STATUS:
-//         return USB_HandleGetStatus            ( State, Setup );
-//     case USB_CLEAR_FEATURE:
-//         return USB_HandleClearFeature         ( State, Setup );
-//     case USB_SET_FEATURE:
-//         return USB_HandleSetFeature           ( State, Setup );
-//     case USB_SET_ADDRESS:
-//         return USB_HandleSetAddress           ( State, Setup );
-//     case USB_GET_CONFIGURATION:
-//         return USB_HandleGetConfiguration     ( State, Setup );
-//     case USB_SET_CONFIGURATION:
-//         return USB_HandleSetConfiguration     ( State, Setup, TRUE );
-//     default:
-//         return USB_HandleConfigurationRequests( State, Setup );
-//     }
-
-//     return USB_STATE_STALL;
-// }
-
 USB_PACKET64* USB_RxEnqueue( USB_CONTROLLER_STATE* State, int endpoint, BOOL& DisableRx )
 {
     ASSERT_IRQ_MUST_BE_OFF();
@@ -1586,6 +1376,10 @@ USB_PACKET64* USB_TxDequeue( USB_CONTROLLER_STATE* State, int endpoint, BOOL Don
 // NOTE:  TODO: Endpoints need to be checked for overlap (must not be used more than once).
 int UsbConfigurationCheck( const USB_DYNAMIC_CONFIGURATION *firstRecord )
 {
+    return USB_CONFIG_ERR_OK;
+    
+    /////////
+    
     const UINT8                         *next;
     const USB_DESCRIPTOR_HEADER         *record;
 
@@ -1812,85 +1606,6 @@ int UsbConfigurationCheck( const USB_DYNAMIC_CONFIGURATION *firstRecord )
     return recordError;
 }
 
-
-// USB_NextEndpoint()
-// Returns a pointer to the next endpoint descriptor in the USB configuration list along with
-// a pointer to its interface descriptor.  Returns FALSE if ep or itfc are bogus pointers or
-// if the end of the configuration list has been reached (no more endpoints).
-// To get the first endpoint and its interface, this should be called with ep = NULL.
-
-// BOOL USB_NextEndpoint( USB_CONTROLLER_STATE* State, const USB_ENDPOINT_DESCRIPTOR * &ep, const USB_INTERFACE_DESCRIPTOR* &itfc )
-// {
-//     const UINT8 *next;
-//     const UINT8 *end;
-//     const USB_CONFIGURATION_DESCRIPTOR *Config;
-
-//     // Locate the configuration descriptor
-//     Config = (const USB_CONFIGURATION_DESCRIPTOR *)USB_FindRecord( State, USB_CONFIGURATION_DESCRIPTOR_MARKER, NULL );
-//     if( NULL == Config )        // If configuration is bogus
-//         return FALSE;
-
-//     // Calculate the range of addresses where endpoint descriptors may be found
-//     next = (const UINT8 *)&Config[1];
-//     end  = ((const UINT8 *)Config) + Config->header.size;
-
-//     // If requesting the first endpoint
-//     if( NULL == ep )
-//     {
-//         // Possible location of first endpoint descriptor - actually, this will
-//         // always be the first interface descriptor, but it doesn't matter.
-//         ep = (const USB_ENDPOINT_DESCRIPTOR *)next;
-//         itfc = NULL;
-//     }
-//     // If not, make sure that both pointers are good
-//     else if( (UINT8 *)ep > next
-//              && (UINT8 *)ep < end
-//              && (UINT8 *)itfc >= next
-//              && (UINT8 *)itfc < end
-//              && USB_ENDPOINT_DESCRIPTOR_TYPE == ep->bDescriptorType
-//              && sizeof(USB_ENDPOINT_DESCRIPTOR) == ep->bLength
-//              && USB_INTERFACE_DESCRIPTOR_TYPE == itfc->bDescriptorType
-//              && sizeof(USB_INTERFACE_DESCRIPTOR) == itfc->bLength )
-//     {
-//         // Possible location of next endpoint descriptor is right after
-//         // the current endpoint descriptor
-//         ep = &ep[1];
-//     }
-//     else
-//     {
-//         // If ep or itfc are bad
-//         return FALSE;
-//     }
-
-//     // While still within the configuration descriptor
-//     while( (const UINT8 *)ep < end )
-//     {
-//         // Check for interfaces
-//         if( USB_INTERFACE_DESCRIPTOR_TYPE == ep->bDescriptorType
-//             && sizeof(USB_INTERFACE_DESCRIPTOR) == ep->bLength )
-//         {
-//             itfc = (const USB_INTERFACE_DESCRIPTOR *)ep;      // Remember the interface
-//         }
-//         // If current points to an endpoint descriptor
-//         else if( USB_ENDPOINT_DESCRIPTOR_TYPE == ep->bDescriptorType
-//             && sizeof(USB_ENDPOINT_DESCRIPTOR) == ep->bLength )
-//         {
-//             // Found next endpoint descriptor
-//             return TRUE;
-//         }
-
-//         // For all configuration descriptors, the first byte is its size.
-//         // Use this to find the next descriptor in the list
-//         next = (const UINT8 *)ep;
-//         next += ep->bLength;
-//         ep = (const USB_ENDPOINT_DESCRIPTOR *)next;
-//     }
-
-//     // If we've run past the end of the configuration descriptor,
-//     // then there are no more endpoints
-//     return FALSE;
-// }
-
 //--//
 
 STREAM_DRIVER_DETAILS* USB1_driver_details( UINT32 handle )
@@ -1918,4 +1633,3 @@ int USB1_write( char* buffer, size_t size )
 {
     return USB_Write( ConvertCOM_UsbStream(USB1), buffer, size );
 }
-

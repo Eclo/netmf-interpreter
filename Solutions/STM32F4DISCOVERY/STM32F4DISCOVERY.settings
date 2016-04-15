@@ -29,7 +29,15 @@
     <DEVICE_SERIES>F4</DEVICE_SERIES>
     <CMSIS_PACK_VER>1.11.0</CMSIS_PACK_VER>
   </PropertyGroup>
-  
+
+  <!-- USB configuration -->
+  <PropertyGroup>
+    <USB_VID>0x0483</USB_VID>
+    <USB_PID>0xA08F</USB_PID>
+    <USB_MANUFACTURER>Microsoft OpenTech</USB_MANUFACTURER>
+    <USB_PRODUCT>STM32F4DISCOVERY</USB_PRODUCT>
+  </PropertyGroup>
+    
   <ItemGroup>
     <IncludePaths Include="Solutions\STM32F4DISCOVERY" />
   </ItemGroup>

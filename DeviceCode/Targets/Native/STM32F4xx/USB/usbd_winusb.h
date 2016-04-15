@@ -50,10 +50,10 @@
   * @{
   */ 
 #define WINUSB_EPIN_ADDR                0x81
-#define WINUSB_EPIN_SIZE                0x10
+//#define WINUSB_EPIN_SIZE                0x10
 
 #define WINUSB_EPOUT_ADDR               0x02
-#define WINUSB_EPOUT_SIZE               0x10
+//#define WINUSB_EPOUT_SIZE               0x10
 
 #define USB_WINUSB_CONFIG_DESC_SIZ      (9 + 9 + 7 + 7)
 
@@ -204,6 +204,7 @@ extern USBD_ClassTypeDef  USBD_WINUSB;
 /**
   * @}
   */ 
+  
 
 #ifdef __cplusplus
 }

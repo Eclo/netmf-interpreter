@@ -156,39 +156,6 @@ void HAL_PCD_SetupStageCallback(PCD_HandleTypeDef *hpcd)
 void HAL_PCD_DataOutStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 {
     USBD_LL_DataOutStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->OUT_ep[epnum].xfer_buff);
-
-    // moving this to USBD_WINUSB_DataOut   
-    // USB_CONTROLLER_STATE* state;
-    // USBD_HandleTypeDef *pdev = (USBD_HandleTypeDef*)hpcd->pData;
-    // state = (USB_CONTROLLER_STATE*)pdev->pUserData;
-
-    // if(epnum == 1)
-    // {
-    //     // this is a control endpoint
-
-    //     state->Data = hpcd->OUT_ep[epnum].xfer_buff;
-    //     state->DataSize = hpcd->OUT_ep[epnum].xfer_count;
-
-    // }
-    // else if(epnum == 2)
-    // {
-    //     // this is a data endpoint
-        
-    //     BOOL bufferIsFull;
-    //     USB_PACKET64* usbPacket = USB_RxEnqueue(state, epnum, bufferIsFull);
-        
-    //     if(usbPacket == NULL)
-    //     {  
-    //         // should not happen
-    //         //USB_Debug( '?' );
-    //         //_ASSERT( 0 );
-    //     }
-        
-    //     // copy data from endpoint buffer to USB packet buffer
-    //     memcpy(usbPacket->Buffer, hpcd->OUT_ep[epnum].xfer_buff, hpcd->OUT_ep[epnum].xfer_count);
-    //     // set USB packet size 
-    //     usbPacket->Size = hpcd->OUT_ep[epnum].xfer_count;         
-    // }  
 }
 
 /**
@@ -200,68 +167,6 @@ void HAL_PCD_DataOutStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 void HAL_PCD_DataInStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 {
     USBD_LL_DataInStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->IN_ep[epnum].xfer_buff);
-
-    // UINT32* ps = NULL;
-    // UINT32 count;
-
-    // USB_CONTROLLER_STATE* state;
-    // USBD_HandleTypeDef *pdev = (USBD_HandleTypeDef*)hpcd->pData;
-    // state = (USB_CONTROLLER_STATE*)pdev->pUserData;
-
-    // if(epnum == 1 )
-    // { 
-    //     // this is a control endpoint
-        
-    //     if(state->DataCallback)
-    //     { 
-    //         // data to send
-    //         state->DataCallback(state);  // this call can't fail
-    //         ps = (UINT32*)state->Data;
-    //         count = state->DataSize;
-
-    //         //USB_Debug( count ? 'x' : 'n' );
-    //     }
-    // }
-    // else if(state->Queues[epnum] != NULL && state->IsTxQueue[epnum])
-    // { 
-    //     // this is a TX data endpoint
-        
-    //     USB_PACKET64* usbPacket = USB_TxDequeue(state, epnum, TRUE);
-    //     if(usbPacket)
-    //     {  
-    //         // data to send
-            
-    //         ps = (UINT32*)usbPacket->Buffer;
-
-    //         //USB_Debug( 's' );
-            
-    //         // copy data from USB packet buffer to endpoint buffer 
-    //         memcpy(hpcd->IN_ep[epnum].xfer_buff, usbPacket->Buffer, usbPacket->Size);
-    //     }
-    // }
-
-    // if(ps)
-    // {
-    //     // data to send
-    //     // enable endpoint
-    //     //OTG->DIEP[ ep ].TSIZ = OTG_DIEPTSIZ_PKTCNT_1 | count;
-    //     //OTG->DIEP[ ep ].CTL |= OTG_DIEPCTL_EPENA | OTG_DIEPCTL_CNAK;
-
-    //     // write data
-    //     uint32_t volatile* pd = OTG->DFIFO[ep];
-    //     for( int c = count; c > 0; c -= 4 )
-    //     {
-    //         *pd = *ps++;
-    //     }
-    // }
-    // else
-    // { 
-    //     // no data
-        
-    //     // disable endpoint
-    //     OTG->DIEP[ ep ].CTL |= OTG_DIEPCTL_SNAK;
-    // }
-  
 }
 
 /**
@@ -283,8 +188,6 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
 { 
     USBD_SpeedTypeDef speed = USBD_SPEED_FULL;
     
-    //USB_Debug( '!' );
-    
     /* Set USB Current Speed */
     switch(hpcd->Init.speed)
     {
@@ -304,15 +207,6 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
     
     /* Reset Device */
     USBD_LL_Reset((USBD_HandleTypeDef*)hpcd->pData);
-  
-    // /* clear all flags */
-    // USB_ClearEvent( 0, USB_EVENT_ALL );
-
-    // usbControlerState.FirstGetDescriptor = TRUE;
-
-    // usbControlerState.DeviceState = USB_DEVICE_STATE_DEFAULT;
-    // usbControlerState.Address = 0;
-    // USB_StateCallback(&usbControlerState);  
 }
 
 /**
@@ -322,8 +216,6 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
   */
 void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
 {
-    //USB_Debug( 'S' );
-    
     USBD_LL_Suspend((USBD_HandleTypeDef*)hpcd->pData);
     
     previousDeviceState = usbControlerState.DeviceState;
@@ -338,8 +230,6 @@ void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
   */
 void HAL_PCD_ResumeCallback(PCD_HandleTypeDef *hpcd)
 {
-    //USB_Debug( 'R' );
-    
     USBD_LL_Resume((USBD_HandleTypeDef*)hpcd->pData);
     
     usbControlerState.DeviceState = previousDeviceState;
@@ -511,6 +401,12 @@ USBD_StatusTypeDef USBD_LL_FlushEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 USBD_StatusTypeDef USBD_LL_StallEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 {
   HAL_PCD_EP_SetStall((PCD_HandleTypeDef*)pdev->pData, ep_addr);
+
+    /* set the halt feature */
+    USB_CONTROLLER_STATE* state;
+    state = (USB_CONTROLLER_STATE*)pdev->pUserData;  
+    state->EndpointStatus[ep_addr & 0xFC] |= USB_STATUS_ENDPOINT_HALT;
+  
   return USBD_OK;
 }
 
@@ -523,6 +419,12 @@ USBD_StatusTypeDef USBD_LL_StallEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 USBD_StatusTypeDef USBD_LL_ClearStallEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 {
   HAL_PCD_EP_ClrStall((PCD_HandleTypeDef*)pdev->pData, ep_addr);
+  
+    /* clear the halt feature */ 
+    USB_CONTROLLER_STATE* state;
+    state = (USB_CONTROLLER_STATE*)pdev->pUserData;  
+    state->EndpointStatus[ep_addr & 0xFC] &= ~USB_STATUS_ENDPOINT_HALT; 
+
   return USBD_OK; 
 }
 

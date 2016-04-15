@@ -184,6 +184,14 @@
 
         <Error Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' == 'True'" Text="Can't have both Cortex-M CRC Unit and Software CRC selected. Check 'features.setting' file for TinyBooter."/>
 
+        <!-- USB Debug -->
+        <Message Condition="'$(FEATURE_USB_DEBUG)' == 'True'" Text="USB Debug: included" Importance="High"/>
+        <ItemGroup Condition="'$(FEATURE_USB_DEBUG)' == 'True'">
+            <CC_CPP_Defines Include="FEATURE_USB_DEBUG" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\USB\dotNetMF.proj" />
+            <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USB_CMSIS\dotNetMF.proj" />
+        </ItemGroup>
+
     </Target>
 
     <!-- HAL mandatory features -->

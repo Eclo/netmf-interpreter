@@ -90,6 +90,8 @@
         <DriverLibs Condition="'$(FEATURE_DA)' != 'True'" Include="cpu_DA_stubs.$(LIB_EXT)" />
         <PlatformIndependentLibs Condition="'$(FEATURE_CRC)' == 'True'" Include="CRC.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CORTEX_CRC)' == 'True'" Include="CMSIS_CRC.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_USB_DEBUG)' == 'True'" Include="CMSIS_USB_DEBUG.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_USB_DEBUG)' == 'True'" Include="usb_cmsis_pal.$(LIB_EXT)" />
 
         <DriverLibs Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Include="CMSIS_Flash.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_CPUCACHE)' != 'True'" Include="cpu_cache_stubs.$(LIB_EXT)" />
@@ -235,10 +237,6 @@
         <PlatformIndependentLibs Include="Graphics_stub.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Graphics\dotNetMF_stub.proj" />
     </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="CMSIS_USB.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\USB\dotNetMF.proj" />
-    </ItemGroup>
     <!--<ItemGroup>
         <DriverLibs Include="STM32F4_INTC.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4\DeviceCode\STM32F4_INTC\dotNetMF.proj" />
@@ -262,10 +260,6 @@
     <ItemGroup>
         <PlatformIndependentLibs Include="Diagnostics_stub.$(LIB_EXT)" Condition="'$(FLAVOR)'=='rtm'" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Diagnostics\dotNetMF_stub.proj" Condition="'$(FLAVOR)'=='rtm'" />
-    </ItemGroup>
-    <ItemGroup>
-        <DriverLibs Include="usb_cmsis_pal.$(LIB_EXT)" />
-        <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USB_CMSIS\dotNetMF.proj" />
     </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="diagnostics_pal.$(LIB_EXT)" Condition="'$(FLAVOR)'=='Instrumented'" />
@@ -303,10 +297,10 @@
         <PlatformIndependentLibs Include="SPOT_Hardware_PWM.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Libraries\SPOT_Hardware\SPOT_PWM\dotNetMF.proj" />
     </ItemGroup>
-    <ItemGroup>
+    <!--<ItemGroup>
         <PlatformIndependentLibs Include="SPOT_Hardware_Usb.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Libraries\SPOT_Hardware\SPOT_Usb\dotNetMF.proj" />
-    </ItemGroup>
+    </ItemGroup>-->
     <ItemGroup>
         <RequiredProjects Include="$(SPOCLIENT)\CLR\Libraries\Windows_Devices\dotNetMF.proj" />
         <PlatformIndependentLibs Include="Windows_Devices.$(LIB_EXT)" />
@@ -347,10 +341,6 @@
       <DriverLibs Include="IO_Init_STM32F4DISCOVERY.$(LIB_EXT)" />
       <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\Init\dotnetmf.proj" />
     </ItemGroup>-->
-    <ItemGroup>
-      <DriverLibs Include="usb_pal_config_STM32F4DISCOVERY.$(LIB_EXT)" />
-      <RequiredProjects Include="$(SPOCLIENT)\Solutions\STM32F4DISCOVERY\DeviceCode\USB\dotnetmf.proj" />
-    </ItemGroup>
     <ItemGroup>
         <DriverLibs Include="native_double_pal.$(LIB_EXT)" />
         <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\Double\dotNetMF.proj" />

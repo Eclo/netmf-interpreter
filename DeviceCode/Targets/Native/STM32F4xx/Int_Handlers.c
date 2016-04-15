@@ -157,4 +157,10 @@ __weak void SysTick_Handler(void)
     HAL_SYSTICK_IRQHandler();
 }
 
+#ifndef FEATURE_USB_DEBUG
+void OTG_FS_IRQHandler(void)
+{
+}
+#endif
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

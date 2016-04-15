@@ -33,12 +33,18 @@
 #include "usbd_def.h"
 #include "usbd_winusb.h"
 
-#define USBD_VID                        0x0483
-#define USBD_PID                        0xA08F
+// definition @ 'solution'.settings
+//#define USBD_VID                        0x0483
+// definition @ 'solution'.settings
+//#define USBD_PID                        0xA08F
+// definition @ 'solution'.settings
+//#define USBD_MANUFACTURER_STRING        "Microsoft OpenTech"
+// definition @ 'solution'.settings
+//#define USBD_PRODUCT_HS_STRING          "STM32F4DISCOVERY"
+// definition @ 'solution'.settings
+//#define USBD_PRODUCT_FS_STRING          "STM32F4DISCOVERY"
+
 #define USBD_LANGID_STRING              0x409
-#define USBD_MANUFACTURER_STRING        "Microsoft OpenTech"
-#define USBD_PRODUCT_HS_STRING          "STM32F4DISCOVERY"
-#define USBD_PRODUCT_FS_STRING          "STM32F4DISCOVERY"
 
 // not used
 #define USBD_CONFIGURATION_HS_STRING    "STM32F4DISCOVERY"

@@ -53,48 +53,8 @@
 #include "usbd_desc.h"
 #include "usbd_ctlreq.h"
 
-
-/** @addtogroup STM32_USB_DEVICE_LIBRARY
-  * @{
-  */
-
-
-/** @defgroup USBD_WINUSB 
-  * @brief usbd core module
-  * @{
-  */ 
-
-/** @defgroup USBD_WINUSB_Private_TypesDefinitions
-  * @{
-  */ 
-/**
-  * @}
-  */ 
-
-
-/** @defgroup USBD_WINUSB_Private_Defines
-  * @{
-  */ 
-
-/**
-  * @}
-  */ 
-
-
-/** @defgroup USBD_WINUSB_Private_Macros
-  * @{
-  */ 
-                                         
-/**
-  * @}
-  */ 
-static uint8_t buffer[80];
-static uint8_t outBuffer[80];
-
-
-/** @defgroup USBD_WINUSB_Private_FunctionPrototypes
-  * @{
-  */
+uint8_t rxBuffer[80];
+uint8_t txBuffer[80];
 
 
 static uint8_t  USBD_WINUSB_Init (USBD_HandleTypeDef *pdev, 
@@ -135,14 +95,6 @@ static uint8_t  USBD_WINUSB_GetMSExtendedCompatIDOSDescriptor (USBD_HandleTypeDe
 static uint8_t  USBD_WINUSB_GetMSExtendedPropertiesOSDescriptor (USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static uint8_t  USBD_WINUSB_VendorRequestDevice(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static uint8_t  USBD_WINUSB_VendorRequestInterface(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
-
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_WINUSB_Private_Variables
-  * @{
-  */ 
 
 USBD_ClassTypeDef  USBD_WINUSB = 
 {
@@ -199,7 +151,7 @@ const uint8_t USBD_WINUSB_CfgDesc[USB_WINUSB_CONFIG_DESC_SIZ]=
   // Endpoint 2 descriptor
   0x07,   /*Endpoint descriptor length = 7*/
   0x05,   /*Endpoint descriptor type */
-  WINUSB_EPOUT_ADDR,   /*Endpoint address (IN, address 1) */
+  WINUSB_EPOUT_ADDR,   /*Endpoint address (OUT, address 1) */
   0x02,   /*Bulk endpoint type */
   LOBYTE(WINUSB_MAX_FS_PACKET),
   HIBYTE(WINUSB_MAX_FS_PACKET),
@@ -271,15 +223,6 @@ const WINUSB_ExtendedPropertiesDescStruct USBD_WINUSB_Extended_Properties_OS_Fea
     },
 };
 
-
-/**
-  * @}
-  */ 
-
-/** @defgroup USBD_WINUSB_Private_Functions
-  * @{
-  */ 
-
 /**
   * @brief  USBD_WINUSB_Init
   *         Initialize the WINUSB interface
@@ -291,32 +234,28 @@ static uint8_t  USBD_WINUSB_Init (USBD_HandleTypeDef *pdev,
                                uint8_t cfgidx)
 {
   uint8_t ret = 0;
-  USB_CONTROLLER_STATE* state;
-  
-    /* Open EP OUT */
-    USBD_LL_OpenEP(pdev,
-                   WINUSB_EPOUT_ADDR,
-                   USBD_EP_TYPE_BULK,
-                   WINUSB_MAX_FS_PACKET);
-
-    /* Open EP IN */
-    USBD_LL_OpenEP(pdev,
-                   WINUSB_EPIN_ADDR,
-                   USBD_EP_TYPE_BULK,
-                   WINUSB_MAX_FS_PACKET);
 
     USBD_LL_FlushEP(pdev, WINUSB_EPOUT_ADDR);
     USBD_LL_FlushEP(pdev, WINUSB_EPIN_ADDR);
-    
-    // state = (USB_CONTROLLER_STATE*)pdev->pUserData;
-    
+
+    /* Open EP OUT */
+    USBD_LL_OpenEP(pdev,
+                WINUSB_EPOUT_ADDR,
+                USBD_EP_TYPE_BULK,
+                WINUSB_MAX_FS_PACKET);
+
+    /* Open EP IN */
+    USBD_LL_OpenEP(pdev,
+                WINUSB_EPIN_ADDR,
+                USBD_EP_TYPE_BULK,
+                WINUSB_MAX_FS_PACKET);
+
     /* Prepare Out endpoint to receive next packet */
     USBD_LL_PrepareReceive(pdev,
-                            WINUSB_EPOUT_ADDR,
-                            &buffer[0],
-                            WINUSB_MAX_FS_PACKET);    
-     
-    
+                        WINUSB_EPOUT_ADDR,
+                        &rxBuffer[0],
+                        WINUSB_MAX_FS_PACKET);    
+
     return ret;
 }
 
@@ -340,11 +279,6 @@ static uint8_t  USBD_WINUSB_DeInit (USBD_HandleTypeDef *pdev,
   return USBD_OK;
 }
 
-// static void USBD_WINUSB_UpdateState(SWinUSBCommSTM32F4 *psWinUSBCommSTM32F4)
-// {
-//     USB_CONTROLLER_STATE* state
-// }
-
 /**
   * @brief  USBD_WINUSB_Setup
   *         Handle the WINUSB specific requests
@@ -354,7 +288,6 @@ static uint8_t  USBD_WINUSB_DeInit (USBD_HandleTypeDef *pdev,
   */
 static uint8_t  USBD_WINUSB_Setup (USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
- 
   switch (req->bmRequest & USB_REQ_TYPE_MASK)
   {
     case USB_REQ_TYPE_CLASS :  
@@ -411,50 +344,6 @@ static uint8_t  USBD_WINUSB_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
     USB_CONTROLLER_STATE* state = (USB_CONTROLLER_STATE*)pdev->pUserData;
     
-    ASSERT_IRQ_MUST_BE_OFF( );
-
-    // UINT32 bits = OTG->DIEP[epnum].INT;
-    // if( bits & OTG_DIEPINT_XFRC )
-    // { 
-    //     // transfer completed
-    //     //USB_Debug( '3' );
-    //     OTG->DIEP[epnum].INT = OTG_DIEPINT_XFRC; // clear interrupt
-    // }
-
-    // if( !( OTG->DIEP[epnum].CTL & OTG_DIEPCTL_EPENA ) )
-    // { 
-    //     // Tx idle
-
-    //     UINT32* ps = NULL;
-    //     UINT32 count;
-
-    //     if(epnum== 0 )
-    //     { 
-    //         // control endpoint
-    //         if( state->DataCallback )
-    //         { 
-    //             // data to send
-    //             state->DataCallback( state );  // this call can't fail
-    //             ps = ( UINT32* )state->Data;
-    //             count = state->DataSize;
-
-    //             //USB_Debug( count ? 'x' : 'n' );
-    //         }
-    //     }
-    //     else if( state->Queues[epnum] != NULL && state->IsTxQueue[epnum] )
-    //     { 
-    //         // Tx data endpoint
-    //         USB_PACKET64* Packet64 = USB_TxDequeue( state, ep, TRUE );
-    //         if( Packet64 )
-    //         {  
-    //             // data to send
-    //             ps = ( UINT32* )Packet64->Buffer;
-    //             count = Packet64->Size;
-
-    //             //USB_Debug( 's' );
-    //         }
-    //     }
-    
     if(epnum == 1)
     {
         // Tx data endpoint
@@ -464,41 +353,16 @@ static uint8_t  USBD_WINUSB_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
         {  
             // data to send
             // Transmit next packet
-            
-            // copy packet data to out buffer  
-            memcpy(usbPacket->Buffer, &outBuffer[0], usbPacket->Size);
-            
-            USBD_LL_Transmit(pdev,
-                            epnum,
-                            outBuffer,
-                            usbPacket->Size);
+                            
+            // copy data to be transmitted from USB packet struct to tx buffer  
+            memcpy(&txBuffer[0], usbPacket->Buffer, usbPacket->Size);
+
+            USBD_LL_Transmit(pdev, WINUSB_EPIN_ADDR, &txBuffer[0], usbPacket->Size);
             // USB_Debug( 's' );
         }
 
-    }    
+    }
 
-    //     if( ps )
-    //     { 
-    //         // data to send
-    //         // enable endpoint
-    //         OTG->DIEP[epnum].TSIZ = OTG_DIEPTSIZ_PKTCNT_1 | count;
-    //         OTG->DIEP[epnum].CTL |= OTG_DIEPCTL_EPENA | OTG_DIEPCTL_CNAK;
-
-    //         // write data
-    //         uint32_t volatile* pd = OTG->DFIFO[epnum];
-    //         for( int c = count; c > 0; c -= 4 )
-    //         {
-    //             *pd = *ps++;
-    //         }
-    //     }
-    //     else
-    //     { // no data
-    //         // disable endpoint
-    //         OTG->DIEP[epnum].CTL |= OTG_DIEPCTL_SNAK;
-    //     }
-    // }
-        
-    // FIXME
     return USBD_OK;
 }
 
@@ -510,48 +374,6 @@ static uint8_t  USBD_WINUSB_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
   */
 static uint8_t  USBD_WINUSB_EP0_RxReady (USBD_HandleTypeDef *pdev)
 {
-    USB_CONTROLLER_STATE* state = (USB_CONTROLLER_STATE*)pdev->pUserData;
-    
-    ASSERT_IRQ_MUST_BE_OFF( );
-
-    UINT32* pd;
-
-    // if(epnum== 0 )
-    // { 
-    //     // control endpoint
-    //     //USB_Debug( count ? 'c' : '0' );
-
-    //     pd = ( UINT32* )( ( STM32F4_USB_STATE* )state )->ep0Buffer;
-    //     state->Data = ( BYTE* )pd;
-    //     state->DataSize = count;
-    // }
-    // else
-    // { 
-    //     // data endpoint
-    //     //USB_Debug( 'r' );
-
-    //     BOOL full;
-    //     USB_PACKET64* Packet64 = USB_RxEnqueue( state, ep, full );
-    //     if( Packet64 == NULL )
-    //     {  
-    //         // should not happen
-    //         //USB_Debug( '?' );
-    //         _ASSERT( 0 );
-    //     }
-    //     pd = ( UINT32* )Packet64->Buffer;
-    //     Packet64->Size = count;
-    // }
-
-    // // read data
-    // uint32_t volatile* ps = OTG->DFIFO[epnum];
-    // for( int c = count; c > 0; c -= 4 )
-    // {
-    //     *pd++ = *ps;
-    // }
-
-    // data handling & Rx reenabling delayed to transfer completed interrupt
-    
-    // FIXME
   return USBD_OK;
 }
 
@@ -563,51 +385,6 @@ static uint8_t  USBD_WINUSB_EP0_RxReady (USBD_HandleTypeDef *pdev)
   */
 static uint8_t  USBD_WINUSB_EP0_TxReady(USBD_HandleTypeDef *pdev)
 {
-    USB_CONTROLLER_STATE* state = (USB_CONTROLLER_STATE*)pdev->pUserData;
-    
-    ASSERT_IRQ_MUST_BE_OFF( );
-
-    // UINT32 bits = OTG->DOEP[epnum].INT;
-
-    // if( bits & OTG_DOEPINT_XFRC )
-    // { 
-    //     // transfer completed
-    //     //USB_Debug( '1' );
-    //     OTG->DOEP[epnum].INT = OTG_DOEPINT_XFRC; // clear interrupt
-    // }
-
-    // if( bits & OTG_DOEPINT_STUP )
-    // { 
-    //     // setup phase done
-    //     //USB_Debug( '2' );
-    //     OTG->DOEP[epnum].INT = OTG_DOEPINT_STUP; // clear interrupt
-    // }
-
-    // if(epnum == 0 )
-    // { 
-    //     // control endpoint
-    //     //USB_Debug( '$' );
-    //     // enable endpoint
-    //     OTG->DOEP[ 0 ].TSIZ = OTG_DOEPTSIZ_STUPCNT | OTG_DOEPTSIZ_PKTCNT_1 | state->PacketSize;
-    //     OTG->DOEP[ 0 ].CTL |= OTG_DOEPCTL_EPENA | OTG_DOEPCTL_CNAK;
-    //     // Handle Setup data in upper layer
-    //     STM32F4_USB_Driver_Handle_Setup( OTG, state );
-    // }
-    // else if( !state->Queues[epnum]->IsFull( ) )
-    // {
-    //     // enable endpoint
-    //     OTG->DOEP[epnum].TSIZ = OTG_DOEPTSIZ_PKTCNT_1 | state->MaxPacketSize[epnum];
-    //     OTG->DOEP[epnum].CTL |= OTG_DOEPCTL_EPENA | OTG_DOEPCTL_CNAK;
-    //     //USB_Debug( 'E' );
-    // }
-    // else
-    // {
-    //     // disable endpoint
-    //     OTG->DOEP[epnum].CTL |= OTG_DOEPCTL_SNAK;
-    //     //USB_Debug( 'v' );
-    // }
-    
-    // FIXME
   return USBD_OK;
 }
 /**
@@ -658,7 +435,7 @@ static uint8_t  USBD_WINUSB_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum)
     USB_CONTROLLER_STATE* state;
     state = (USB_CONTROLLER_STATE*)pdev->pUserData;
 
-    if(epnum == WINUSB_EPOUT_ADDR)
+    if(epnum == 2)
     {
         // EP2
         
@@ -677,21 +454,10 @@ static uint8_t  USBD_WINUSB_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum)
         usbPacket->Size = USBD_LL_GetRxDataSize (pdev , epnum);
 
         // copy received data to USB packet struct  
-        memcpy(usbPacket->Buffer, &buffer[0], usbPacket->Size);
+        memcpy(usbPacket->Buffer, &rxBuffer[0], usbPacket->Size);
 
         // prepare WINUSB_EPOUT_ADDR endpoint to receive next packet
-        USBD_LL_PrepareReceive(pdev, epnum, &buffer[0], WINUSB_MAX_FS_PACKET);
-
-        if(usbPacket->Buffer[0] == 'x')
-        {
-            // xx start of packet
-            debug_printf("dummy packet");
-        }
-        else if(usbPacket->Buffer[0] == 'M')
-        {
-            // start of Msft debug  packet
-            debug_printf("debug packet");
-        } 
+        USBD_LL_PrepareReceive(pdev, epnum, &rxBuffer[0], WINUSB_MAX_FS_PACKET);
     }  
 
     return USBD_OK;
@@ -745,18 +511,12 @@ static uint8_t *USBD_WINUSB_ExtendedCompatIDOSDescriptor(USBD_SpeedTypeDef speed
 
 static uint8_t  USBD_WINUSB_StandardRequest(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-  //SSTM32F4USB *psSTM32F4USB = (SSTM32F4USB *)pdev->pUserData;
-
   switch (req->bRequest)
   {
   case USB_REQ_GET_INTERFACE :
-    //USBD_CtlSendData (pdev, (uint8_t *)&psSTM32F4USB->m_eCurrentInterface, 1);
-    //while(1);
     break;
 
   case USB_REQ_SET_INTERFACE :
-    //psSTM32F4USB->m_eCurrentInterface = (uint8_t)(req->wValue);
-    //while(1);
     break;
 
   case USB_REQ_CLEAR_FEATURE:
@@ -773,7 +533,7 @@ static uint8_t  USBD_WINUSB_StandardRequest(USBD_HandleTypeDef *pdev, USBD_Setup
     }
     else
     {
-      /* Open EP IN */
+      /* Open EP OUT */
       USBD_LL_OpenEP(pdev, WINUSB_EPOUT_ADDR, USBD_EP_TYPE_BULK, WINUSB_MAX_FS_PACKET);
     }
     break;
@@ -860,46 +620,6 @@ static uint8_t  USBD_WINUSB_VendorRequestDevice(USBD_HandleTypeDef *pdev, USBD_S
 
 static uint8_t  USBD_WINUSB_VendorRequestInterface(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-//   SSTM32F4USB *psSTM32F4USB = (SSTM32F4USB *)pdev->pUserData;
-//   SWINUSBSTM32F4 *psWINUSBSTM32F4 = &psSTM32F4USB->m_sWINUSBSTM32F4;
-
-//   switch ( req->wIndex )
-//   {
-//   case stm32f4usbinterface_WINUSB:
-//     switch ( req->bRequest )
-//     {
-//     case WINUSB2commandReset:
-//       psWINUSBSTM32F4->m_dwExpectedByteCountUSB = 0;
-//       psWINUSBSTM32F4->m_pbyReceivePtrUSB = psWINUSBSTM32F4->m_pbyBuffer;
-//       psWINUSBSTM32F4->m_dwSendByteCountUSB = 0;
-//       break;
-//     case WINUSB2commandGetVersion: USBD_CtlSendData(pdev, &s_byWINUSBVersion, 1); break;
-//     case WINUSB2commandGetState: USBD_CtlSendData(pdev, &psWINUSBSTM32F4->m_byStateUSB, 1); break;
-//     case WINUSB2commandGetBufferSize: USBD_CtlSendData(pdev, (uint8_t*)(&psWINUSBSTM32F4->m_dwBufferSizeInBytes), 4); break;
-//     case WINUSB2commandGetReturnSize:
-//       if ( psWINUSBSTM32F4->m_dwSendByteCountUSB )
-//       {
-//         if ( psWINUSBSTM32F4->m_pbyWritePtr > psWINUSBSTM32F4->m_pbyBuffer )
-//         {
-//           USBD_LL_Transmit(pdev, WINUSB_EPIN_ADDR, psWINUSBSTM32F4->m_pbySendPtrUSB, psWINUSBSTM32F4->m_dwSendByteCountUSB);
-//         }
-//         psWINUSBSTM32F4->m_pbyReceivePtrUSB = psWINUSBSTM32F4->m_pbyBuffer;
-//         psWINUSBSTM32F4->m_pbyWritePtr = psWINUSBSTM32F4->m_pbyBuffer;
-//       }
-//       USBD_CtlSendData(pdev, (uint8_t*)(&psWINUSBSTM32F4->m_dwSendByteCountUSB), 4);
-//       break;
-//     case WINUSB2commandFollowingPacketSize:
-//       psWINUSBSTM32F4->m_pbyReceivePtrUSB = psWINUSBSTM32F4->m_pbyBuffer;
-//       USBD_CtlPrepareRx(pdev, (uint8_t*)(&psWINUSBSTM32F4->m_dwExpectedByteCountUSB), 4);
-//       break;
-//     default: USBD_CtlError(pdev , req); return USBD_FAIL;
-//     }
-//     //USBD_WINUSB_UpdateState(psWINUSBSTM32F4);
-//     break;
-//   default:
-//     USBD_CtlError(pdev , req);
-//     return USBD_FAIL;
-//   }
   return USBD_OK;
 }
 
@@ -943,19 +663,3 @@ static uint8_t USBD_WINUSB_GetMSExtendedPropertiesOSDescriptor(USBD_HandleTypeDe
     
     return USBD_OK;
 }
-
-/**
-  * @}
-  */ 
-
-
-/**
-  * @}
-  */ 
-
-
-/**
-  * @}
-  */ 
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
