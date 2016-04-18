@@ -45,6 +45,7 @@
         <IncludePaths Include="DeviceCode\Targets\OS\CMSIS_RTOS\DeviceCode\lwip_1_4_1_os" />
         <Compile Include="allocator.cpp" />
         <Compile Include="tinyclr.cpp" />
+        <Compile Include="$(SRC_DIR)\$(AS_SUBDIR)\startup_tinyCLR.s" />
         <HFiles Include="$(SPOCLIENT)\clr\include\tinyclr_application.h" />
         <ObjFiles Include="$(OBJ_DIR)\$(AssemblyName)_dat.$(OBJ_EXT)" />
         <ScatterFileReferences Include="$(SRC_DIR)\scatterfile_$(AssemblyName)_$(COMPILER_TOOL).$(SCATTER_EXT)" />

@@ -100,7 +100,7 @@ PowerOnReset:
   .type  Reset_Handler, %function
   
     .section i.EntryPoint, "ax", %progbits
-EntryPoint:
+//EntryPoint:
 Reset_Handler:  
   ldr   sp, =_estack     /* set stack pointer */
 
@@ -463,8 +463,8 @@ ARM_Vectors:
    /*.weak      UART4_IRQHandler         
    .thumb_set UART4_IRQHandler,Default_Handler*/
                   
-   /*.weak      UART5_IRQHandler         
-   .thumb_set UART5_IRQHandler,Default_Handler*/
+   .weak      UART5_IRQHandler         
+   .thumb_set UART5_IRQHandler,Default_Handler
                   
    .weak      TIM6_DAC_IRQHandler                  
    .thumb_set TIM6_DAC_IRQHandler,Default_Handler
@@ -487,8 +487,8 @@ ARM_Vectors:
    .weak      DMA2_Stream4_IRQHandler               
    .thumb_set DMA2_Stream4_IRQHandler,Default_Handler
             
-   /*.weak      ETH_IRQHandler      
-   .thumb_set ETH_IRQHandler,Default_Handler*/
+   .weak      ETH_IRQHandler      
+   .thumb_set ETH_IRQHandler,Default_Handler
                   
    .weak      ETH_WKUP_IRQHandler                  
    .thumb_set ETH_WKUP_IRQHandler,Default_Handler

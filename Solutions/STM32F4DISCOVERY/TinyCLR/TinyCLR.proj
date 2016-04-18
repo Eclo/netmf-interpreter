@@ -42,6 +42,7 @@
         <!--<IncludePaths Include="DeviceCode\PAL" />-->
         <Compile Include="$(SRC_DIR)\allocator.cpp" />
         <Compile Include="$(SRC_DIR)\tinyclr.cpp" />
+        <Compile Include="$(SRC_DIR)\$(AS_SUBDIR)\startup_tinyCLR.s" />
         <HFiles Include="$(SPOCLIENT)\clr\include\tinyclr_application.h" />
         <ObjFiles Include="$(OBJ_DIR)\$(AssemblyName)_dat.$(OBJ_EXT)" />
         <ScatterFileReferences Include="$(SRC_DIR)\scatterfile_$(AssemblyName)_$(COMPILER_TOOL).$(SCATTER_EXT)" />

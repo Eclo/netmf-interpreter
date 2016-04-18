@@ -29,6 +29,7 @@
     <ItemGroup>
         <Compile Include="$(SRC_DIR)\Allocator.cpp" />
         <Compile Include="$(SRC_DIR)\TinyBooterEntry.cpp" />
+        <Compile Include="$(SRC_DIR)\$(AS_SUBDIR)\startup_tinyBooter.s" />
     </ItemGroup>
     <ItemGroup>
         <PlatformIndependentLibs Include="TinybooterLib.$(LIB_EXT)" />
