@@ -274,7 +274,7 @@ void HAL_Initialize()
     Native_Profiler_Init();
 #endif
 
-#ifdef FEATURE_CORTEX_CRC
+#ifdef FEATURE_HARDWARE_CRC
     // enable clock for the CRC calculation module
     __HAL_RCC_CRC_CLK_ENABLE();
 #endif
@@ -309,7 +309,7 @@ void HAL_Uninitialize()
         }
     }    
 
-#ifdef FEATURE_CORTEX_CRC
+#ifdef FEATURE_HARDWARE_CRC
     // disable clock for the CRC calculation module
     __HAL_RCC_CRC_CLK_DISABLE();
 #endif

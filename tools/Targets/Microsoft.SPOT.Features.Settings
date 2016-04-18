@@ -69,16 +69,14 @@
         </ItemGroup>
                         
         <!-- Cortex-M CRC -->
-        <ItemGroup Condition="'$(FEATURE_CORTEX_CRC)' == 'True' AND '$(FEATURE_CRC)' != 'True'">
-            <CC_CPP_Defines Include="FEATURE_CORTEX_CRC" />
+        <ItemGroup Condition="'$(FEATURE_HARDWARE_CRC)' == 'True' AND '$(FEATURE_SOFTWARE_CRC)' != 'True'">
+            <CC_CPP_Defines Include="FEATURE_HARDWARE_CRC" />
         </ItemGroup>
                                 
         <!-- Software CRC -->
-        <ItemGroup Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'">
-            <CC_CPP_Defines Include="FEATURE_CRC" />
+        <ItemGroup Condition="'$(FEATURE_SOFTWARE_CRC)' == 'True' AND '$(FEATURE_HARDWARE_CRC)' != 'True'">
+            <CC_CPP_Defines Include="FEATURE_SOFTWARE_CRC" />
         </ItemGroup>
-
-        <Error Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' == 'True'" Text="Can't have both Cortex-M CRC Unit and Software CRC selected. Check 'features.setting' file for TinyBooter."/>
 
         <!-- USB Debug -->
         <ItemGroup Condition="'$(FEATURE_USB_DEBUG)' == 'True'">

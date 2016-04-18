@@ -62,8 +62,8 @@
         <DriverLibs Condition="'$(FEATURE_PWM)' != 'True'" Include="cpu_pwm_stubs.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_DA)' == 'True'" Include="CMSIS_DA.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_DA)' != 'True'" Include="cpu_DA_stubs.$(LIB_EXT)" />
-        <PlatformIndependentLibs Condition="'$(FEATURE_CRC)' == 'True'" Include="CRC.$(LIB_EXT)" />
-        <DriverLibs Condition="'$(FEATURE_CORTEX_CRC)' == 'True'" Include="CMSIS_CRC.$(LIB_EXT)" />
+        <PlatformIndependentLibs Condition="'$(FEATURE_SOFTWARE_CRC)' == 'True'" Include="CRC.$(LIB_EXT)" />
+        <DriverLibs Condition="'$(FEATURE_HARDWARE_CRC)' == 'True'" Include="CMSIS_CRC.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USB_DEBUG)' == 'True'" Include="CMSIS_USB_DEBUG.$(LIB_EXT)" />
         <DriverLibs Condition="'$(FEATURE_USB_DEBUG)' == 'True'" Include="usb_cmsis_pal.$(LIB_EXT)" />
         
