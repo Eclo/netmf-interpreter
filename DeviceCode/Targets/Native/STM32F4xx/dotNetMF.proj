@@ -88,100 +88,85 @@
         <!-- GPIO -->
         <Message Condition="'$(FEATURE_GPIO)' == 'True'" Text="HAL GPIO: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_GPIO)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_GPIO" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\GPIO\dotNetMF.proj" />
         </ItemGroup>
            
         <!-- SPI -->
         <Message Condition="'$(FEATURE_SPI)' == 'True'" Text="HAL SPI: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_SPI)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_SPI" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\SPI\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- I2C -->
         <Message Condition="'$(FEATURE_I2C)' == 'True'" Text="HAL I2C: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_I2C)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_I2C" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\I2C\dotNetMF.proj" />
         </ItemGroup>     
         
         <!-- USART -->
         <Message Condition="'$(FEATURE_USART)' == 'True'" Text="HAL USART: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_USART)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_USART" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\USART\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- Analog (ADC) -->
         <Message Condition="'$(FEATURE_ANALOG)' == 'True'" Text="HAL Analog (ADC): included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_ANALOG)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_ANALOG" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\Analog\dotNetMF.proj" />
         </ItemGroup>
         
         <!-- PWM -->
         <Message Condition="'$(FEATURE_PWM)' == 'True'" Text="HAL PWM: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_PWM)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_PWM" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\PWM\dotNetMF.proj" />
         </ItemGroup>
 
         <!-- DA -->
         <Message Condition="'$(FEATURE_DA)' == 'True'" Text="HAL PWM: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_DA)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_DA" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\DA\dotNetMF.proj" />
         </ItemGroup>
           
         <!-- Cortex-M internal FLASH -->
         <Message Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'" Text="Cortex-M Flash: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CORTEX_FLASH)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_CORTEX_FLASH" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\Flash\dotNetMF.proj" />
         </ItemGroup>
               
         <!-- CPU Cache -->
         <Message Condition="'$(FEATURE_CPUCACHE)' == 'True'" Text="HAL SPI: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CPUCACHE)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_CPUCACHE" />
         </ItemGroup>
         
         <!-- Watchdog -->
         <Message Condition="'$(FEATURE_WATCHDOG)' == 'True'" Text="Watchdog: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_WATCHDOG)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_WATCHDOG" />
         </ItemGroup>
 
         <!-- Sockets -->
         <Message Condition="'$(FEATURE_SOCKETS)' == 'True'" Text="Sockets: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_SOCKETS)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_SOCKETS" />
         </ItemGroup>
         
         <!-- Time Service -->
         <Message Condition="'$(FEATURE_TIMESERVICE)' == 'True'" Text="Time service: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_TIMESERVICE)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_TIMESERVICE" />
         </ItemGroup>
 
         <!-- PAL event -->
         <Message Condition="'$(FEATURE_PALEVENT)' == 'True'" Text="PAL event: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_PALEVENT)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_PALEVENT" />
         </ItemGroup>
                       
         <!-- Cortex-M CRC -->
         <Message Condition="'$(FEATURE_CORTEX_CRC)' == 'True' AND '$(FEATURE_CRC)' != 'True'" Text="Cortex-M CRC Unit: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CORTEX_CRC)' == 'True' AND '$(FEATURE_CRC)' != 'True'">
-            <CC_CPP_Defines Include="FEATURE_CORTEX_CRC" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\CRC\dotNetMF.proj" />
         </ItemGroup>
                               
         <!-- Software CRC -->
         <Message Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'" Text="Software CRC: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_CRC)' == 'True' AND '$(FEATURE_CORTEX_CRC)' != 'True'">
-            <CC_CPP_Defines Include="FEATURE_CRC" />
             <RequiredProjects Include="$(SPOCLIENT)\Support\CRC\dotNetMF.proj" />
         </ItemGroup>
 
@@ -190,7 +175,6 @@
         <!-- USB Debug -->
         <Message Condition="'$(FEATURE_USB_DEBUG)' == 'True'" Text="USB Debug: included" Importance="High"/>
         <ItemGroup Condition="'$(FEATURE_USB_DEBUG)' == 'True'">
-            <CC_CPP_Defines Include="FEATURE_USB_DEBUG" />
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\USB\dotNetMF.proj" />            
             <RequiredProjects Include="$(SPOCLIENT)\DeviceCode\PAL\COM\USB_CMSIS\dotNetMF.proj" />
         </ItemGroup>
@@ -228,7 +212,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="$(SPOCLIENT)\DeviceCode\Targets\Native\STM32F4xx\$(AS_SUBDIR)\startup_tinyCLR.s" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\IDelayLoop.s" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\Interlocked.s" />
         <Compile Include="$(SPOCLIENT)\DeviceCode\Cores\arm\Processors\CortexMx\TinyHal\$(AS_SUBDIR)\OtherHandlers.s" />
