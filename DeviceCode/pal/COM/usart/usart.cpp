@@ -556,7 +556,9 @@ BOOL USART_Driver::AddCharToRxBuffer( int ComPortNum, char c )
             SetEvent( ComPortNum, USART_EVENT_ERROR_RXOVER );
                 
 #if !defined(BUILD_RTM)
+#ifdef FEATURE_LCD
             lcd_printf("\fBuffer OVFLW\r\n");
+#endif            
             hal_printf("Buffer OVFLW\r\n");
 #endif
             return FALSE;
