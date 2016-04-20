@@ -22,7 +22,7 @@ BOOL DebuggerPort_Initialize( COM_HANDLE ComPortNum )
             if(USB_Initialize(ConvertCOM_UsbController(ComPortNum)))
             {
 #if defined(USB_ALLOW_CONFIGURATION_OVERRIDE)
-                // because it was called from debugger port USB_Initialize alreadt opened the USB stream  
+                // because the call is from a debugger port USB_Initialize has already opened the USB stream  
                 return TRUE;
 #else
                 return USB_OpenStream( ConvertCOM_UsbStream(HalSystemConfig.DebuggerPorts[0]), USB_DEBUG_EP_WRITE, USB_DEBUG_EP_READ );    
