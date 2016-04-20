@@ -19,10 +19,17 @@ BOOL DebuggerPort_Initialize( COM_HANDLE ComPortNum )
             if(USB_CONFIG_ERR_OK != USB_Configure( ConvertCOM_UsbController(ComPortNum), NULL ))
                 return FALSE;
 
-            if(!USB_Initialize( ConvertCOM_UsbController(ComPortNum) ))
-                return FALSE;
-
-            return USB_OpenStream( ConvertCOM_UsbStream(ComPortNum), USB_DEBUG_EP_WRITE, USB_DEBUG_EP_READ );
+            if(USB_Initialize(ConvertCOM_UsbController(ComPortNum)))
+            {
+#if defined(USB_ALLOW_CONFIGURATION_OVERRIDE)
+                // because it was called from debugger port USB_Initialize alreadt opened the USB stream  
+                return TRUE;
+#else
+                return USB_OpenStream( ConvertCOM_UsbStream(HalSystemConfig.DebuggerPorts[0]), USB_DEBUG_EP_WRITE, USB_DEBUG_EP_READ );    
+#endif
+                
+            }
+            break;
 #endif
             
     #ifdef FEATURE_SOCKETS        
