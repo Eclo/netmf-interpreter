@@ -370,7 +370,7 @@ bool CLR_DBG_Debugger::Monitor_Ping( WP_Message* msg, void* owner )
 
         cmdReply.m_source    = CLR_DBG_Commands::Monitor_Ping::c_Ping_Source_TinyCLR;
 
-#if !defined(BIG_ENDIAN)
+#if !defined(NETMF_TARGET_BIG_ENDIAN)
         cmdReply.m_dbg_flags = CLR_EE_DBG_IS(State_ProgramExited) != 0 ? CLR_DBG_Commands::Monitor_Ping::c_Ping_DbgFlag_AppExit : 0;
 #else
         cmdReply.m_dbg_flags  = CLR_DBG_Commands::Monitor_Ping::c_Ping_DbgFlag_BigEndian;
@@ -427,7 +427,7 @@ bool CLR_DBG_Debugger::Monitor_FlashSectorMap( WP_Message* msg, void* owner )
 
             if(cnt == 1)
             {
-                pData = (struct Flash_Sector*)private_malloc(rangeCount * sizeof(struct Flash_Sector));
+                pData = (struct Flash_Sector*)malloc(rangeCount * sizeof(struct Flash_Sector));
 
                 if(pData == NULL)
                 {
@@ -467,7 +467,7 @@ bool CLR_DBG_Debugger::Monitor_FlashSectorMap( WP_Message* msg, void* owner )
 
         dbg->m_messaging->ReplyToCommand( msg, true, false, (void*)pData, rangeCount * sizeof (struct Flash_Sector) );
 
-        private_free(pData);
+        free(pData);
     }
 
     return true;
@@ -1210,7 +1210,7 @@ bool CLR_DBG_Debugger::Debugging_MFUpdate_AuthCommand( WP_Message* msg, void* ow
         {
             int cmdSize = respLen + offsetof(CLR_DBG_Commands::Debugging_MFUpdate_AuthCommand::Reply, m_response);
             
-            CLR_DBG_Commands::Debugging_MFUpdate_AuthCommand::Reply* pTmp = (CLR_DBG_Commands::Debugging_MFUpdate_AuthCommand::Reply*)private_malloc(cmdSize);
+            CLR_DBG_Commands::Debugging_MFUpdate_AuthCommand::Reply* pTmp = (CLR_DBG_Commands::Debugging_MFUpdate_AuthCommand::Reply*)malloc(cmdSize);
 
             if(pTmp != NULL)
             {
@@ -1223,7 +1223,7 @@ bool CLR_DBG_Debugger::Debugging_MFUpdate_AuthCommand( WP_Message* msg, void* ow
                 }
                 else
                 {
-                    private_free(pTmp);
+                    free(pTmp);
                 }
             }
         }
@@ -1233,7 +1233,7 @@ bool CLR_DBG_Debugger::Debugging_MFUpdate_AuthCommand( WP_Message* msg, void* ow
 
     if(pReply != &reply)
     {
-        private_free(pReply);
+        free(pReply);
     }
 
     return true;
@@ -1297,7 +1297,7 @@ bool CLR_DBG_Debugger::Debugging_MFUpdate_GetMissingPkts( WP_Message* msg, void*
 
     if(MFUpdate_GetMissingPackets(cmd->m_updateHandle, &s_missingPkts[0], &int32Cnt))
     {
-        pReply = (CLR_DBG_Commands::Debugging_MFUpdate_GetMissingPkts::Reply*)private_malloc(sizeBytes);
+        pReply = (CLR_DBG_Commands::Debugging_MFUpdate_GetMissingPkts::Reply*)malloc(sizeBytes);
 
         if(pReply != NULL)
         {
@@ -1318,7 +1318,7 @@ bool CLR_DBG_Debugger::Debugging_MFUpdate_GetMissingPkts( WP_Message* msg, void*
 
     if(pReply != &reply)
     {
-        private_free(pReply);
+        free(pReply);
     }
     
     return true;    
@@ -1432,7 +1432,7 @@ static bool FillValues( CLR_RT_HeapBlock* ptr, CLR_DBG_Commands::Debugging_Value
         // Primitives or optimized value types.
         //
         
-#if !defined(BIG_ENDIAN)
+#if !defined(NETMF_TARGET_BIG_ENDIAN)
         memcpy( dst->m_builtinValue, (void*)&ptr->NumericByRefConst().u1, 8 );
 #else
         {
@@ -1953,7 +1953,7 @@ bool CLR_DBG_Debugger::Debugging_Thread_Get( WP_Message* msg, void* owner )
 
     if(!fFound)
     {
-        pThread = (CLR_RT_HeapBlock*)private_malloc(sizeof(CLR_RT_HeapBlock));
+        pThread = (CLR_RT_HeapBlock*)malloc(sizeof(CLR_RT_HeapBlock));
         
         //Create the managed thread.
         //This implies that there is no state in the managed object.  This is not exactly true, as the managed thread 
