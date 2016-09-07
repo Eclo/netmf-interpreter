@@ -27,7 +27,7 @@
   <PropertyGroup>
     <DEVICE_ID>STM32F407xx</DEVICE_ID>
     <DEVICE_SERIES>F4</DEVICE_SERIES>
-    <CMSIS_PACK_VER>1.11.0</CMSIS_PACK_VER>
+    <CMSIS_PACK_VER>1.13.0</CMSIS_PACK_VER>
   </PropertyGroup>
 
   <!-- USB configuration -->
