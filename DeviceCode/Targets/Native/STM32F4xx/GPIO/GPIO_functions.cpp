@@ -296,21 +296,46 @@ BOOL CPU_GPIO_Initialize()
     GPIO_InitStruct.Pin = GPIO_PIN_All;
 
     #if defined (RCC_AHB1ENR_GPIOAEN)
+    
     #if !defined(BUILD_RTM)
     // don't change PA13 and PA14 as they maybe used in JTAG
     GPIO_InitStruct.Pin = GPIO_PIN_All & (~GPIO_PIN_13) & (~GPIO_PIN_14);
     #endif 
+    
     __HAL_RCC_GPIOA_CLK_ENABLE();
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    
+    // disable Port A clock only if this not RTM, otherwise keep it active for JTAG and debug
     #if defined(BUILD_RTM)
     __HAL_RCC_GPIOA_CLK_DISABLE();
     #endif
+    
     #endif
+
+    #if !defined(BUILD_RTM) && (TOTAL_GENERIC_PORTS == 1)
+    // don't change PB3 if it's being used as ITM port for SWO
+    GPIO_InitStruct.Pin = GPIO_PIN_All & (~GPIO_PIN_3);
+    #else
+    // reset pin structure to ALL
+    GPIO_InitStruct.Pin = GPIO_PIN_All & (~GPIO_PIN_13) & (~GPIO_PIN_14);
+    #endif 
+
     #if defined (RCC_AHB1ENR_GPIOBEN)
     __HAL_RCC_GPIOB_CLK_ENABLE();
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    __HAL_RCC_GPIOB_CLK_DISABLE();
+
+    // turn off clock only for Port B only if ITM port for SWO it's not being used
+    #if !(TOTAL_GENERIC_PORTS == 1)
+        __HAL_RCC_GPIOB_CLK_DISABLE();
     #endif
+
+    #endif
+
+    #if !defined(BUILD_RTM)
+    // reset pin structure to ALL
+    GPIO_InitStruct.Pin = GPIO_PIN_All & (~GPIO_PIN_13) & (~GPIO_PIN_14);
+    #endif 
+
     #if defined (RCC_AHB1ENR_GPIOCEN)
     __HAL_RCC_GPIOC_CLK_ENABLE();
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
