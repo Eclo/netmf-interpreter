@@ -21,11 +21,11 @@ TIM_HandleTypeDef       slaveTimerHandle;
 
 /*
 NETMF time base requires a resolution of 100ns (1MHz).
-That requires a timer with 48 bits resolution, which doesn't exit in the supported Cortex M platforms.
+That requires a timer with 48 bits resolution, which doesn't exist in the supported Cortex M platforms.
 The solution is to synchronize 2 timers:
     - MASTER with 32 bits resolution (lower bits)
     - SLAVE with 16 bits resolution (upper bits)
-    (32+16=48, check!)
+    (16+32=48, check!)
 
 In previous NETMF HAL implementations the developer could choose which timers would be synchronized to implement the HAL timer.
 For the current HAL implementation (CMSIS based) we choose to go with a fixed configuration, for simplicity.
@@ -66,7 +66,7 @@ BOOL HAL_Time_Initialize()
     /* Get APB1 prescaler */
     uwAPB1Prescaler = clkconfig.APB1CLKDivider;
 
-    /* Compute TIM6 clock */
+    /* Compute TIM clock */
     if (uwAPB1Prescaler == RCC_HCLK_DIV1) 
     {
         uwTimclock = HAL_RCC_GetPCLK1Freq();
@@ -85,7 +85,7 @@ BOOL HAL_Time_Initialize()
     ClockDivision = 0
     Counter direction = Up
     */
-    masterTimerHandle.Init.Period = (1000000U / 1000U) - 1U;
+    masterTimerHandle.Init.Period = 0xFFFFFFFF;
     masterTimerHandle.Init.Prescaler = uwPrescalerValue;
     masterTimerHandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     masterTimerHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -108,7 +108,7 @@ BOOL HAL_Time_Initialize()
 
 
     // slave timer
-    slaveTimerHandle.Init.Period = 0;
+    slaveTimerHandle.Init.Period = 0xFFFF;
     slaveTimerHandle.Init.Prescaler = 0;
     slaveTimerHandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     slaveTimerHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -123,16 +123,6 @@ BOOL HAL_Time_Initialize()
     sSlaveConfig.SlaveMode = TIM_SLAVEMODE_GATED;
     sSlaveConfig.InputTrigger = TIM_TS_ITR1;
     if(HAL_TIM_SlaveConfigSynchronization(&slaveTimerHandle, &sSlaveConfig) != HAL_OK)
-    {
-        /* Configuration Error */
-        // FIXME
-        //Error_Handler();
-    }
-    
-    // config master sync for slave
-    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET; 
-    sMasterConfig.MasterSlaveMode=TIM_MASTERSLAVEMODE_DISABLE; 
-    if(HAL_TIMEx_MasterConfigSynchronization(&slaveTimerHandle, &sMasterConfig) != HAL_OK)
     {
         /* Configuration Error */
         // FIXME
@@ -168,15 +158,16 @@ BOOL HAL_Time_Uninitialize()
 #pragma arm section code = "SectionForFlashOperations"
 UINT64 __section("SectionForFlashOperations") HAL_Time_CurrentTicks()
 {
-    UINT32 t2, t3; // cascaded timers
-    do 
-    {
-        t3 = slaveTimerHandle.Instance->CNT;
-        t2 = masterTimerHandle.Instance->CNT;
-    } 
-    while (t3 != slaveTimerHandle.Instance->CNT); // asure consistent values
+    UINT64 ticks, lowerTicks; // cascaded timers
+
+    // read counters from timers
+    ticks = (UINT64)__HAL_TIM_GET_COUNTER(&slaveTimerHandle);
+    lowerTicks = (UINT64)__HAL_TIM_GET_COUNTER(&masterTimerHandle);
     
-    return t2 | (UINT64)t3 << 32;
+    ticks = ticks << 32;
+    ticks = ticks | lowerTicks;
+
+    return ticks;
 }
 #pragma arm section code
 
