@@ -143,6 +143,9 @@ namespace Microsoft.SPOT.Debugger.WireProtocol
             public const uint c_Ping_Source_TinyBooter = 0x00000001;
             public const uint c_Ping_Source_Host = 0x00000002;
 
+            public const uint c_Ping_Source_NanoCLR = 0x00010000;
+            public const uint c_Ping_Source_NanoBooter = 0x00010001;
+
             public const uint c_Ping_DbgFlag_Stop       = 0x00000001;
             public const uint c_Ping_DbgFlag_BigEndian  = 0x02000002;
             public const uint c_Ping_DbgFlag_AppExit    = 0x00000004;

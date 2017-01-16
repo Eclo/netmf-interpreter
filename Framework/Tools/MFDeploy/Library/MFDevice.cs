@@ -41,10 +41,12 @@ namespace Microsoft.NetMicroFramework.Tools.MFDeployTool.Engine
 
     public enum PingConnectionType
     {
-        TinyCLR,
-        TinyBooter,
+        TinyCLR = 0x00000000,
+        TinyBooter = 0x00000001,
         NoConnection,
         MicroBooter,
+        NanoCLR = 0x00010000,
+        NanoBooter = 0x00010001,
     }
 
     public class DebugOutputEventArgs : EventArgs
@@ -339,6 +341,14 @@ namespace Microsoft.NetMicroFramework.Tools.MFDeployTool.Engine
                                     else if (m_eng.ConnectionSource == _DBG.ConnectionSource.TinyBooter)
                                     {
                                         if (target == _DBG.ConnectionSource.TinyCLR)
+                                        {
+                                            m_eng.ExecuteMemory(0);
+                                            Thread.Sleep(100);
+                                        }
+                                    }
+                                    else if (m_eng.ConnectionSource == _DBG.ConnectionSource.NanoBooter)
+                                    {
+                                        if (target == _DBG.ConnectionSource.NanoCLR)
                                         {
                                             m_eng.ExecuteMemory(0);
                                             Thread.Sleep(100);
@@ -640,7 +650,8 @@ namespace Microsoft.NetMicroFramework.Tools.MFDeployTool.Engine
 
             if (!IsClrDebuggerEnabled() || 0 != (optionFlags & EraseOptions.Firmware))
             {
-                fReset = (Ping() == PingConnectionType.TinyCLR);
+                var pingResult = Ping();
+                fReset = (pingResult == PingConnectionType.TinyCLR || pingResult == PingConnectionType.NanoCLR);
                 if (!ConnectToTinyBooter())
                 {
                     throw new MFTinyBooterConnectionFailureException();
@@ -793,6 +804,12 @@ namespace Microsoft.NetMicroFramework.Tools.MFDeployTool.Engine
                             case _WP.Commands.Monitor_Ping.c_Ping_Source_TinyBooter:
                                 ret = PingConnectionType.TinyBooter;
                                 break;
+                            case _WP.Commands.Monitor_Ping.c_Ping_Source_NanoCLR:
+                                ret = PingConnectionType.NanoCLR;
+                                break;
+                            case _WP.Commands.Monitor_Ping.c_Ping_Source_NanoBooter:
+                                ret = PingConnectionType.NanoBooter;
+                                break;
                         }
                     }
                 }
@@ -816,8 +833,8 @@ namespace Microsoft.NetMicroFramework.Tools.MFDeployTool.Engine
         /// connected to the CLR rather than TinyBooter.</returns>
         public OemMonitorInfo GetOemMonitorInfo()
         {
-            if (m_eng == null || !m_eng.IsConnected || m_eng.IsConnectedToTinyCLR) return null;
-            
+            if (m_eng == null || m_eng.IsConnectedToTinyCLR || m_eng.IsConnectedToNanoCLR) return null;
+
             _WP.Commands.Monitor_OemInfo.Reply reply = m_eng.GetMonitorOemInfo();
             return reply == null ? null : new OemMonitorInfo(reply);
         }

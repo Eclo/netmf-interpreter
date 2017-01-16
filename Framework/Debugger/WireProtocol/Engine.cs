@@ -153,6 +153,8 @@ namespace Microsoft.SPOT.Debugger
         TinyBooter,
         TinyCLR,
         MicroBooter,
+        NanoCLR,
+        NanoBooter,
     };
 
     internal class RebootTime
@@ -1496,6 +1498,11 @@ namespace Microsoft.SPOT.Debugger
             get { return ConnectionSource == ConnectionSource.TinyCLR; }
         }
 
+        public bool IsConnectedToNanoCLR
+        {
+            get { return ConnectionSource == ConnectionSource.NanoCLR; }
+        }
+
         public bool IsTargetBigEndian
         {
             get { return m_targetIsBigEndian; }
@@ -1531,7 +1538,25 @@ namespace Microsoft.SPOT.Debugger
                 }
                 m_connected = true;
 
-                m_connectionSource = ( reply == null || reply.m_source == Commands.Monitor_Ping.c_Ping_Source_TinyCLR ) ? ConnectionSource.TinyCLR : ConnectionSource.TinyBooter;
+                if(reply != null)
+                {
+                    if(reply.m_source == Commands.Monitor_Ping.c_Ping_Source_TinyCLR)
+                    {
+                        m_connectionSource = ConnectionSource.TinyCLR;
+                    }
+                    else if (reply.m_source == Commands.Monitor_Ping.c_Ping_Source_TinyBooter)
+                    {
+                        m_connectionSource = ConnectionSource.TinyBooter;
+                    }
+                    else if (reply.m_source == Commands.Monitor_Ping.c_Ping_Source_NanoCLR)
+                    {
+                        m_connectionSource = ConnectionSource.NanoCLR;
+                    }
+                    else if (reply.m_source == Commands.Monitor_Ping.c_Ping_Source_NanoBooter)
+                    {
+                        m_connectionSource = ConnectionSource.NanoBooter;
+                    }
+                }
 
                 if( m_silent )
                 {
